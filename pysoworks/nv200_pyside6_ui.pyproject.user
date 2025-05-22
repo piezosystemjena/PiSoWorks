@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 16.0.0, 2025-05-20T16:04:56. -->
+<!-- Written by QtCreator 16.0.0, 2025-05-22T15:59:53. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -86,26 +86,29 @@
     <valuelist type="QVariantList" key="ClangTools.SuppressedDiagnostics"/>
     <value type="bool" key="ClangTools.UseGlobalSettings">true</value>
    </valuemap>
+   <valuemap type="QVariantMap" key="CppEditor.QuickFix">
+    <value type="bool" key="UseGlobalSettings">true</value>
+   </valuemap>
   </valuemap>
  </data>
  <data>
   <variable>ProjectExplorer.Project.Target.0</variable>
   <valuemap type="QVariantMap">
    <value type="QString" key="DeviceType">Desktop</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Python 3.12.9</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Python 3.12.9</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{06d8c3da-3012-406d-adb2-3d6775d3f814}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Python PySoWorks</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Python PySoWorks</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{958753ad-07ed-4b4f-93bb-455563bbddde}</value>
    <value type="qlonglong" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="qlonglong" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="qlonglong" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:\Coding\projects_python\nv200_python_lib\.venv</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:\Coding\projects_python\nv200_software\pysoworks\pysoworks</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Python.PysideBuildStep</value>
-      <value type="QString" key="Python.PySideProjectTool">C:\Coding\projects_python\nv200_python_lib\.venv\Scripts\pyside6-project.exe</value>
-      <value type="QString" key="Python.PySideUic">C:\Coding\projects_python\nv200_python_lib\.venv\Scripts\pyside6-uic.exe</value>
+      <value type="QString" key="Python.PySideProjectTool">C:\Coding\projects_python\nv200_software\pysoworks\.venv\Scripts\pyside6-project.exe</value>
+      <value type="QString" key="Python.PySideUic">C:\Coding\projects_python\nv200_software\pysoworks\.venv\Scripts\pyside6-uic.exe</value>
      </valuemap>
      <value type="qlonglong" key="ProjectExplorer.BuildStepList.StepsCount">1</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Build</value>
@@ -123,10 +126,9 @@
     <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.CustomParsers"/>
     <value type="bool" key="ProjectExplorer.BuildConfiguration.ParseStandardOutput">false</value>
     <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.UserEnvironmentChanges"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Python 3.12.9 virtuelle Umgebung</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Python PySoWorks</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Python.PySideBuildConfiguration</value>
-    <value type="QString" key="python">C:/Coding/projects_python/nv200_python_lib/.venv/Scripts/python.exe</value>
-    <value type="QString" key="venv">C:/Coding/projects_python/nv200_python_lib/.venv</value>
+    <value type="QString" key="python">C:/Coding/projects_python/nv200_software/pysoworks/.venv/Scripts/python.exe</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.BuildConfigurationCount">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.DeployConfiguration.0">
@@ -154,12 +156,12 @@
     <value type="QString" key="PerfRecordArgsId">-e cpu-cycles --call-graph &quot;dwarf,4096&quot; -F 250</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">mainwindow.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration.</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Coding/projects_python/nv200_python_lib/examples/nv200_pyside6_ui/mainwindow.py</value>
-    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">true</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">C:\Coding\projects_python\nv200_python_lib\examples\nv200_pyside6_ui\mainwindow.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Coding/projects_python/nv200_software/pysoworks/pysoworks/mainwindow.py</value>
+    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">false</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">C:\Coding\projects_python\nv200_software\pysoworks\pysoworks\mainwindow.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Coding/projects_python/nv200_python_lib/examples/nv200_pyside6_ui</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">C:/Coding/projects_python/nv200_software/pysoworks/pysoworks</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

@@ -19,6 +19,7 @@ from qt_material import apply_stylesheet
 from pathlib import Path
 from qt_material_icons import MaterialIcon
 from nv200widget import NV200Widget
+import PySide6QtAds as QtAds
 
 
 # Important:
@@ -52,9 +53,24 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("PySoWorks")
         ui = self.ui
         ui.setupUi(self)
+
+        # Create the dock manager. Because the parent parameter is a QMainWindow
+        # the dock manager registers itself as the central widget.
+        self.dock_manager = QtAds.CDockManager(self)
+        ui.actionAdd_NV200_View.triggered.connect(self.add_nv200_view)
+
+
+    def add_nv200_view(self):
+        """
+        Adds a new NV200 view to the main window.
+        """
         nv200widget = NV200Widget(self)
-        nv200widget.status_message.connect(self.statusBar().showMessage)
-        self.setCentralWidget(nv200widget)
+        dock_widget = QtAds.CDockWidget("NV200")
+        dock_widget.setWidget(nv200widget)
+        #nv200widget.status_message.connect(self.statusBar().showMessage)
+        #self.setCentralWidget(nv200widget)
+        # Add the dock widget to the top dock widget area
+        self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
 
    
 def setup_logging():

@@ -27,6 +27,7 @@ matplotlib = "^3.10.1"
 qt-material-icons = "^0.2.0"
 qt-material = "^2.17"
 #nv200 = { path = "../nv200_python_lib", develop = true }
+pyside6-qtads = "^4.4.0"
 
 
 
