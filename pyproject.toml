@@ -1,0 +1,73 @@
+[tool.poetry]
+# - `name`: The name of the Python package.
+# - `version`: The current version of the package.
+# - `description`: A brief description of the package's purpose.
+# - `packages`: Specifies the package(s) to include in the distribution. Here, it includes the "nv200" package.
+# - `authors`: A list of authors or maintainers of the package.
+# - `readme`: The file containing the long description of the package, typically displayed on package repositories.
+# - `include`: Specifies additional files or directories to include in the package distribution. In this case, all files in the "examples" directory and its subdirectories are included
+name = "pysoworks"
+version = "0.1.0"
+description = "PySide6-based application for controlling NV200 devices."
+authors = ["piezosystem jena GmbH"]
+license = "MIT"
+readme = "README_PYPI.md"
+packages = [{ include = "pysoworks" }]
+
+
+
+[tool.poetry.dependencies]
+# This section defines the dependencies for the project using Poetry.
+# Each dependency specifies the required version range to ensure compatibility.
+python = "^3.12,<3.14"
+pyside6 = "^6.9.0"
+qtinter = "^0.11.0"
+tomlkit = "^0.13.2"
+matplotlib = "^3.10.1"
+qt-material-icons = "^0.2.0"
+qt-material = "^2.17"
+#nv200 = { path = "../nv200_python_lib", develop = true }
+
+
+
+[tool.poetry.group.dev.dependencies]
+# This section defines the development dependencies for the project using Poetry's
+# dependency grouping feature. The `[tool.poetry.group.dev.dependencies]` table
+# specifies packages required for development purposes, particularly for
+# documentation generation and theming:
+sphinx = "^8.2.3"
+sphinx-rtd-theme = "^3.0.2"
+sphinx-rtd-dark-mode = "^1.3.0"
+sphinx-fontawesome = "^0.0.6"
+sphinx-togglebutton = "^0.3.2"
+sphinxcontrib-napoleon = "^0.7"
+
+
+
+[build-system]
+# This section defines the build system requirements for the project.
+# - The `requires` field specifies the dependencies needed to build the project.
+#   In this case, it requires `poetry-core` version 2.0.0 or higher, but less than 3.0.0.
+# - The `build-backend` field specifies the backend used for building the project.
+#   Here, it is set to `poetry_dynamic_versioning.backend`, which likely integrates
+#   dynamic versioning functionality into the build process.
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+
+
+[tool.poetry-dynamic-versioning]
+# This section configures the "poetry-dynamic-versioning" plugin for Poetry.
+# - `enable`: Enables the dynamic versioning functionality.
+# - `vcs`: Specifies the version control system to use for versioning (e.g., "git").
+# - `fix-shallow-repository`: Ensures compatibility with shallow Git repositories.
+# - `bump`: Automatically increments the version based on changes in the repository.
+# To use the plugin it needs to get installed via:
+# pipx inject poetry "poetry-dynamic-versioning[plugin]
+enable = true
+vcs = "git"
+fix-shallow-repository = true
+bump = true
+#format = "{base}"  # <- This removes the `+local` part
+dirty = false
+metadata = false # <== disables the +commit-hash suffix to avoid warnings when uploading to PyPI

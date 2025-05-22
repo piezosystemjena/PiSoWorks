@@ -1,0 +1,5 @@
+/doc/_api
+/doc/_build
+/.venv
+/dist
+__pycache__/
