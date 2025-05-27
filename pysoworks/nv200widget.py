@@ -13,7 +13,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
 from nv200.shared_types import DetectedDevice, PidLoopMode, DiscoverFlags
 from nv200.device_discovery import discover_devices
-from nv200.device_interface import DeviceClient, create_device_client
+from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from qt_material import apply_stylesheet
 from pathlib import Path
@@ -52,7 +52,7 @@ class NV200Widget(QWidget):
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
     """
 
-    _device: DeviceClient = None
+    _device: NV200Device = None
     _recorder : DataRecorder = None
     status_message = Signal(str, int)  # message text, timeout in ms
 
@@ -227,7 +227,7 @@ class NV200Widget(QWidget):
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
-            self._device = create_device_client(detected_device)
+            self._device = NV200Device.from_detected_device(detected_device)
             await self._device.connect()
             self.ui.easyModeGroupBox.setEnabled(True)
             await self.initialize_easy_mode_ui()

@@ -9,12 +9,6 @@ from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject
 from PySide6.QtGui import QColor, QIcon, QPalette
 from PySide6.QtWidgets import QDoubleSpinBox
 import qtinter
-from matplotlib.backends.backend_qtagg import FigureCanvas
-from matplotlib.figure import Figure
-from nv200.shared_types import DetectedDevice, PidLoopMode, DiscoverFlags
-from nv200.device_discovery import discover_devices
-from nv200.device_interface import DeviceClient, create_device_client
-from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 import qt_material
 from pathlib import Path
 from qt_material_icons import MaterialIcon
@@ -38,10 +32,6 @@ class MainWindow(QMainWindow):
         _device (DeviceClient): The currently connected device client, or None if not connected.
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
     """
-
-    _device: DeviceClient = None
-    _recorder : DataRecorder = None
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
@@ -68,6 +58,7 @@ class MainWindow(QMainWindow):
         #self.setCentralWidget(nv200widget)
         # Add the dock widget to the top dock widget area
         self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
+        nv200widget.status_message.connect(self.statusBar().showMessage)
 
    
 def setup_logging():
