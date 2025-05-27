@@ -6,20 +6,21 @@ import os
 
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject
-from PySide6.QtGui import QColor, QIcon
+from PySide6.QtGui import QColor, QIcon, QPalette
 from PySide6.QtWidgets import QDoubleSpinBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
-from nv200.device_types import DetectedDevice, PidLoopMode, DiscoverFlags
+from nv200.shared_types import DetectedDevice, PidLoopMode, DiscoverFlags
 from nv200.device_discovery import discover_devices
 from nv200.device_interface import DeviceClient, create_device_client
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
-from qt_material import apply_stylesheet
+import qt_material
 from pathlib import Path
 from qt_material_icons import MaterialIcon
 from nv200widget import NV200Widget
 import PySide6QtAds as QtAds
+import qdarktheme
 
 
 # Important:
@@ -27,12 +28,6 @@ import PySide6QtAds as QtAds
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from ui_mainwindow import Ui_MainWindow
-
-
-def get_icon(icon_name: str, size: int = 24, fill: bool = True) -> MaterialIcon:
-    icon = MaterialIcon(icon_name, size=size, fill=fill)
-    icon.set_color(QColor.fromString(os.environ.get("QTMATERIAL_PRIMARYCOLOR", "")))
-    return icon
 
 
 
@@ -57,7 +52,9 @@ class MainWindow(QMainWindow):
         # Create the dock manager. Because the parent parameter is a QMainWindow
         # the dock manager registers itself as the central widget.
         self.dock_manager = QtAds.CDockManager(self)
+        self.dock_manager.setStyleSheet("")
         ui.actionAdd_NV200_View.triggered.connect(self.add_nv200_view)
+        self.add_nv200_view()
 
 
     def add_nv200_view(self):
@@ -86,14 +83,43 @@ def setup_logging():
     logging.getLogger("nv200.device_discovery").setLevel(logging.DEBUG)
     logging.getLogger("nv200.transport_protocols").setLevel(logging.DEBUG)         
 
+def set_dark_fusion_style(app : QApplication):
+    """
+    Sets the application style to a dark fusion theme.
+    """
+    QApplication.setStyle('Fusion')
+    QApplication.setPalette(QApplication.style().standardPalette())
+    dark_palette = QApplication.palette()
+    dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.WindowText, Qt.white)
+    dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+    dark_palette.setColor(QPalette.Text, Qt.white)
+    dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ButtonText, Qt.white)
+    dark_palette.setColor(QPalette.BrightText, Qt.red)
+    dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    QApplication.setPalette(dark_palette)
+
 
 if __name__ == "__main__":
     setup_logging()
     app = QApplication(sys.argv)
-    app.setStyle('fusion')
     app_path = Path(__file__).resolve().parent
     app.setWindowIcon(QIcon(str(app_path) + '/app_icon.ico'))
-    apply_stylesheet(app, theme='dark_teal.xml')
+    #set_dark_fusion_style(app)
+    #qt_material.apply_stylesheet(app, theme='dark_teal.xml')
+
+    qdarktheme.setup_theme(theme="dark", custom_colors={"primary": "#00C267"})
+    palette = qdarktheme.load_palette(theme="dark", custom_colors={"primary": "#00C267"})
+    app.setPalette(palette)
+
+    #print(qdarktheme.load_stylesheet(theme="dark", custom_colors={"primary": "#00C267"}))
+
+
     widget = MainWindow()
     widget.show()
     #sys.exit(app.exec())

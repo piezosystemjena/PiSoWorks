@@ -248,6 +248,18 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
+name = "darkdetect"
+version = "0.7.1"
+description = "Detect OS Dark Mode from Python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "darkdetect-0.7.1-py2.py3-none-any.whl", hash = "sha256:3efe69f8ecd5f1b7f4fbb0d1d93f656b0e493c45cc49222380ffe2a529cbc866"},
+    {file = "darkdetect-0.7.1.tar.gz", hash = "sha256:47be3cf5134432ddb616bbffc927237718407914993c82809983e7ccebf49013"},
+]
+
+[[package]]
 name = "docutils"
 version = "0.21.2"
 description = "Docutils -- Python Documentation Utilities"
@@ -812,6 +824,21 @@ files = [
 diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
+name = "pyqtdarktheme2"
+version = "2.1.2"
+description = "Flat dark theme for PySide and PyQt."
+optional = false
+python-versions = "<3.14,>=3.12"
+groups = ["main"]
+files = [
+    {file = "pyqtdarktheme2-2.1.2-py3-none-any.whl", hash = "sha256:50fe5fce2a2cfa41d142ba3dd51a636f2d562c8cb203de37175cec65bbf28e53"},
+    {file = "pyqtdarktheme2-2.1.2.tar.gz", hash = "sha256:e4027b23384fcccd6f6bf9b2b6344898c76bb9ec9f0aca75b63f8a703c241098"},
+]
+
+[package.dependencies]
+darkdetect = ">=0.7.1,<0.8.0"
+
+[[package]]
 name = "pyside6"
 version = "6.9.0"
 description = "Python bindings for the Qt cross-platform application and UI framework"
@@ -1334,4 +1361,4 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12,<3.14"
-content-hash = "a3dda4cd3bc7b5be1a4ab6f06d434394359f360db8703fab4b8c938f70917dc2"
+content-hash = "b16bf2e3cf6d904e65971a190e77d52bf0363586983ee0d7409cdd42a892e7bc"
