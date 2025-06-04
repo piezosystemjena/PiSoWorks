@@ -2,6 +2,8 @@
     "files": [
         "mainwindow.py",
         "mainwindow.ui",
-        "nv200widget.ui"
+        "nv200widget.ui",
+        "spiboxwidget.py",
+        "spiboxwidget.ui"
     ]
 }

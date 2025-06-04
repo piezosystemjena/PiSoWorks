@@ -24,7 +24,7 @@ from qt_material_icons import MaterialIcon
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from ui_nv200widget import Ui_NV200Widget
+from ui_spiboxwidget import Ui_SpiBoxWidget
 
 
 def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
@@ -44,7 +44,7 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
 
 
 
-class NV200Widget(QWidget):
+class SpiBoxWidget(QWidget):
     """
     Main application window for the PySoWorks UI, providing asynchronous device discovery, connection, and control features.
     Attributes:
@@ -58,7 +58,7 @@ class NV200Widget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = Ui_NV200Widget()
+        self.ui = Ui_SpiBoxWidget()
         ui = self.ui
         ui.setupUi(self)
         ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
@@ -81,6 +81,7 @@ class NV200Widget(QWidget):
         ui.moveButton_2.setIconSize(ui.moveButton.iconSize())
         ui.moveButton_2.clicked.connect(self.start_move)
         ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
+        self.setWindowTitle("PySoWorks")
 
     async def search_devices(self):
         """
@@ -221,9 +222,8 @@ class NV200Widget(QWidget):
         """
         Asynchronously connects to the selected device.
         """
-        self.setCursor(Qt.WaitCursor)
         detected_device = self.selected_device()
-        self.status_message.emit(f"Connecting to {detected_device.identifier}...", 0)
+        self.status_message.emit(f"Connecting to {detected_device.identifier}...")
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
@@ -237,8 +237,7 @@ class NV200Widget(QWidget):
             self.status_message.emit(f"Connection failed: {e}", 2000)
             print(f"Connection failed: {e}")
             return
-        finally:
-            self.setCursor(Qt.ArrowCursor)
+
 
     def recorder(self) -> DataRecorder:
         """
