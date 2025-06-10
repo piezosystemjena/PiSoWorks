@@ -11,13 +11,14 @@ from PySide6.QtWidgets import QDoubleSpinBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
-from nv200.shared_types import DetectedDevice, PidLoopMode, DiscoverFlags
-from nv200.device_discovery import discover_devices
-from nv200.nv200_device import NV200Device
-from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from qt_material import apply_stylesheet
 from pathlib import Path
 from qt_material_icons import MaterialIcon
+
+from nv200.shared_types import DetectedDevice, DiscoverFlags
+from nv200.device_discovery import discover_devices
+from nv200.spibox_device import SpiBoxDevice
+from nv200.connection_utils import connect_to_detected_device
 
 
 # Important:
@@ -52,8 +53,7 @@ class SpiBoxWidget(QWidget):
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
     """
 
-    _device: NV200Device = None
-    _recorder : DataRecorder = None
+    _device: SpiBoxDevice = None
     status_message = Signal(str, int)  # message text, timeout in ms
 
     def __init__(self, parent=None):
@@ -64,24 +64,11 @@ class SpiBoxWidget(QWidget):
         ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
         ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
         ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
-        ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        ui.slewRateSpinBox.editingFinished.connect(qtinter.asyncslot(self.on_slow_rate_editing_finished))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
+        ui.singleDatasetGroupBox.setEnabled(False)
+        ui.sendSingleButton.clicked.connect(qtinter.asyncslot(self.send_single_dataset))
 
-        ui.moveButton.setIcon(get_icon("play_arrow", size=24, fill=True))
-        ui.moveButton.setStyleSheet("QPushButton { padding: 0px }")
-        ui.moveButton.setIconSize(QSize(24, 24))
-        ui.moveButton.clicked.connect(self.start_move)
-        ui.moveButton.setProperty("value_edit", ui.targetPosSpinBox)
-
-        ui.moveButton_2.setIcon(ui.moveButton.icon())
-        ui.moveButton_2.setStyleSheet("QPushButton { padding: 0px }")
-        ui.moveButton_2.setIconSize(ui.moveButton.iconSize())
-        ui.moveButton_2.clicked.connect(self.start_move)
-        ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
-        self.setWindowTitle("PySoWorks")
 
     async def search_devices(self):
         """
@@ -90,7 +77,7 @@ class SpiBoxWidget(QWidget):
         ui = self.ui
         ui.searchDevicesButton.setEnabled(False)
         ui.connectButton.setEnabled(False)
-        ui.easyModeGroupBox.setEnabled(False)
+        ui.singleDatasetGroupBox.setEnabled(False)
         self.status_message.emit("Searching for devices...", 0)
         QApplication.setOverrideCursor(Qt.WaitCursor)
 
@@ -102,7 +89,7 @@ class SpiBoxWidget(QWidget):
         ui.moveProgressBar.start(5000, "search_devices")
         try:
             print("Discovering devices...")
-            devices = await discover_devices(flags=DiscoverFlags.ALL, device_class=NV200Device)    
+            devices = await discover_devices(flags=DiscoverFlags.ALL, device_class=SpiBoxDevice)    
             
             if not devices:
                 print("No devices found.")
@@ -143,40 +130,7 @@ class SpiBoxWidget(QWidget):
         print(f"Selected device: {device}")
         self.ui.connectButton.setEnabled(True)
 
-
-    async def on_pid_mode_button_clicked(self):
-        """
-        Handles the event when the PID mode button is clicked.
-
-        Determines the desired PID loop mode (closed or open loop) based on the state of the UI button,
-        sends the mode to the device asynchronously, and updates the UI status bar with any errors encountered.
-        """
-        ui = self.ui
-        pid_mode = PidLoopMode.CLOSED_LOOP if ui.closedLoopButton.isChecked() else PidLoopMode.OPEN_LOOP
-        try:
-            await self._device.set_pid_mode(pid_mode)
-            print(f"PID mode set to {pid_mode}.")
-        except Exception as e:
-            print(f"Error setting PID mode: {e}")
-            self.status_message.emit(f"Error setting PID mode: {e}", 2000)
-            return
-        
-    async def on_slow_rate_editing_finished(self):
-        """
-        Handles the event when the slew rate editing is finished.
-
-        Sends the new slew rate to the device asynchronously and updates the UI status bar with any errors encountered.
-        """
-        ui = self.ui
-        try:
-            await self._device.set_slew_rate(ui.slewRateSpinBox.value())
-            print(f"Slew rate set to {ui.slewRateSpinBox.value()}.")
-        except Exception as e:
-            print(f"Error setting slew rate: {e}")
-            self.status_message.emit(f"Error setting slew rate: {e}", 2000)
-            return
-
-
+    
     def selected_device(self) -> DetectedDevice:
         """
         Returns the currently selected device from the devicesComboBox.
@@ -186,24 +140,7 @@ class SpiBoxWidget(QWidget):
             return None
         return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
     
-
-    async def initialize_easy_mode_ui(self):
-        """
-        Asynchronously initializes the UI elements for easy mode UI.
-        """
-        dev = self._device
-        ui = self.ui
-        ui.targetPosSpinBox.setValue(await dev.get_setpoint())
-        pid_mode = await dev.get_pid_mode()
-        if pid_mode == PidLoopMode.OPEN_LOOP:
-            ui.openLoopButton.setChecked(True)
-        else:
-            ui.closedLoopButton.setChecked(True)
-        ui.slewRateSpinBox.setValue(await dev.get_slew_rate())
-        ui.setpointFilterCheckBox.setChecked(await dev.is_setpoint_lowpass_filter_enabled())
-        ui.setpointFilterCutoffSpinBox.setValue(await dev.get_setpoint_lowpass_filter_cutoff_freq())
-
-
+    
     async def disconnect_from_device(self):
         """
         Asynchronously disconnects from the currently connected device.
@@ -214,7 +151,6 @@ class SpiBoxWidget(QWidget):
 
         await self._device.close()
         self._device = None       
-        self._recorder = None
             
 
 
@@ -222,81 +158,35 @@ class SpiBoxWidget(QWidget):
         """
         Asynchronously connects to the selected device.
         """
+        self.setCursor(Qt.WaitCursor)
         detected_device = self.selected_device()
-        self.status_message.emit(f"Connecting to {detected_device.identifier}...")
+        self.status_message.emit(f"Connecting to {detected_device.identifier}...", 0)
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
-            self._device = NV200Device.from_detected_device(detected_device)
-            await self._device.connect()
-            self.ui.easyModeGroupBox.setEnabled(True)
-            await self.initialize_easy_mode_ui()
+            self._device = await connect_to_detected_device(detected_device)
+            self.ui.singleDatasetGroupBox.setEnabled(True)
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
             print(f"Connected to {detected_device.identifier}.")
         except Exception as e:
             self.status_message.emit(f"Connection failed: {e}", 2000)
             print(f"Connection failed: {e}")
             return
-
-
-    def recorder(self) -> DataRecorder:
-        """
-        Returns the DataRecorder instance associated with the device.
-        """
-        if self._device is None:
-            return None
-
-        if self._recorder is None:
-            self._recorder = DataRecorder(self._device)
-        return self._recorder	
-    
-
-    def start_move(self):
-        """
-        Initiates an asynchronous move operation by creating a new asyncio task.
-        """
-        asyncio.create_task(self.start_move_async(self.sender()))
-
-
-    async def start_move_async(self, sender: QObject):
-        """
-        Asynchronously starts the move operation.
-        """
-        if self._device is None:
-            print("No device connected.")
-            return
-        
-        spinbox : QDoubleSpinBox = sender.property("value_edit")
-        ui = self.ui
-        ui.easyModeGroupBox.setEnabled(False)
-        ui.moveProgressBar.start(5000, "start_move")
-        try:
-            recorder = self.recorder()
-            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
-            await recorder.set_data_source(1, DataRecorderSource.PIEZO_VOLTAGE)
-            await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_SET_COMMAND)
-            await recorder.set_recording_duration_ms(120)
-            await recorder.start_recording()
-
-            # Implement the move logic here
-            # For example, you might want to send a command to the device to start moving.
-            # await self._device.start_move()
-            print("Starting move operation...")
-            await self._device.move(spinbox.value())
-            self.status_message.emit("Move operation started.", 0)
-            await recorder.wait_until_finished()
-            self.status_message.emit("Reading recorded data from device...", 0)
-            rec_data = await recorder.read_recorded_data_of_channel(0)
-            ui.mplCanvasWidget.canvas.plot_data(rec_data, QColor(0, 255, 0))
-            rec_data = await recorder.read_recorded_data_of_channel(1)
-            ui.mplCanvasWidget.canvas.add_line(rec_data,  QColor('orange'))
-            ui.moveProgressBar.stop(success=True, context="start_move")
-        except Exception as e:
-            self.status_message.emit(f"Error during move operation: {e}", 4000)
-            ui.moveProgressBar.reset()
-            print(f"Error during move operation: {e}")
-            return
         finally:
-            ui.easyModeGroupBox.setEnabled(True)
-            self.status_message.emit("", 0)
+            self.setCursor(Qt.ArrowCursor)
 
+
+    async def send_single_dataset(self):
+        """
+        Handles the event when the send single button is clicked.
+        Sends a single dataset to the connected SPI Box device and updates the UI with the response.
+        """
+        rxdata = await self._device.set_setpoints_percent(
+            self.ui.singleDatasetSendCh1SpinBox.value(),
+            self.ui.singleDatasetSendCh2SpinBox.value(),
+            self.ui.singleDatasetSendCh3SpinBox.value()
+        )
+
+        self.ui.singleDatasetReceiveCh1SpinBox.setValue(rxdata[0])
+        self.ui.singleDatasetReceiveCh2SpinBox.setValue(rxdata[1])
+        self.ui.singleDatasetReceiveCh3SpinBox.setValue(rxdata[2])

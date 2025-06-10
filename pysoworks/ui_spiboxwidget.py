@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QGroupBox, QHBoxLayout, QLabel, QPushButton,
-    QRadioButton, QSizePolicy, QSpacerItem, QSpinBox,
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
+    QFrame, QGridLayout, QGroupBox, QHBoxLayout,
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
     QVBoxLayout, QWidget)
 
 from mplcanvas import MplWidget
@@ -70,111 +70,109 @@ class Ui_SpiBoxWidget(object):
         self.horizontalLayout_2.setContentsMargins(-1, -1, 0, -1)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.easyModeGroupBox = QGroupBox(SpiBoxWidget)
-        self.easyModeGroupBox.setObjectName(u"easyModeGroupBox")
-        self.easyModeGroupBox.setEnabled(False)
-        self.verticalLayout = QVBoxLayout(self.easyModeGroupBox)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.openLoopButton = QRadioButton(self.easyModeGroupBox)
-        self.openLoopButton.setObjectName(u"openLoopButton")
-        self.openLoopButton.setChecked(True)
+        self.singleDatasetGroupBox = QGroupBox(SpiBoxWidget)
+        self.singleDatasetGroupBox.setObjectName(u"singleDatasetGroupBox")
+        self.singleDatasetGroupBox.setEnabled(True)
+        self.singleDatasetGroupBox.setMinimumSize(QSize(0, 0))
+        self.gridLayout = QGridLayout(self.singleDatasetGroupBox)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.singleDatasetSendCh1SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetSendCh1SpinBox.setObjectName(u"singleDatasetSendCh1SpinBox")
+        self.singleDatasetSendCh1SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+        self.singleDatasetSendCh1SpinBox.setDecimals(3)
+        self.singleDatasetSendCh1SpinBox.setMaximum(100.000000000000000)
+        self.singleDatasetSendCh1SpinBox.setSingleStep(10.000000000000000)
 
-        self.verticalLayout.addWidget(self.openLoopButton)
+        self.gridLayout.addWidget(self.singleDatasetSendCh1SpinBox, 1, 1, 1, 1)
 
-        self.closedLoopButton = QRadioButton(self.easyModeGroupBox)
-        self.closedLoopButton.setObjectName(u"closedLoopButton")
+        self.singleDatasetReceiveCh1SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetReceiveCh1SpinBox.setObjectName(u"singleDatasetReceiveCh1SpinBox")
+        self.singleDatasetReceiveCh1SpinBox.setReadOnly(True)
+        self.singleDatasetReceiveCh1SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.singleDatasetReceiveCh1SpinBox.setDecimals(3)
+        self.singleDatasetReceiveCh1SpinBox.setMaximum(1000.000000000000000)
 
-        self.verticalLayout.addWidget(self.closedLoopButton)
+        self.gridLayout.addWidget(self.singleDatasetReceiveCh1SpinBox, 1, 3, 1, 1)
 
-        self.label = QLabel(self.easyModeGroupBox)
+        self.label_3 = QLabel(self.singleDatasetGroupBox)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout.addWidget(self.label_3, 0, 1, 1, 1)
+
+        self.label_4 = QLabel(self.singleDatasetGroupBox)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout.addWidget(self.label_4, 0, 3, 1, 1)
+
+        self.label = QLabel(self.singleDatasetGroupBox)
         self.label.setObjectName(u"label")
 
-        self.verticalLayout.addWidget(self.label)
+        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
 
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(6)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(0, 0, -1, -1)
-        self.targetPosSpinBox = QDoubleSpinBox(self.easyModeGroupBox)
-        self.targetPosSpinBox.setObjectName(u"targetPosSpinBox")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.targetPosSpinBox.sizePolicy().hasHeightForWidth())
-        self.targetPosSpinBox.setSizePolicy(sizePolicy2)
-        self.targetPosSpinBox.setDecimals(3)
-        self.targetPosSpinBox.setMaximum(1000.000000000000000)
+        self.label_2 = QLabel(self.singleDatasetGroupBox)
+        self.label_2.setObjectName(u"label_2")
 
-        self.horizontalLayout_3.addWidget(self.targetPosSpinBox)
+        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
 
-        self.moveButton = QPushButton(self.easyModeGroupBox)
-        self.moveButton.setObjectName(u"moveButton")
-        sizePolicy1.setHeightForWidth(self.moveButton.sizePolicy().hasHeightForWidth())
-        self.moveButton.setSizePolicy(sizePolicy1)
+        self.singleDatasetReceiveCh3SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetReceiveCh3SpinBox.setObjectName(u"singleDatasetReceiveCh3SpinBox")
+        self.singleDatasetReceiveCh3SpinBox.setReadOnly(True)
+        self.singleDatasetReceiveCh3SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.singleDatasetReceiveCh3SpinBox.setDecimals(3)
+        self.singleDatasetReceiveCh3SpinBox.setMaximum(1000.000000000000000)
 
-        self.horizontalLayout_3.addWidget(self.moveButton)
+        self.gridLayout.addWidget(self.singleDatasetReceiveCh3SpinBox, 3, 3, 1, 1)
 
+        self.singleDatasetReceiveCh2SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetReceiveCh2SpinBox.setObjectName(u"singleDatasetReceiveCh2SpinBox")
+        self.singleDatasetReceiveCh2SpinBox.setReadOnly(True)
+        self.singleDatasetReceiveCh2SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.singleDatasetReceiveCh2SpinBox.setDecimals(3)
+        self.singleDatasetReceiveCh2SpinBox.setMaximum(1000.000000000000000)
 
-        self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.gridLayout.addWidget(self.singleDatasetReceiveCh2SpinBox, 2, 3, 1, 1)
 
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setSpacing(6)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalLayout_4.setContentsMargins(0, 0, -1, -1)
-        self.targetPosSpinBox_2 = QDoubleSpinBox(self.easyModeGroupBox)
-        self.targetPosSpinBox_2.setObjectName(u"targetPosSpinBox_2")
-        sizePolicy2.setHeightForWidth(self.targetPosSpinBox_2.sizePolicy().hasHeightForWidth())
-        self.targetPosSpinBox_2.setSizePolicy(sizePolicy2)
-        self.targetPosSpinBox_2.setDecimals(3)
-        self.targetPosSpinBox_2.setMaximum(1000.000000000000000)
+        self.singleDatasetSendCh3SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetSendCh3SpinBox.setObjectName(u"singleDatasetSendCh3SpinBox")
+        self.singleDatasetSendCh3SpinBox.setReadOnly(False)
+        self.singleDatasetSendCh3SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+        self.singleDatasetSendCh3SpinBox.setDecimals(3)
+        self.singleDatasetSendCh3SpinBox.setMaximum(100.000000000000000)
+        self.singleDatasetSendCh3SpinBox.setSingleStep(10.000000000000000)
 
-        self.horizontalLayout_4.addWidget(self.targetPosSpinBox_2)
+        self.gridLayout.addWidget(self.singleDatasetSendCh3SpinBox, 3, 1, 1, 1)
 
-        self.moveButton_2 = QPushButton(self.easyModeGroupBox)
-        self.moveButton_2.setObjectName(u"moveButton_2")
-        sizePolicy1.setHeightForWidth(self.moveButton_2.sizePolicy().hasHeightForWidth())
-        self.moveButton_2.setSizePolicy(sizePolicy1)
+        self.label_5 = QLabel(self.singleDatasetGroupBox)
+        self.label_5.setObjectName(u"label_5")
 
-        self.horizontalLayout_4.addWidget(self.moveButton_2)
+        self.gridLayout.addWidget(self.label_5, 3, 0, 1, 1)
 
+        self.sendSingleButton = QPushButton(self.singleDatasetGroupBox)
+        self.sendSingleButton.setObjectName(u"sendSingleButton")
 
-        self.verticalLayout.addLayout(self.horizontalLayout_4)
+        self.gridLayout.addWidget(self.sendSingleButton, 4, 1, 1, 3)
 
+        self.line = QFrame(self.singleDatasetGroupBox)
+        self.line.setObjectName(u"line")
+        self.line.setMinimumSize(QSize(0, 0))
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
-        self.verticalLayout_2.addWidget(self.easyModeGroupBox)
+        self.gridLayout.addWidget(self.line, 1, 2, 3, 1)
 
-        self.setpointParamGroupBox = QGroupBox(SpiBoxWidget)
-        self.setpointParamGroupBox.setObjectName(u"setpointParamGroupBox")
-        self.verticalLayout_6 = QVBoxLayout(self.setpointParamGroupBox)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.slewRateLabel = QLabel(self.setpointParamGroupBox)
-        self.slewRateLabel.setObjectName(u"slewRateLabel")
+        self.singleDatasetSendCh2SpinBox = QDoubleSpinBox(self.singleDatasetGroupBox)
+        self.singleDatasetSendCh2SpinBox.setObjectName(u"singleDatasetSendCh2SpinBox")
+        self.singleDatasetSendCh2SpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+        self.singleDatasetSendCh2SpinBox.setDecimals(3)
+        self.singleDatasetSendCh2SpinBox.setMaximum(100.000000000000000)
+        self.singleDatasetSendCh2SpinBox.setSingleStep(10.000000000000000)
 
-        self.verticalLayout_6.addWidget(self.slewRateLabel)
-
-        self.slewRateSpinBox = QDoubleSpinBox(self.setpointParamGroupBox)
-        self.slewRateSpinBox.setObjectName(u"slewRateSpinBox")
-        self.slewRateSpinBox.setDecimals(7)
-        self.slewRateSpinBox.setMinimum(0.000000000000000)
-        self.slewRateSpinBox.setMaximum(2000.000000000000000)
-        self.slewRateSpinBox.setValue(0.000000000000000)
-
-        self.verticalLayout_6.addWidget(self.slewRateSpinBox)
-
-        self.setpointFilterCheckBox = QCheckBox(self.setpointParamGroupBox)
-        self.setpointFilterCheckBox.setObjectName(u"setpointFilterCheckBox")
-
-        self.verticalLayout_6.addWidget(self.setpointFilterCheckBox)
-
-        self.setpointFilterCutoffSpinBox = QSpinBox(self.setpointParamGroupBox)
-        self.setpointFilterCutoffSpinBox.setObjectName(u"setpointFilterCutoffSpinBox")
-        self.setpointFilterCutoffSpinBox.setMinimum(1)
-        self.setpointFilterCutoffSpinBox.setMaximum(10000)
-
-        self.verticalLayout_6.addWidget(self.setpointFilterCutoffSpinBox)
+        self.gridLayout.addWidget(self.singleDatasetSendCh2SpinBox, 2, 1, 1, 1)
 
 
-        self.verticalLayout_2.addWidget(self.setpointParamGroupBox)
+        self.verticalLayout_2.addWidget(self.singleDatasetGroupBox)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -189,11 +187,11 @@ class Ui_SpiBoxWidget(object):
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
         self.mplCanvasWidget = MplWidget(SpiBoxWidget)
         self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.mplCanvasWidget.sizePolicy().hasHeightForWidth())
-        self.mplCanvasWidget.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.mplCanvasWidget.sizePolicy().hasHeightForWidth())
+        self.mplCanvasWidget.setSizePolicy(sizePolicy2)
 
         self.verticalLayout_4.addWidget(self.mplCanvasWidget)
 
@@ -221,15 +219,18 @@ class Ui_SpiBoxWidget(object):
         SpiBoxWidget.setWindowTitle(QCoreApplication.translate("SpiBoxWidget", u"Form", None))
         self.searchDevicesButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Search Devices ...", None))
         self.connectButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Connect", None))
-        self.easyModeGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Easy Mode", None))
-        self.openLoopButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Open Loop", None))
-        self.closedLoopButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Closed Loop", None))
-        self.label.setText(QCoreApplication.translate("SpiBoxWidget", u"Target Positions", None))
-        self.moveButton.setText("")
-        self.moveButton_2.setText("")
-        self.setpointParamGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Setpoint Param.", None))
-        self.slewRateLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Slew Rate", None))
-        self.setpointFilterCheckBox.setText(QCoreApplication.translate("SpiBoxWidget", u"LP Filter Cutoff", None))
-        self.setpointFilterCutoffSpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" Hz", None))
+        self.singleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Single Dataset", None))
+        self.singleDatasetSendCh1SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.singleDatasetReceiveCh1SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.label_3.setText(QCoreApplication.translate("SpiBoxWidget", u"Send", None))
+        self.label_4.setText(QCoreApplication.translate("SpiBoxWidget", u"Receive", None))
+        self.label.setText(QCoreApplication.translate("SpiBoxWidget", u"Channel 1:", None))
+        self.label_2.setText(QCoreApplication.translate("SpiBoxWidget", u"Channel 2:", None))
+        self.singleDatasetReceiveCh3SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.singleDatasetReceiveCh2SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.singleDatasetSendCh3SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.label_5.setText(QCoreApplication.translate("SpiBoxWidget", u"Channel 3:", None))
+        self.sendSingleButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Send", None))
+        self.singleDatasetSendCh2SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
     # retranslateUi
 

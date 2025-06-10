@@ -3,21 +3,30 @@ import sys
 import asyncio
 import logging
 import os
+from typing import Any
 
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject, Signal
 from PySide6.QtGui import QColor, QIcon, QPalette
-from PySide6.QtWidgets import QDoubleSpinBox
+from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
-from nv200.shared_types import DetectedDevice, PidLoopMode, DiscoverFlags
-from nv200.device_discovery import discover_devices
-from nv200.nv200_device import NV200Device
-from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from qt_material import apply_stylesheet
 from pathlib import Path
 from qt_material_icons import MaterialIcon
+
+from nv200.shared_types import (
+    DetectedDevice,
+    PidLoopMode,
+    DiscoverFlags,
+    ModulationSource,
+    SPIMonitorSource,
+)
+from nv200.device_discovery import discover_devices
+from nv200.nv200_device import NV200Device
+from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
+from nv200.connection_utils import connect_to_detected_device
 
 
 # Important:
@@ -67,6 +76,7 @@ class NV200Widget(QWidget):
         ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
         ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
         ui.slewRateSpinBox.editingFinished.connect(qtinter.asyncslot(self.on_slow_rate_editing_finished))
+        ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
 
@@ -81,6 +91,96 @@ class NV200Widget(QWidget):
         ui.moveButton_2.setIconSize(ui.moveButton.iconSize())
         ui.moveButton_2.clicked.connect(self.start_move)
         ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
+
+        self.init_modsrc_combobox()
+        self.init_spimonitor_combobox()
+
+
+    def init_modsrc_combobox(self):
+        """
+        Initializes the modsrcComboBox with available modulation sources.
+        """
+        cb = self.ui.modsrcComboBox
+        cb.clear()
+        cb.addItem("Setpoint (set cmd)", ModulationSource.SET_CMD)
+        cb.addItem("Analog In", ModulationSource.ANALOG_IN)
+        cb.addItem("SPI Interface", ModulationSource.SPI)
+        cb.addItem("Waveform Generator", ModulationSource.WAVEFORM_GENERATOR)
+        cb.activated.connect(qtinter.asyncslot(self.on_modsrc_combobox_activated))
+
+
+    async def on_modsrc_combobox_activated(self, index: int):
+        """
+        Handles the event when a modulation source is selected from the modsrcComboBox.
+        """
+        if index == -1:
+            print("No modulation source selected.")
+            return
+
+        source = self.ui.modsrcComboBox.itemData(index)
+        if source is None:
+            print("No modulation source data found.")
+            return
+        
+        print(f"Selected modulation source: {source}")
+        try:
+            await self._device.set_modulation_source(source)
+        except Exception as e:
+            self.status_message.emit(f"Error setting modulation source: {e}", 0)
+
+    
+    def init_spimonitor_combobox(self):
+        """
+        Initializes the SPI monitor source combo box with available monitoring options.
+        """
+        cb = self.ui.spisrcComboBox
+        cb.clear()
+        cb.addItem("Zero (0x0000)", SPIMonitorSource.ZERO)
+        cb.addItem("Closed Loop Pos.", SPIMonitorSource.CLOSED_LOOP_POS)
+        cb.addItem("Setpoint", SPIMonitorSource.SETPOINT)
+        cb.addItem("Piezo Voltage", SPIMonitorSource.PIEZO_VOLTAGE)
+        cb.addItem("Position Error", SPIMonitorSource.ABS_POSITION_ERROR)
+        cb.addItem("Open Loop Pos.", SPIMonitorSource.OPEN_LOOP_POS)
+        cb.addItem("Piezo Current 1", SPIMonitorSource.PIEZO_CURRENT_1)
+        cb.addItem("Piezo Current 2", SPIMonitorSource.PIEZO_CURRENT_2)
+        cb.addItem("Test Value", SPIMonitorSource.TEST_VALUE)
+        cb.activated.connect(qtinter.asyncslot(self.on_spimonitor_combobox_activated))
+
+
+    async def on_spimonitor_combobox_activated(self, index: int):
+        """
+        Handles the event when a SPI monitor source is selected from the spisrcComboBox.
+        """
+        if index == -1:
+            print("No SPI monitor source selected.")
+            return
+
+        source = self.ui.spisrcComboBox.itemData(index)
+        if source is None:
+            print("No SPI monitor source data found.")
+            return
+        
+        print(f"Selected SPI monitor source: {source}")
+        try:
+            await self._device.set_spi_monitor_source(source)
+        except Exception as e:
+            self.status_message.emit(f"Error setting SPI monitor source: {e}", 0)
+
+
+    def set_combobox_index_by_value(self, combobox: QComboBox, value: Any) -> None:
+        """
+        Sets the current index of a QComboBox based on the given userData value.
+
+        :param combobox: The QComboBox to modify.
+        :param value: The value to match against the item userData.
+        """
+        index = combobox.findData(value)
+        if index != -1:
+            combobox.setCurrentIndex(index)
+        else:
+            # Optional: Log or raise if not found
+            print(f"Warning: Value {value} not found in combobox.")
+
 
     async def search_devices(self):
         """
@@ -174,6 +274,19 @@ class NV200Widget(QWidget):
             print(f"Error setting slew rate: {e}")
             self.status_message.emit(f"Error setting slew rate: {e}", 2000)
             return
+        
+    async def apply_setpoint_param(self):
+        """
+        Asynchronously applies setpoint parameters to the connected device.
+        """
+        try:
+            print("Applying setpoint parameters...")
+            dev = self._device
+            await dev.set_slew_rate(self.ui.slewRateSpinBox.value())
+            await dev.set_setpoint_lowpass_filter_cutoff_freq(self.ui.setpointFilterCutoffSpinBox.value())
+            await dev.enable_setpoint_lowpass_filter(self.ui.setpointFilterCheckBox.isChecked())
+        except Exception as e:
+            self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
 
     def selected_device(self) -> DetectedDevice:
@@ -186,7 +299,7 @@ class NV200Widget(QWidget):
         return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
     
 
-    async def initialize_easy_mode_ui(self):
+    async def initialize_ui_from_device(self):
         """
         Asynchronously initializes the UI elements for easy mode UI.
         """
@@ -201,6 +314,8 @@ class NV200Widget(QWidget):
         ui.slewRateSpinBox.setValue(await dev.get_slew_rate())
         ui.setpointFilterCheckBox.setChecked(await dev.is_setpoint_lowpass_filter_enabled())
         ui.setpointFilterCutoffSpinBox.setValue(await dev.get_setpoint_lowpass_filter_cutoff_freq())
+        self.set_combobox_index_by_value(ui.modsrcComboBox, await dev.get_modulation_source())
+        self.set_combobox_index_by_value(ui.spisrcComboBox, await dev.get_spi_monitor_source())
 
 
     async def disconnect_from_device(self):
@@ -227,10 +342,9 @@ class NV200Widget(QWidget):
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
-            self._device = NV200Device.from_detected_device(detected_device)
-            await self._device.connect()
+            self._device = await connect_to_detected_device(detected_device)
             self.ui.easyModeGroupBox.setEnabled(True)
-            await self.initialize_easy_mode_ui()
+            await self.initialize_ui_from_device()
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
             print(f"Connected to {detected_device.identifier}.")
         except Exception as e:

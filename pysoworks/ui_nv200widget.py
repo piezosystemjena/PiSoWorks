@@ -16,9 +16,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QGroupBox, QHBoxLayout, QLabel, QPushButton,
-    QRadioButton, QSizePolicy, QSpacerItem, QSpinBox,
-    QVBoxLayout, QWidget)
+    QGroupBox, QHBoxLayout, QLabel, QLayout,
+    QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
+    QSpinBox, QVBoxLayout, QWidget)
 
 from mplcanvas import MplWidget
 from timed_progress_bar import TimedProgressBar
@@ -27,7 +27,7 @@ class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):
         if not NV200Widget.objectName():
             NV200Widget.setObjectName(u"NV200Widget")
-        NV200Widget.resize(1205, 821)
+        NV200Widget.resize(1114, 729)
         self.verticalLayout_3 = QVBoxLayout(NV200Widget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.horizontalLayout = QHBoxLayout()
@@ -147,10 +147,23 @@ class Ui_NV200Widget(object):
         self.setpointParamGroupBox.setObjectName(u"setpointParamGroupBox")
         self.verticalLayout_6 = QVBoxLayout(self.setpointParamGroupBox)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setContentsMargins(-1, 0, -1, -1)
         self.slewRateLabel = QLabel(self.setpointParamGroupBox)
         self.slewRateLabel.setObjectName(u"slewRateLabel")
 
-        self.verticalLayout_6.addWidget(self.slewRateLabel)
+        self.horizontalLayout_5.addWidget(self.slewRateLabel, 0, Qt.AlignmentFlag.AlignBottom)
+
+        self.applySetpointParamButton = QPushButton(self.setpointParamGroupBox)
+        self.applySetpointParamButton.setObjectName(u"applySetpointParamButton")
+        sizePolicy1.setHeightForWidth(self.applySetpointParamButton.sizePolicy().hasHeightForWidth())
+        self.applySetpointParamButton.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_5.addWidget(self.applySetpointParamButton, 0, Qt.AlignmentFlag.AlignRight)
+
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_5)
 
         self.slewRateSpinBox = QDoubleSpinBox(self.setpointParamGroupBox)
         self.slewRateSpinBox.setObjectName(u"slewRateSpinBox")
@@ -175,6 +188,35 @@ class Ui_NV200Widget(object):
 
 
         self.verticalLayout_2.addWidget(self.setpointParamGroupBox)
+
+        self.settingsGroupBox = QGroupBox(NV200Widget)
+        self.settingsGroupBox.setObjectName(u"settingsGroupBox")
+        self.settingsGroupBox.setMinimumSize(QSize(0, 100))
+        self.verticalLayout_5 = QVBoxLayout(self.settingsGroupBox)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
+        self.label_2 = QLabel(self.settingsGroupBox)
+        self.label_2.setObjectName(u"label_2")
+
+        self.verticalLayout_5.addWidget(self.label_2)
+
+        self.modsrcComboBox = QComboBox(self.settingsGroupBox)
+        self.modsrcComboBox.setObjectName(u"modsrcComboBox")
+
+        self.verticalLayout_5.addWidget(self.modsrcComboBox)
+
+        self.label_3 = QLabel(self.settingsGroupBox)
+        self.label_3.setObjectName(u"label_3")
+
+        self.verticalLayout_5.addWidget(self.label_3)
+
+        self.spisrcComboBox = QComboBox(self.settingsGroupBox)
+        self.spisrcComboBox.setObjectName(u"spisrcComboBox")
+
+        self.verticalLayout_5.addWidget(self.spisrcComboBox)
+
+
+        self.verticalLayout_2.addWidget(self.settingsGroupBox)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -229,7 +271,17 @@ class Ui_NV200Widget(object):
         self.moveButton_2.setText("")
         self.setpointParamGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Setpoint Param.", None))
         self.slewRateLabel.setText(QCoreApplication.translate("NV200Widget", u"Slew Rate", None))
-        self.setpointFilterCheckBox.setText(QCoreApplication.translate("NV200Widget", u"LP Filter Cutoff", None))
+        self.applySetpointParamButton.setText(QCoreApplication.translate("NV200Widget", u"Apply", None))
+        self.setpointFilterCheckBox.setText(QCoreApplication.translate("NV200Widget", u"LP Filter", None))
         self.setpointFilterCutoffSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))
+        self.settingsGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Settings", None))
+        self.label_2.setText(QCoreApplication.translate("NV200Widget", u"Setpoint Source:", None))
+#if QT_CONFIG(tooltip)
+        self.modsrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>Signal source for setppoint (modsrc)</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_3.setText(QCoreApplication.translate("NV200Widget", u"SPI-Monitor Source:", None))
+#if QT_CONFIG(tooltip)
+        self.spisrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>SPI monitor/ Return value via MISO (spisrc)</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 

@@ -91,11 +91,6 @@ class MainWindow(QMainWindow):
         """
         Adds a new NV200 view to the main window.
         """
-        # nv200widget = NV200Widget(self)
-        # dock_widget = QtAds.CDockWidget("NV200")
-        # dock_widget.setWidget(nv200widget)
-        # self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
-        # nv200widget.status_message.connect(self.statusBar().showMessage)
         self.add_view(NV200Widget, "NV200")
 
     def add_spibox_view(self):
@@ -167,7 +162,11 @@ def set_qt_material_style(app: QApplication):
     """
     Applies the Qt Material stylesheet with the 'dark_teal' theme to the given QApplication instance.
     """
-    qt_material.apply_stylesheet(app, theme='dark_teal.xml')
+    extra = {
+        # Density Scale
+        'density_scale': '-2',
+    }
+    qt_material.apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
 
 
 if __name__ == "__main__":
