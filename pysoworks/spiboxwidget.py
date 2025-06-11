@@ -89,7 +89,7 @@ class SpiBoxWidget(QWidget):
         ui.moveProgressBar.start(5000, "search_devices")
         try:
             print("Discovering devices...")
-            devices = await discover_devices(flags=DiscoverFlags.ALL, device_class=SpiBoxDevice)    
+            devices = await discover_devices(flags=DiscoverFlags.ALL | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=SpiBoxDevice)    
             
             if not devices:
                 print("No devices found.")

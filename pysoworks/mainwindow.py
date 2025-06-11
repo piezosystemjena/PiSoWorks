@@ -1,19 +1,16 @@
 # This Python file uses the following encoding: utf-8
 import sys
-import asyncio
 import logging
-import os
+from typing import List, Dict
+import json
 
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import (
     Qt,
-    QDir,
-    QCoreApplication,
-    QSize,
-    QObject,
     QtMsgType,
     qInstallMessageHandler,
     qDebug,
+    QProcessEnvironment
 )
 from PySide6.QtGui import QColor, QIcon, QPalette
 from PySide6.QtWidgets import QDoubleSpinBox
@@ -27,6 +24,7 @@ import PySide6QtAds as QtAds
 import qdarktheme
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
+from pysoworks import assets
 
 
 def qt_message_handler(mode, context, message):
@@ -115,26 +113,96 @@ def setup_logging():
     logging.getLogger("nv200.device_discovery").setLevel(logging.DEBUG)
     logging.getLogger("nv200.transport_protocols").setLevel(logging.DEBUG)         
 
+
 def set_dark_fusion_style(app : QApplication):
     """
     Sets the application style to a dark fusion theme.
     """
+    ROLE_MAP: dict[str, QPalette.ColorRole] = {
+        "WindowText": QPalette.WindowText,
+        "Button": QPalette.Button,
+        "Light": QPalette.Light,
+        "Midlight": QPalette.Midlight,
+        "Dark": QPalette.Dark,
+        "Mid": QPalette.Mid,
+        "Text": QPalette.Text,
+        "BrightText": QPalette.BrightText,
+        "ButtonText": QPalette.ButtonText,
+        "Base": QPalette.Base,
+        "Window": QPalette.Window,
+        "Shadow": QPalette.Shadow,
+        "Highlight": QPalette.Highlight,
+        "HighlightedText": QPalette.HighlightedText,
+        "Link": QPalette.Link,
+        "LinkVisited": QPalette.LinkVisited,
+        "AlternateBase": QPalette.AlternateBase,
+        "NoRole": QPalette.NoRole,
+        "ToolTipBase": QPalette.ToolTipBase,
+        "ToolTipText": QPalette.ToolTipText,
+        "PlaceholderText": QPalette.PlaceholderText,
+        "Accent": QPalette.Accent
+    }
+
+    def export_palette_to_json(palette):
+        # List of tuples (role_name_str, QPalette.ColorRole)
+        palette_states = {
+            "Active": QPalette.Active,
+            "Inactive": QPalette.Inactive,
+            "Disabled": QPalette.Disabled,
+        }
+
+        output: Dict[str, Dict[str, str]] = {}
+
+        for state_name, state_enum in palette_states.items():
+            state_colors: Dict[str, str] = {}
+            for role_name, role_enum in ROLE_MAP.items():
+                try:
+                    color: QColor = palette.color(state_enum, role_enum)
+                    state_colors[role_name] = color.name()  # Hex string only
+                except Exception:
+                    continue
+            output[state_name] = state_colors
+        print(json.dumps(output, indent=4))
+
+    def load_palette_from_json() -> QPalette:
+        text = assets.load_text('dark_palette.json')
+        palette_dict: Dict[str, Dict[str, str]] = json.loads(text)
+
+        palette = QPalette()
+
+        state_map: Dict[str, QPalette.ColorGroup] = {
+            "Active": QPalette.Active,
+            "Inactive": QPalette.Inactive,
+            "Disabled": QPalette.Disabled,
+        }
+
+
+        for state_name, colors in palette_dict.items():
+                state_enum = state_map.get(state_name)
+                if state_enum is None:
+                    continue
+
+                for role_name, hex_color in colors.items():
+                    role_enum = ROLE_MAP.get(role_name)
+                    if role_enum is None:
+                        continue
+
+                    color = QColor(hex_color)
+                    palette.setColor(state_enum, role_enum, color)
+
+        return palette
+
+
     QApplication.setStyle('Fusion')
-    QApplication.setPalette(QApplication.style().standardPalette())
-    dark_palette = QApplication.palette()
-    dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.WindowText, Qt.white)
-    dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    dark_palette.setColor(QPalette.Text, Qt.white)
-    dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    dark_palette.setColor(QPalette.BrightText, Qt.red)
-    dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    dark_palette = load_palette_from_json()
     QApplication.setPalette(dark_palette)
+    #export_palette_to_json(QApplication.palette())
+    stylesheets: List[str] = []
+    stylesheets.append(assets.load_stylesheet('ads_base.qss'))
+    stylesheets.append(assets.load_stylesheet('ads_dark.qss'))
+    stylesheet='\n'.join(stylesheets)
+    app.setStyleSheet(stylesheet)
+
 
 
 def set_qdarktheme_style(app: QApplication):
@@ -164,19 +232,21 @@ def set_qt_material_style(app: QApplication):
     """
     extra = {
         # Density Scale
-        'density_scale': '-2',
+        'density_scale': '-1',
     }
     qt_material.apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
 
 
+
 if __name__ == "__main__":
     setup_logging()
+    env = QProcessEnvironment.systemEnvironment()
     app = QApplication(sys.argv)
     app_path = Path(__file__).resolve().parent
     app.setWindowIcon(QIcon(str(app_path) + '/app_icon.ico'))
-    #set_dark_fusion_style(app)
+    set_dark_fusion_style(app)
     #set_qt_material_style(app)
-    set_qdarktheme_style(app)
+    #set_qdarktheme_style(app)
     widget = MainWindow()
     widget.show()
     #sys.exit(app.exec())

@@ -201,7 +201,7 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.start(5000, "search_devices")
         try:
             print("Discovering devices...")
-            devices = await discover_devices(flags=DiscoverFlags.ALL, device_class=NV200Device)    
+            devices = await discover_devices(flags=DiscoverFlags.ALL | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
             
             if not devices:
                 print("No devices found.")
