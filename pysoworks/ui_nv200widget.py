@@ -20,8 +20,8 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
     QSpinBox, QVBoxLayout, QWidget)
 
-from mplcanvas import MplWidget
-from timed_progress_bar import TimedProgressBar
+from pysoworks.mplcanvas import MplWidget
+from pysoworks.timed_progress_bar import TimedProgressBar
 
 class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):

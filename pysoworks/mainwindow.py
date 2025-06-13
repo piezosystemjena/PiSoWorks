@@ -3,6 +3,8 @@ import sys
 import logging
 from typing import List, Dict
 import json
+import pkgutil
+import os
 
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import (
@@ -14,18 +16,19 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QColor, QIcon, QPalette
 from PySide6.QtWidgets import QDoubleSpinBox
+
 import qtinter
 import qt_material
 from pathlib import Path
 from qt_material_icons import MaterialIcon
-from nv200widget import NV200Widget
-from spiboxwidget import SpiBoxWidget
 import PySide6QtAds as QtAds
 import qdarktheme
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
-from pysoworks import assets
 
+from pysoworks import assets
+from pysoworks.nv200widget import NV200Widget
+from pysoworks.spiboxwidget import SpiBoxWidget
 
 def qt_message_handler(mode, context, message):
     if mode == QtMsgType.QtDebugMsg:
@@ -46,7 +49,7 @@ qInstallMessageHandler(qt_message_handler)
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from ui_mainwindow import Ui_MainWindow
+from pysoworks.ui_mainwindow import Ui_MainWindow
 
 
 
@@ -60,7 +63,6 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
-        self.setWindowTitle("PySoWorks")
         ui = self.ui
         ui.setupUi(self)
 
@@ -165,7 +167,8 @@ def set_dark_fusion_style(app : QApplication):
         print(json.dumps(output, indent=4))
 
     def load_palette_from_json() -> QPalette:
-        text = assets.load_text('dark_palette.json')
+        # Use this to ensure that it also works with a PyInstaller package
+        text = pkgutil.get_data('pysoworks.assets', 'dark_palette.json').decode('utf-8')
         palette_dict: Dict[str, Dict[str, str]] = json.loads(text)
 
         palette = QPalette()
@@ -237,18 +240,32 @@ def set_qt_material_style(app: QApplication):
     qt_material.apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
 
 
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    base_path = ''
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = Path(__file__).resolve().parent.parent
+    print(f"base_path: {base_path}")
+    return os.path.join(base_path, relative_path)
 
-if __name__ == "__main__":
+def main():
+    """
+    Initializes and runs the main application window.
+    """
     setup_logging()
-    env = QProcessEnvironment.systemEnvironment()
     app = QApplication(sys.argv)
     app_path = Path(__file__).resolve().parent
-    app.setWindowIcon(QIcon(str(app_path) + '/app_icon.ico'))
+    print(f"Application Path: {app_path}")
+    app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
+
     set_dark_fusion_style(app)
     #set_qt_material_style(app)
     #set_qdarktheme_style(app)
+    
     widget = MainWindow()
     widget.show()
-    #sys.exit(app.exec())
+    widget.setWindowTitle('PySoWorks')
     with qtinter.using_asyncio_from_qt():
         app.exec()

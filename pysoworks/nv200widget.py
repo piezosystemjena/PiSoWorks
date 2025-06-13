@@ -33,7 +33,7 @@ from nv200.connection_utils import connect_to_detected_device
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from ui_nv200widget import Ui_NV200Widget
+from pysoworks.ui_nv200widget import Ui_NV200Widget
 
 
 def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:

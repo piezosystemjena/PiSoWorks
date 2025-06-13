@@ -367,13 +367,13 @@
   <customwidget>
    <class>MplWidget</class>
    <extends>QWidget</extends>
-   <header location="global">mplcanvas</header>
+   <header location="global">pysoworks.mplcanvas</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>TimedProgressBar</class>
    <extends>QProgressBar</extends>
-   <header location="global">timed_progress_bar</header>
+   <header location="global">pysoworks.timed_progress_bar</header>
   </customwidget>
  </customwidgets>
  <resources/>
