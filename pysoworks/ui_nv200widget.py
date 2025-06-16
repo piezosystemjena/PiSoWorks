@@ -16,9 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QGroupBox, QHBoxLayout, QLabel, QLayout,
-    QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
-    QSpinBox, QVBoxLayout, QWidget)
+    QFrame, QGroupBox, QHBoxLayout, QLabel,
+    QLayout, QPushButton, QRadioButton, QScrollArea,
+    QSizePolicy, QSpacerItem, QSpinBox, QTabWidget,
+    QVBoxLayout, QWidget)
 
 from pysoworks.mplcanvas import MplWidget
 from pysoworks.timed_progress_bar import TimedProgressBar
@@ -27,7 +28,7 @@ class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):
         if not NV200Widget.objectName():
             NV200Widget.setObjectName(u"NV200Widget")
-        NV200Widget.resize(1114, 729)
+        NV200Widget.resize(1483, 1027)
         self.verticalLayout_3 = QVBoxLayout(NV200Widget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.horizontalLayout = QHBoxLayout()
@@ -68,9 +69,30 @@ class Ui_NV200Widget(object):
         self.horizontalLayout_2.setSpacing(12)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(-1, -1, 0, -1)
-        self.verticalLayout_2 = QVBoxLayout()
+        self.scrollArea = QScrollArea(NV200Widget)
+        self.scrollArea.setObjectName(u"scrollArea")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy2)
+        self.scrollArea.setFrameShape(QFrame.Shape.NoFrame)
+        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 188, 964))
+        self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.easyModeGroupBox = QGroupBox(NV200Widget)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.tabWidget = QTabWidget(self.scrollAreaWidgetContents)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.easyModeTab = QWidget()
+        self.easyModeTab.setObjectName(u"easyModeTab")
+        self.verticalLayout_7 = QVBoxLayout(self.easyModeTab)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.easyModeGroupBox = QGroupBox(self.easyModeTab)
         self.easyModeGroupBox.setObjectName(u"easyModeGroupBox")
         self.easyModeGroupBox.setEnabled(False)
         self.verticalLayout = QVBoxLayout(self.easyModeGroupBox)
@@ -97,11 +119,12 @@ class Ui_NV200Widget(object):
         self.horizontalLayout_3.setContentsMargins(0, 0, -1, -1)
         self.targetPosSpinBox = QDoubleSpinBox(self.easyModeGroupBox)
         self.targetPosSpinBox.setObjectName(u"targetPosSpinBox")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.targetPosSpinBox.sizePolicy().hasHeightForWidth())
-        self.targetPosSpinBox.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.targetPosSpinBox.sizePolicy().hasHeightForWidth())
+        self.targetPosSpinBox.setSizePolicy(sizePolicy3)
+        self.targetPosSpinBox.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
         self.targetPosSpinBox.setDecimals(3)
         self.targetPosSpinBox.setMaximum(1000.000000000000000)
 
@@ -123,8 +146,9 @@ class Ui_NV200Widget(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, -1, -1)
         self.targetPosSpinBox_2 = QDoubleSpinBox(self.easyModeGroupBox)
         self.targetPosSpinBox_2.setObjectName(u"targetPosSpinBox_2")
-        sizePolicy2.setHeightForWidth(self.targetPosSpinBox_2.sizePolicy().hasHeightForWidth())
-        self.targetPosSpinBox_2.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.targetPosSpinBox_2.sizePolicy().hasHeightForWidth())
+        self.targetPosSpinBox_2.setSizePolicy(sizePolicy3)
+        self.targetPosSpinBox_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
         self.targetPosSpinBox_2.setDecimals(3)
         self.targetPosSpinBox_2.setMaximum(1000.000000000000000)
 
@@ -141,9 +165,18 @@ class Ui_NV200Widget(object):
         self.verticalLayout.addLayout(self.horizontalLayout_4)
 
 
-        self.verticalLayout_2.addWidget(self.easyModeGroupBox)
+        self.verticalLayout_7.addWidget(self.easyModeGroupBox)
 
-        self.setpointParamGroupBox = QGroupBox(NV200Widget)
+        self.verticalSpacer = QSpacerItem(20, 740, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_7.addItem(self.verticalSpacer)
+
+        self.tabWidget.addTab(self.easyModeTab, "")
+        self.settingsTab = QWidget()
+        self.settingsTab.setObjectName(u"settingsTab")
+        self.verticalLayout_8 = QVBoxLayout(self.settingsTab)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.setpointParamGroupBox = QGroupBox(self.settingsTab)
         self.setpointParamGroupBox.setObjectName(u"setpointParamGroupBox")
         self.verticalLayout_6 = QVBoxLayout(self.setpointParamGroupBox)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
@@ -187,9 +220,9 @@ class Ui_NV200Widget(object):
         self.verticalLayout_6.addWidget(self.setpointFilterCutoffSpinBox)
 
 
-        self.verticalLayout_2.addWidget(self.setpointParamGroupBox)
+        self.verticalLayout_8.addWidget(self.setpointParamGroupBox)
 
-        self.settingsGroupBox = QGroupBox(NV200Widget)
+        self.settingsGroupBox = QGroupBox(self.settingsTab)
         self.settingsGroupBox.setObjectName(u"settingsGroupBox")
         self.settingsGroupBox.setMinimumSize(QSize(0, 100))
         self.verticalLayout_5 = QVBoxLayout(self.settingsGroupBox)
@@ -216,14 +249,19 @@ class Ui_NV200Widget(object):
         self.verticalLayout_5.addWidget(self.spisrcComboBox)
 
 
-        self.verticalLayout_2.addWidget(self.settingsGroupBox)
+        self.verticalLayout_8.addWidget(self.settingsGroupBox)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 654, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_2.addItem(self.verticalSpacer)
+        self.verticalLayout_8.addItem(self.verticalSpacer_2)
 
+        self.tabWidget.addTab(self.settingsTab, "")
 
-        self.horizontalLayout_2.addLayout(self.verticalLayout_2)
+        self.verticalLayout_2.addWidget(self.tabWidget)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.horizontalLayout_2.addWidget(self.scrollArea)
 
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setSpacing(0)
@@ -231,11 +269,11 @@ class Ui_NV200Widget(object):
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
         self.mplCanvasWidget = MplWidget(NV200Widget)
         self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.mplCanvasWidget.sizePolicy().hasHeightForWidth())
-        self.mplCanvasWidget.setSizePolicy(sizePolicy3)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.mplCanvasWidget.sizePolicy().hasHeightForWidth())
+        self.mplCanvasWidget.setSizePolicy(sizePolicy4)
 
         self.verticalLayout_4.addWidget(self.mplCanvasWidget)
 
@@ -256,6 +294,9 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
+        self.tabWidget.setCurrentIndex(0)
+
+
         QMetaObject.connectSlotsByName(NV200Widget)
     # setupUi
 
@@ -269,6 +310,7 @@ class Ui_NV200Widget(object):
         self.label.setText(QCoreApplication.translate("NV200Widget", u"Target Positions", None))
         self.moveButton.setText("")
         self.moveButton_2.setText("")
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.easyModeTab), QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
         self.setpointParamGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Setpoint Param.", None))
         self.slewRateLabel.setText(QCoreApplication.translate("NV200Widget", u"Slew Rate", None))
         self.applySetpointParamButton.setText(QCoreApplication.translate("NV200Widget", u"Apply", None))
@@ -283,5 +325,6 @@ class Ui_NV200Widget(object):
 #if QT_CONFIG(tooltip)
         self.spisrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>SPI monitor/ Return value via MISO (spisrc)</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
     # retranslateUi
 

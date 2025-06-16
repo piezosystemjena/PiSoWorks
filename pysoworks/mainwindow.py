@@ -114,6 +114,7 @@ def setup_logging():
 
     logging.getLogger("nv200.device_discovery").setLevel(logging.DEBUG)
     logging.getLogger("nv200.transport_protocols").setLevel(logging.DEBUG)         
+    logging.getLogger("nv200.device_base").setLevel(logging.DEBUG)     
 
 
 def set_dark_fusion_style(app : QApplication):
@@ -263,7 +264,7 @@ def main():
     set_dark_fusion_style(app)
     #set_qt_material_style(app)
     #set_qdarktheme_style(app)
-    
+
     widget = MainWindow()
     widget.show()
     widget.setWindowTitle('PySoWorks')
