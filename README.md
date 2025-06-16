@@ -2,9 +2,9 @@
 
 # PySoWorks
 
-![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)
-![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)
-![License](https://img.shields.io/pypi/l/pysoworks)
+[![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)](https://pypi.org/project/pysoworks/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)](https://pypi.org/project/pysoworks/)
+[![License](https://img.shields.io/pypi/l/pysoworks)](https://pypi.org/project/pysoworks/)
 
 PySoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the [NV200 Python library](https://pypi.org/project/nv200/) within a graphical interface based on PySide6.
 
@@ -203,3 +203,4 @@ pyinstaller --clean --log-level=DEBUG pysoworks.spec
 - `--log-level=DEBUG` enables detailed logging to help diagnose any build issues.
 
 The resulting executable will be located in the `dist/` directory.
+
