@@ -242,7 +242,7 @@ class NV200Widget(QWidget):
         print(f"Selected device: {device}")
         self.ui.connectButton.setEnabled(True)
 
-    async def update_target_pos_ranges(self):
+    async def update_target_pos_edits(self):
             """
             Asynchronously updates the minimum and maximum values for the target position spin boxes
             in the UI based on the setpoint range retrieved from the device.
@@ -251,6 +251,10 @@ class NV200Widget(QWidget):
             setpoint_range = await self._device.get_setpoint_range()
             ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
             ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
+            unit = await self._device.get_setpoint_unit()
+            ui.targetPosSpinBox.setSuffix(f" {unit}")
+            ui.targetPosSpinBox_2.setSuffix(f" {unit}")
+
 
     async def on_pid_mode_button_clicked(self):
         """
@@ -264,7 +268,7 @@ class NV200Widget(QWidget):
         try:
             await self._device.set_pid_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
-            await self.update_target_pos_ranges()
+            await self.update_target_pos_edits()
         except Exception as e:
             print(f"Error setting PID mode: {e}")
             self.status_message.emit(f"Error setting PID mode: {e}", 2000)
@@ -315,7 +319,7 @@ class NV200Widget(QWidget):
         """
         dev = self._device
         ui = self.ui
-        await self.update_target_pos_ranges()
+        await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
         pid_mode = await dev.get_pid_mode()
         if pid_mode == PidLoopMode.OPEN_LOOP:
