@@ -49,6 +49,7 @@ qt-material = "^2.17"
 nv200 = "^1.1.0"
 pyside6-qtads = "^4.4.0"
 pyqtdarktheme2 = "^2.1.2"
+rich = "^14.0.0"
 
 
 
