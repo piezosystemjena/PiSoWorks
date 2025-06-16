@@ -13,6 +13,19 @@ authors = ["piezosystem jena GmbH"]
 license = "MIT"
 readme = "README_PYPI.md"
 packages = [{ include = "pysoworks" }]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers"
+]
+
+
+[tool.poetry.urls]
+Homepage = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
+Source = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
+"Bug Tracker" = "https://gitlab.com/gitlabuser0xFFFF/pysoworks/-/issues"
+Documentation = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
 
 
 
