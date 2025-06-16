@@ -28,6 +28,12 @@ Source = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
 Documentation = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
 
 
+[tool.poetry.scripts]
+# This section defines the entry points for the package, allowing users to run the application
+# from the command line. The `pysoworks` script will execute the `main` function
+# from the `main` module within the `pysoworks` package.
+pysoworks = "pysoworks.__main__:main"
+
 
 [tool.poetry.dependencies]
 # This section defines the dependencies for the project using Poetry.
