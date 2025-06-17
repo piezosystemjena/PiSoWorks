@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  release:
+    types: [created]
   workflow_dispatch:
 
 jobs:
@@ -34,7 +36,7 @@ jobs:
         run: |
           poetry install --no-interaction --with dev
 
-      - name: Install PyInstaller globally
+      - name: Install PyInstaller
         run: |
           poetry run pip install pyinstaller
 
@@ -42,8 +44,16 @@ jobs:
         run: |
           poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
 
-      - name: Archive build artifacts
+      - name: Upload executable as workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pysoworks-windows-build
-          path: dist/
+          name: PySoWorks.exe
+          path: dist/PySoWorks.exe
+
+      - name: Upload executable to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/PySoWorks.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
