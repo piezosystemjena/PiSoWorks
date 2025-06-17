@@ -53,11 +53,9 @@ jobs:
           name: PySoWorks.exe
           path: dist/PySoWorks.exe
 
-      - name: Upload executable to GitHub Release
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/PySoWorks.exe
-        env:
-           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload release assets
+        if: github.event_name == 'release' && github.event.action == 'published'
+        run: |
+          mkdir -p artifacts
+          cp dist/PySoWorks.exe artifacts/
     
