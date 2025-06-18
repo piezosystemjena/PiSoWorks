@@ -108,10 +108,14 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout.addWidget(self.closedLoopButton)
 
-        self.label = QLabel(self.easyModeGroupBox)
-        self.label.setObjectName(u"label")
+        self.verticalSpacer_3 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout.addItem(self.verticalSpacer_3)
+
+        self.targetPositionsLabel = QLabel(self.easyModeGroupBox)
+        self.targetPositionsLabel.setObjectName(u"targetPositionsLabel")
+
+        self.verticalLayout.addWidget(self.targetPositionsLabel)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setSpacing(6)
@@ -307,7 +311,7 @@ class Ui_NV200Widget(object):
         self.easyModeGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
         self.openLoopButton.setText(QCoreApplication.translate("NV200Widget", u"Open Loop", None))
         self.closedLoopButton.setText(QCoreApplication.translate("NV200Widget", u"Closed Loop", None))
-        self.label.setText(QCoreApplication.translate("NV200Widget", u"Target Positions", None))
+        self.targetPositionsLabel.setText(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>Target Positions</p></body></html>", None))
         self.moveButton.setText("")
         self.moveButton_2.setText("")
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.easyModeTab), QCoreApplication.translate("NV200Widget", u"Easy Mode", None))

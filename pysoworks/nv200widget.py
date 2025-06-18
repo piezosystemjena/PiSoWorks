@@ -75,8 +75,12 @@ class NV200Widget(QWidget):
         ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
         ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
         ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        ui.slewRateSpinBox.editingFinished.connect(qtinter.asyncslot(self.on_slow_rate_editing_finished))
+        
+        ui.applySetpointParamButton.setIcon(get_icon("publish", size=24, fill=True))
+        ui.applySetpointParamButton.setText("")
+        ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
         ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+        
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
 
@@ -254,6 +258,9 @@ class NV200Widget(QWidget):
             unit = await self._device.get_setpoint_unit()
             ui.targetPosSpinBox.setSuffix(f" {unit}")
             ui.targetPosSpinBox_2.setSuffix(f" {unit}")
+            ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
+            label_text = f"Target Positions<br/>{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}:"
+            ui.targetPositionsLabel.setText(label_text)
 
 
     async def on_pid_mode_button_clicked(self):
@@ -274,21 +281,7 @@ class NV200Widget(QWidget):
             self.status_message.emit(f"Error setting PID mode: {e}", 2000)
             return
         
-    async def on_slow_rate_editing_finished(self):
-        """
-        Handles the event when the slew rate editing is finished.
-
-        Sends the new slew rate to the device asynchronously and updates the UI status bar with any errors encountered.
-        """
-        ui = self.ui
-        try:
-            await self._device.set_slew_rate(ui.slewRateSpinBox.value())
-            print(f"Slew rate set to {ui.slewRateSpinBox.value()}.")
-        except Exception as e:
-            print(f"Error setting slew rate: {e}")
-            self.status_message.emit(f"Error setting slew rate: {e}", 2000)
-            return
-        
+       
     async def apply_setpoint_param(self):
         """
         Asynchronously applies setpoint parameters to the connected device.
