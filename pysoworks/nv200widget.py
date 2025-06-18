@@ -80,6 +80,8 @@ class NV200Widget(QWidget):
         ui.applySetpointParamButton.setText("")
         ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
         ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+
+        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
         
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
@@ -314,6 +316,13 @@ class NV200Widget(QWidget):
         ui = self.ui
         await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
+        
+    async def initialize_settings_tab_from_device(self):
+        """
+        Asynchronously initializes the settings tab UI elements based on the device's current settings.
+        """
+        dev = self._device
+        ui = self.ui
         pid_mode = await dev.get_pid_mode()
         if pid_mode == PidLoopMode.OPEN_LOOP:
             ui.openLoopButton.setChecked(True)
@@ -324,6 +333,7 @@ class NV200Widget(QWidget):
         ui.setpointFilterCutoffSpinBox.setValue(await dev.get_setpoint_lowpass_filter_cutoff_freq())
         self.set_combobox_index_by_value(ui.modsrcComboBox, await dev.get_modulation_source())
         self.set_combobox_index_by_value(ui.spisrcComboBox, await dev.get_spi_monitor_source())
+
 
 
     async def disconnect_from_device(self):
@@ -422,4 +432,12 @@ class NV200Widget(QWidget):
         finally:
             ui.easyModeGroupBox.setEnabled(True)
             self.status_message.emit("", 0)
+
+    async def on_current_tab_changed(self, index: int):
+        """
+        Handles the event when the current tab in the tab widget is changed.
+        """
+        if index == 1:
+            print("Settings tab activated")
+            await self.initialize_settings_tab_from_device()
 
