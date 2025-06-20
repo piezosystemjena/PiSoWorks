@@ -1,3 +1,4 @@
+from typing import Sequence
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 import matplotlib.pyplot as plt
@@ -45,21 +46,36 @@ class MplCanvas(FigureCanvas):
         self.draw()
 
 
-    def plot_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
-        """Plots the data and stores the line object for later removal."""
+    def plot_recorder_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
+        """
+        Plots the data and stores the line object for later removal.
+        """
         self.remove_all_lines()  # Remove all previous lines before plotting new data
-        self.add_line(rec_data, color)  # Add the new line to the plot
+        self.add_recorder_data_line(rec_data, color)  # Add the new line to the plot
 
 
-    def add_line(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
+    def add_recorder_data_line(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
         """
         Adds a new line plot to the canvas using the provided channel recording data.
+        """
+        self.add_line(rec_data.sample_times_ms, rec_data.values, str(rec_data.source), color)  # Add the new line to the plot
+
+    def plot_data(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange')):
+        """
+        Plots the data and stores the line object for later removal.
+        """
+        self.remove_all_lines()  # Remove all previous lines before plotting new data
+        self.add_line(x_data, y_data, label, color)  # Add the new line to the plot
+
+    def add_line(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange')):
+        """
+        Adds a new line plot to the canvas 
         """
         # Plot the data and add a label for the legend
         ax = self.axes
         ax.plot(
-            rec_data.sample_times_ms, rec_data.values, 
-            linestyle='-', color=color.name(), label=rec_data.source
+            x_data, y_data, 
+            linestyle='-', color=color.name(), label=label
         )
 
         # Autoscale the axes after plotting the data
@@ -78,6 +94,16 @@ class MplCanvas(FigureCanvas):
         # Redraw the canvas
         self.draw()
 
+    def scale_axes(self, x_min: float, x_max: float, y_min: float, y_max: float):
+        """
+        Scales the axes to the specified limits.
+        """
+        ax = self.axes
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+
+        # Redraw the canvas to reflect the changes
+        self.draw()    
 
     def remove_all_lines(self):
         """Removes all lines from the axes."""

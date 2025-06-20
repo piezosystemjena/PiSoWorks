@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'nv200widget.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.0
+## Created by: Qt User Interface Compiler version 6.9.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,10 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QFrame, QGroupBox, QHBoxLayout, QLabel,
-    QLayout, QPushButton, QRadioButton, QScrollArea,
-    QSizePolicy, QSpacerItem, QSpinBox, QTabWidget,
-    QVBoxLayout, QWidget)
+    QFormLayout, QFrame, QGroupBox, QHBoxLayout,
+    QLabel, QLayout, QPushButton, QRadioButton,
+    QScrollArea, QSizePolicy, QSpacerItem, QSpinBox,
+    QTabWidget, QVBoxLayout, QWidget)
 
 from pysoworks.mplcanvas import MplWidget
 from pysoworks.timed_progress_bar import TimedProgressBar
@@ -81,13 +81,14 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 188, 964))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 214, 964))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.tabWidget = QTabWidget(self.scrollAreaWidgetContents)
         self.tabWidget.setObjectName(u"tabWidget")
+        self.tabWidget.setTabPosition(QTabWidget.TabPosition.West)
         self.easyModeTab = QWidget()
         self.easyModeTab.setObjectName(u"easyModeTab")
         self.verticalLayout_7 = QVBoxLayout(self.easyModeTab)
@@ -260,6 +261,98 @@ class Ui_NV200Widget(object):
         self.verticalLayout_8.addItem(self.verticalSpacer_2)
 
         self.tabWidget.addTab(self.settingsTab, "")
+        self.waveformTab = QWidget()
+        self.waveformTab.setObjectName(u"waveformTab")
+        self.formLayout = QFormLayout(self.waveformTab)
+        self.formLayout.setObjectName(u"formLayout")
+        self.freqLabel = QLabel(self.waveformTab)
+        self.freqLabel.setObjectName(u"freqLabel")
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.freqLabel)
+
+        self.freqSpinBox = QDoubleSpinBox(self.waveformTab)
+        self.freqSpinBox.setObjectName(u"freqSpinBox")
+        self.freqSpinBox.setMinimum(0.010000000000000)
+        self.freqSpinBox.setMaximum(100.000000000000000)
+        self.freqSpinBox.setValue(20.000000000000000)
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.freqSpinBox)
+
+        self.lowLabel = QLabel(self.waveformTab)
+        self.lowLabel.setObjectName(u"lowLabel")
+
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.lowLabel)
+
+        self.lowLevelSpinBox = QDoubleSpinBox(self.waveformTab)
+        self.lowLevelSpinBox.setObjectName(u"lowLevelSpinBox")
+        self.lowLevelSpinBox.setDecimals(3)
+        self.lowLevelSpinBox.setMaximum(1000.000000000000000)
+
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.lowLevelSpinBox)
+
+        self.highLabel = QLabel(self.waveformTab)
+        self.highLabel.setObjectName(u"highLabel")
+
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.LabelRole, self.highLabel)
+
+        self.highLevelSpinBox = QDoubleSpinBox(self.waveformTab)
+        self.highLevelSpinBox.setObjectName(u"highLevelSpinBox")
+        self.highLevelSpinBox.setDecimals(3)
+        self.highLevelSpinBox.setMaximum(1000.000000000000000)
+
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.highLevelSpinBox)
+
+        self.phaseLabel = QLabel(self.waveformTab)
+        self.phaseLabel.setObjectName(u"phaseLabel")
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, self.phaseLabel)
+
+        self.phaseShiftSpinBox = QDoubleSpinBox(self.waveformTab)
+        self.phaseShiftSpinBox.setObjectName(u"phaseShiftSpinBox")
+        self.phaseShiftSpinBox.setDecimals(3)
+        self.phaseShiftSpinBox.setMinimum(0.000000000000000)
+        self.phaseShiftSpinBox.setMaximum(360.000000000000000)
+        self.phaseShiftSpinBox.setValue(0.000000000000000)
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.phaseShiftSpinBox)
+
+        self.verticalSpacer_4 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.formLayout.setItem(5, QFormLayout.ItemRole.FieldRole, self.verticalSpacer_4)
+
+        self.cyclesLabel = QLabel(self.waveformTab)
+        self.cyclesLabel.setObjectName(u"cyclesLabel")
+
+        self.formLayout.setWidget(6, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
+
+        self.cyclesSpinBox = QSpinBox(self.waveformTab)
+        self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
+        self.cyclesSpinBox.setMaximum(65535)
+        self.cyclesSpinBox.setValue(1)
+
+        self.formLayout.setWidget(6, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
+
+        self.uploadButton = QPushButton(self.waveformTab)
+        self.uploadButton.setObjectName(u"uploadButton")
+
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.SpanningRole, self.uploadButton)
+
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.startButton = QPushButton(self.waveformTab)
+        self.startButton.setObjectName(u"startButton")
+
+        self.horizontalLayout_6.addWidget(self.startButton)
+
+        self.stopButton = QPushButton(self.waveformTab)
+        self.stopButton.setObjectName(u"stopButton")
+
+        self.horizontalLayout_6.addWidget(self.stopButton)
+
+
+        self.formLayout.setLayout(7, QFormLayout.ItemRole.SpanningRole, self.horizontalLayout_6)
+
+        self.tabWidget.addTab(self.waveformTab, "")
 
         self.verticalLayout_2.addWidget(self.tabWidget)
 
@@ -298,7 +391,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(NV200Widget)
@@ -330,5 +423,16 @@ class Ui_NV200Widget(object):
         self.spisrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>SPI monitor/ Return value via MISO (spisrc)</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
+        self.freqLabel.setText(QCoreApplication.translate("NV200Widget", u"Freq.", None))
+        self.freqSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" \u00b0", None))
+        self.lowLabel.setText(QCoreApplication.translate("NV200Widget", u"Low Level", None))
+        self.highLabel.setText(QCoreApplication.translate("NV200Widget", u"High Level", None))
+        self.phaseLabel.setText(QCoreApplication.translate("NV200Widget", u"Phase Shift", None))
+        self.phaseShiftSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" \u00b0", None))
+        self.cyclesLabel.setText(QCoreApplication.translate("NV200Widget", u"Cycles", None))
+        self.uploadButton.setText(QCoreApplication.translate("NV200Widget", u"Upload", None))
+        self.startButton.setText(QCoreApplication.translate("NV200Widget", u"Start", None))
+        self.stopButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
     # retranslateUi
 

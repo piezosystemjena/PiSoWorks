@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 from typing import Any, Tuple
+import math
 
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject, Signal
@@ -27,6 +28,7 @@ from nv200.device_discovery import discover_devices
 from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from nv200.connection_utils import connect_to_detected_device
+from nv200.waveform_generator import WaveformGenerator
 
 
 # Important:
@@ -61,12 +63,15 @@ class NV200Widget(QWidget):
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
     """
 
-    _device: NV200Device = None
-    _recorder : DataRecorder = None
     status_message = Signal(str, int)  # message text, timeout in ms
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+        self._device: NV200Device | None = None
+        self._recorder : DataRecorder | None = None
+        self._waveform_generator : WaveformGenerator | None = None
+
         self.ui = Ui_NV200Widget()
         ui = self.ui
         ui.setupUi(self)
@@ -97,6 +102,12 @@ class NV200Widget(QWidget):
         ui.moveButton_2.setIconSize(ui.moveButton.iconSize())
         ui.moveButton_2.clicked.connect(self.start_move)
         ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
+
+        ui.lowLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
+        ui.highLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
+        ui.freqSpinBox.valueChanged.connect(self.updateWaveformPlot)
+        ui.phaseShiftSpinBox.valueChanged.connect(self.updateWaveformPlot)
+        ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
 
         self.init_modsrc_combobox()
         self.init_spimonitor_combobox()
@@ -263,6 +274,10 @@ class NV200Widget(QWidget):
             ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
             label_text = f"Target Positions<br/>{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}:"
             ui.targetPositionsLabel.setText(label_text)
+            ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+            ui.lowLevelSpinBox.setValue(setpoint_range[0])
+            ui.highLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+            ui.highLevelSpinBox.setValue(setpoint_range[1])
 
 
     async def on_pid_mode_button_clicked(self):
@@ -372,7 +387,7 @@ class NV200Widget(QWidget):
         finally:
             self.setCursor(Qt.ArrowCursor)
 
-    def recorder(self) -> DataRecorder:
+    def recorder(self) -> DataRecorder| None:
         """
         Returns the DataRecorder instance associated with the device.
         """
@@ -382,6 +397,18 @@ class NV200Widget(QWidget):
         if self._recorder is None:
             self._recorder = DataRecorder(self._device)
         return self._recorder	
+    
+    def waveform_generator(self) -> WaveformGenerator | None:
+        """
+        Returns the WaveformGenerator instance associated with the device.
+        If it does not exist, it creates a new one.
+        """
+        if self._device is None:
+            return None
+
+        if self._waveform_generator is None:
+            self._waveform_generator = WaveformGenerator(self._device)
+        return self._waveform_generator
     
 
     def start_move(self):
@@ -420,9 +447,9 @@ class NV200Widget(QWidget):
             await recorder.wait_until_finished()
             self.status_message.emit("Reading recorded data from device...", 0)
             rec_data = await recorder.read_recorded_data_of_channel(0)
-            ui.mplCanvasWidget.canvas.plot_data(rec_data, QColor(0, 255, 0))
+            ui.mplCanvasWidget.canvas.plot_recorder_data(rec_data, QColor(0, 255, 0))
             rec_data = await recorder.read_recorded_data_of_channel(1)
-            ui.mplCanvasWidget.canvas.add_line(rec_data,  QColor('orange'))
+            ui.mplCanvasWidget.canvas.add_recorder_data_line(rec_data,  QColor('orange'))
             ui.moveProgressBar.stop(success=True, context="start_move")
         except Exception as e:
             self.status_message.emit(f"Error during move operation: {e}", 4000)
@@ -441,3 +468,69 @@ class NV200Widget(QWidget):
             print("Settings tab activated")
             await self.initialize_settings_tab_from_device()
 
+    def updateWaveformPlot(self):
+        if self.ui.tabWidget.currentIndex() != 2:
+            return
+        
+        print("Updating waveform plot...")
+        waveform = WaveformGenerator.generate_sine_wave(
+            low_level=self.ui.lowLevelSpinBox.value(),
+            high_level=self.ui.highLevelSpinBox.value(),
+            freq_hz=self.ui.freqSpinBox.value(),
+            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value())
+        )
+        ui = self.ui
+        mpl_canvas = self.ui.mplCanvasWidget.canvas
+        mpl_canvas.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor(0, 255, 150))
+        mpl_canvas.scale_axes(0, 1000, 0, 80)
+
+    async def upload_waveform(self):
+        """
+        Asynchronously uploads the waveform to the device.
+        """
+        if self._device is None:
+            print("No device connected.")
+            return
+        
+        wg = self.waveform_generator()
+        if wg is None:
+            print("Waveform generator not initialized.")
+            return
+        
+        waveform = WaveformGenerator.generate_sine_wave(
+            low_level=self.ui.lowLevelSpinBox.value(),
+            high_level=self.ui.highLevelSpinBox.value(),
+            freq_hz=self.ui.freqSpinBox.value(),
+            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value())
+        )
+        
+       
+        try:
+            await wg.set_waveform(waveform)
+            print("Waveform uploaded successfully.")
+            self.status_message.emit("Waveform uploaded successfully.", 2000)
+        except Exception as e:
+            print(f"Error uploading waveform: {e}")
+            self.status_message.emit(f"Error uploading waveform: {e}", 4000)
+        
+
+    async def start_waveform_generator(self):
+        """
+        Asynchronously starts the waveform generator.
+        """
+        if self._device is None:
+            print("No device connected.")
+            return
+        
+        wg = self.waveform_generator()
+        if wg is None:
+            print("Waveform generator not initialized.")
+            return
+        
+        try:
+            await wg.start(cycles=self.ui.cyclesSpinBox.value())
+            print("Waveform generator started successfully.")
+            self.status_message.emit("Waveform generator started successfully.", 2000)
+        except Exception as e:
+            print(f"Error starting waveform generator: {e}")
+            self.status_message.emit(f"Error starting waveform generator: {e}", 4000)
