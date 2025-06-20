@@ -5,6 +5,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)](https://pypi.org/project/pysoworks/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)](https://pypi.org/project/pysoworks/)
 [![License](https://img.shields.io/pypi/l/pysoworks)](https://pypi.org/project/pysoworks/)
+[![Publish to PyPi](https://github.com/githubuser0xFFFF/pysoworks/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/githubuser0xFFFF/pysoworks/actions/workflows/publish-pypi.yml)
 
 PySoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the [NV200 Python library](https://pypi.org/project/nv200/) within a graphical interface based on PySide6.
 
