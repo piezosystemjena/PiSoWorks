@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QScrollArea, QSizePolicy, QSpacerItem, QSpinBox,
     QTabWidget, QVBoxLayout, QWidget)
 
+from pysoworks.consolewidget import Console
 from pysoworks.mplcanvas import MplWidget
 from pysoworks.timed_progress_bar import TimedProgressBar
 
@@ -28,8 +29,9 @@ class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):
         if not NV200Widget.objectName():
             NV200Widget.setObjectName(u"NV200Widget")
-        NV200Widget.resize(1483, 1027)
+        NV200Widget.resize(1541, 960)
         self.verticalLayout_3 = QVBoxLayout(NV200Widget)
+        self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(6)
@@ -81,7 +83,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 214, 964))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 214, 897))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -363,7 +365,7 @@ class Ui_NV200Widget(object):
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
+        self.verticalLayout_4.setContentsMargins(0, 0, -1, 0)
         self.mplCanvasWidget = MplWidget(NV200Widget)
         self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
         sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -373,6 +375,16 @@ class Ui_NV200Widget(object):
         self.mplCanvasWidget.setSizePolicy(sizePolicy4)
 
         self.verticalLayout_4.addWidget(self.mplCanvasWidget)
+
+        self.console = Console(NV200Widget)
+        self.console.setObjectName(u"console")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.console.sizePolicy().hasHeightForWidth())
+        self.console.setSizePolicy(sizePolicy5)
+
+        self.verticalLayout_4.addWidget(self.console)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_4)
@@ -391,7 +403,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(NV200Widget)

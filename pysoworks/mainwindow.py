@@ -114,6 +114,7 @@ def setup_logging():
 
     logging.getLogger("nv200.device_discovery").setLevel(logging.DEBUG)
     logging.getLogger("nv200.transport_protocols").setLevel(logging.DEBUG)         
+    logging.getLogger("nv200.serial_protocol").setLevel(logging.DEBUG)    
     logging.getLogger("nv200.device_base").setLevel(logging.DEBUG)     
 
 

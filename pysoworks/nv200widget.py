@@ -109,6 +109,8 @@ class NV200Widget(QWidget):
         ui.phaseShiftSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
 
+        ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
+
         self.init_modsrc_combobox()
         self.init_spimonitor_combobox()
 
@@ -534,3 +536,23 @@ class NV200Widget(QWidget):
         except Exception as e:
             print(f"Error starting waveform generator: {e}")
             self.status_message.emit(f"Error starting waveform generator: {e}", 4000)
+
+
+    async def send_console_cmd(self, command: str):
+        """
+        Sends a command to the connected device and handles the response.
+        """
+        print(f"Sending command: {command}")
+        # if command == "cl,0":
+        #     self.ui.console.print_output("response")
+        # return
+
+        if self._device is None:
+            print("No device connected.")
+            return
+        
+        self.ui.console.prompt_count += 1
+        response = await self._device.read_stripped_response_string(command, 10)
+        print(f"Command response: {response}")
+        self.ui.console.print_output(response)
+

@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1483</width>
-    <height>1027</height>
+    <width>1541</width>
+    <height>960</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
@@ -91,7 +94,7 @@
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>964</height>
+          <height>897</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -116,7 +119,7 @@
             <enum>QTabWidget::TabPosition::West</enum>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="easyModeTab">
             <attribute name="title">
@@ -577,13 +580,29 @@
        <property name="spacing">
         <number>0</number>
        </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
        <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
         <widget class="MplWidget" name="mplCanvasWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Console" name="console">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -623,6 +642,11 @@
    <class>TimedProgressBar</class>
    <extends>QProgressBar</extends>
    <header location="global">pysoworks.timed_progress_bar</header>
+  </customwidget>
+  <customwidget>
+   <class>Console</class>
+   <extends>QTextEdit</extends>
+   <header location="global">pysoworks.consolewidget</header>
   </customwidget>
  </customwidgets>
  <resources/>
