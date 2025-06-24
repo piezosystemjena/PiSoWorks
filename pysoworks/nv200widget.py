@@ -81,12 +81,19 @@ class NV200Widget(QWidget):
         ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
         ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
         
-        ui.applySetpointParamButton.setIcon(get_icon("publish", size=24, fill=True))
-        ui.applySetpointParamButton.setText("")
+        ui.applySetpointParamButton.setIconSize(QSize(24, 24))
+        ui.applySetpointParamButton.setIcon(get_icon("check", size=24, fill=True))
+        ui.applySetpointParamButton.setText("Apply")
+        ui.applySetpointParamButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
         ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
 
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
+
+        ui.consoleButton.setIcon(get_icon("terminal", size=24, fill=True))
+        ui.consoleButton.setIconSize(QSize(24, 24))
+        ui.consoleButton.clicked.connect(self.toggle_console_visibility)
+        ui.consoleWidget.setVisible(False)
         
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
@@ -375,24 +382,23 @@ class NV200Widget(QWidget):
         self.ui.connectButton.setEnabled(True)
 
     async def update_target_pos_edits(self):
-            """
-            Asynchronously updates the minimum and maximum values for the target position spin boxes
-            in the UI based on the setpoint range retrieved from the device.
-            """
-            ui = self.ui
-            setpoint_range = await self._device.get_setpoint_range()
-            ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
-            ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
-            unit = await self._device.get_setpoint_unit()
-            ui.targetPosSpinBox.setSuffix(f" {unit}")
-            ui.targetPosSpinBox_2.setSuffix(f" {unit}")
-            ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
-            label_text = f"Target Positions<br/>{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}:"
-            ui.targetPositionsLabel.setText(label_text)
-            ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
-            ui.lowLevelSpinBox.setValue(setpoint_range[0])
-            ui.highLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
-            ui.highLevelSpinBox.setValue(setpoint_range[1])
+        """
+        Asynchronously updates the minimum and maximum values for the target position spin boxes
+        in the UI based on the setpoint range retrieved from the device.
+        """
+        ui = self.ui
+        setpoint_range = await self._device.get_setpoint_range()
+        ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+        ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
+        unit = await self._device.get_setpoint_unit()
+        ui.targetPosSpinBox.setSuffix(f" {unit}")
+        ui.targetPosSpinBox_2.setSuffix(f" {unit}")
+        ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
+        ui.rangeLabel.setText(f"{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}")
+        ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+        ui.lowLevelSpinBox.setValue(setpoint_range[0])
+        ui.highLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+        ui.highLevelSpinBox.setValue(setpoint_range[1])
 
 
     async def on_pid_mode_button_clicked(self):
@@ -444,6 +450,11 @@ class NV200Widget(QWidget):
         """
         dev = self._device
         ui = self.ui
+        pid_mode = await dev.get_pid_mode()
+        if pid_mode == PidLoopMode.OPEN_LOOP:
+            ui.openLoopButton.setChecked(True)
+        else:
+            ui.closedLoopButton.setChecked(True)
         await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
         
@@ -453,11 +464,6 @@ class NV200Widget(QWidget):
         """
         dev = self._device
         ui = self.ui
-        pid_mode = await dev.get_pid_mode()
-        if pid_mode == PidLoopMode.OPEN_LOOP:
-            ui.openLoopButton.setChecked(True)
-        else:
-            ui.closedLoopButton.setChecked(True)
         ui.slewRateSpinBox.setValue(await dev.get_slew_rate())
         ui.setpointFilterCheckBox.setChecked(await dev.is_setpoint_lowpass_filter_enabled())
         ui.setpointFilterCutoffSpinBox.setValue(await dev.get_setpoint_lowpass_filter_cutoff_freq())
@@ -669,3 +675,12 @@ class NV200Widget(QWidget):
         print(f"Command response: {response}")
         self.ui.console.print_output(response)
 
+
+    def toggle_console_visibility(self):
+        """
+        Toggles the visibility of the console widget.
+        """
+        if self.ui.consoleWidget.isVisible():
+            self.ui.consoleWidget.hide()
+        else:
+            self.ui.consoleWidget.show()

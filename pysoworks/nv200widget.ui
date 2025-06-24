@@ -6,17 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1541</width>
-    <height>960</height>
+    <width>1498</width>
+    <height>793</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
-   <property name="spacing">
-    <number>6</number>
-   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
@@ -64,40 +61,546 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>12</number>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QScrollArea" name="scrollArea">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <widget class="QWidget" name="">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>12</number>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::Shape::NoFrame</enum>
+       <property name="rightMargin">
+        <number>0</number>
        </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>214</width>
-          <height>897</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>240</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::NoFrame</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>240</width>
+              <height>617</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QTabWidget" name="tabWidget">
+               <property name="tabPosition">
+                <enum>QTabWidget::TabPosition::West</enum>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="easyModeTab">
+                <attribute name="title">
+                 <string>Easy Mode</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_7">
+                 <item>
+                  <widget class="QGroupBox" name="easyModeGroupBox">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="title">
+                    <string>Easy Mode</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout">
+                    <item>
+                     <widget class="QRadioButton" name="openLoopButton">
+                      <property name="text">
+                       <string>Open Loop</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="closedLoopButton">
+                      <property name="text">
+                       <string>Closed Loop</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_3">
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Policy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>0</width>
+                        <height>10</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="targetPositionsLabel">
+                      <property name="text">
+                       <string>Target Positions:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <layout class="QGridLayout" name="gridLayout">
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="1" column="0">
+                       <widget class="QDoubleSpinBox" name="targetPosSpinBox_2">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                        </property>
+                        <property name="decimals">
+                         <number>3</number>
+                        </property>
+                        <property name="maximum">
+                         <double>1000.000000000000000</double>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QPushButton" name="moveButton_2">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QDoubleSpinBox" name="targetPosSpinBox">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                        </property>
+                        <property name="prefix">
+                         <string/>
+                        </property>
+                        <property name="suffix">
+                         <string/>
+                        </property>
+                        <property name="decimals">
+                         <number>3</number>
+                        </property>
+                        <property name="maximum">
+                         <double>1000.000000000000000</double>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QPushButton" name="moveButton">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="rangeLabel">
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignmentFlag::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>740</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="settingsTab">
+                <attribute name="title">
+                 <string>Settings</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <item>
+                  <widget class="QGroupBox" name="setpointParamGroupBox">
+                   <property name="title">
+                    <string>Setpoint Param.</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_6">
+                    <item>
+                     <widget class="QLabel" name="slewRateLabel">
+                      <property name="text">
+                       <string>Slew Rate</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="slewRateSpinBox">
+                      <property name="decimals">
+                       <number>7</number>
+                      </property>
+                      <property name="minimum">
+                       <double>0.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>2000.000000000000000</double>
+                      </property>
+                      <property name="value">
+                       <double>0.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="setpointFilterCheckBox">
+                      <property name="text">
+                       <string>LP Filter</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="setpointFilterCutoffSpinBox">
+                      <property name="suffix">
+                       <string> Hz</string>
+                      </property>
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item alignment="Qt::AlignmentFlag::AlignRight">
+                     <widget class="QToolButton" name="applySetpointParamButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Apply</string>
+                      </property>
+                      <property name="autoRaise">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="settingsGroupBox">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="title">
+                    <string>Settings</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_5">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>Setpoint Source:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="modsrcComboBox">
+                      <property name="toolTip">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Signal source for setppoint (modsrc)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_3">
+                      <property name="text">
+                       <string>SPI-Monitor Source:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="spisrcComboBox">
+                      <property name="toolTip">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SPI monitor/ Return value via MISO (spisrc)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>654</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="waveformTab">
+                <attribute name="title">
+                 <string>Waveform</string>
+                </attribute>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="freqLabel">
+                   <property name="text">
+                    <string>Freq.</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QDoubleSpinBox" name="freqSpinBox">
+                   <property name="suffix">
+                    <string> °</string>
+                   </property>
+                   <property name="minimum">
+                    <double>0.010000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>100.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>20.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="phaseLabel">
+                   <property name="text">
+                    <string>Phase Shift</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="phaseShiftSpinBox">
+                   <property name="suffix">
+                    <string> °</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>0.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>360.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>0.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="highLabel">
+                   <property name="text">
+                    <string>High Level</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QDoubleSpinBox" name="highLevelSpinBox">
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="lowLabel">
+                   <property name="text">
+                    <string>Low Level</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QDoubleSpinBox" name="lowLevelSpinBox">
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" colspan="2">
+                  <widget class="QPushButton" name="uploadButton">
+                   <property name="text">
+                    <string>Upload</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Policy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>0</width>
+                     <height>10</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="cyclesLabel">
+                   <property name="text">
+                    <string>Cycles</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="1">
+                  <widget class="QSpinBox" name="cyclesSpinBox">
+                   <property name="maximum">
+                    <number>65535</number>
+                   </property>
+                   <property name="value">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0" colspan="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <widget class="QPushButton" name="startButton">
+                     <property name="text">
+                      <string>Start</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="stopButton">
+                     <property name="text">
+                      <string>Stop</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="consoleButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>PushButton</string>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -107,511 +610,78 @@
          <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
          <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
-          <widget class="QTabWidget" name="tabWidget">
-           <property name="tabPosition">
-            <enum>QTabWidget::TabPosition::West</enum>
+          <widget class="MplWidget" name="mplCanvasWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <widget class="QWidget" name="easyModeTab">
-            <attribute name="title">
-             <string>Easy Mode</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_7">
-             <item>
-              <widget class="QGroupBox" name="easyModeGroupBox">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="title">
-                <string>Easy Mode</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout">
-                <item>
-                 <widget class="QRadioButton" name="openLoopButton">
-                  <property name="text">
-                   <string>Open Loop</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="closedLoopButton">
-                  <property name="text">
-                   <string>Closed Loop</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Vertical</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Policy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>0</width>
-                    <height>10</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="targetPositionsLabel">
-                  <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Target Positions&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <property name="spacing">
-                   <number>6</number>
-                  </property>
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QDoubleSpinBox" name="targetPosSpinBox">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-                    </property>
-                    <property name="decimals">
-                     <number>3</number>
-                    </property>
-                    <property name="maximum">
-                     <double>1000.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="moveButton">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_4">
-                  <property name="spacing">
-                   <number>6</number>
-                  </property>
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QDoubleSpinBox" name="targetPosSpinBox_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-                    </property>
-                    <property name="decimals">
-                     <number>3</number>
-                    </property>
-                    <property name="maximum">
-                     <double>1000.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="moveButton_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>740</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="settingsTab">
-            <attribute name="title">
-             <string>Settings</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_8">
-             <item>
-              <widget class="QGroupBox" name="setpointParamGroupBox">
-               <property name="title">
-                <string>Setpoint Param.</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_6">
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_5">
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <item alignment="Qt::AlignmentFlag::AlignBottom">
-                   <widget class="QLabel" name="slewRateLabel">
-                    <property name="text">
-                     <string>Slew Rate</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item alignment="Qt::AlignmentFlag::AlignRight">
-                   <widget class="QPushButton" name="applySetpointParamButton">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Apply</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="slewRateSpinBox">
-                  <property name="decimals">
-                   <number>7</number>
-                  </property>
-                  <property name="minimum">
-                   <double>0.000000000000000</double>
-                  </property>
-                  <property name="maximum">
-                   <double>2000.000000000000000</double>
-                  </property>
-                  <property name="value">
-                   <double>0.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="setpointFilterCheckBox">
-                  <property name="text">
-                   <string>LP Filter</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QSpinBox" name="setpointFilterCutoffSpinBox">
-                  <property name="suffix">
-                   <string> Hz</string>
-                  </property>
-                  <property name="minimum">
-                   <number>1</number>
-                  </property>
-                  <property name="maximum">
-                   <number>10000</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="settingsGroupBox">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>100</height>
-                </size>
-               </property>
-               <property name="title">
-                <string>Settings</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_5">
-                <property name="sizeConstraint">
-                 <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
-                </property>
-                <item>
-                 <widget class="QLabel" name="label_2">
-                  <property name="text">
-                   <string>Setpoint Source:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="modsrcComboBox">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Signal source for setppoint (modsrc)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_3">
-                  <property name="text">
-                   <string>SPI-Monitor Source:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="spisrcComboBox">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SPI monitor/ Return value via MISO (spisrc)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>654</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="waveformTab">
-            <attribute name="title">
-             <string>Waveform</string>
-            </attribute>
-            <layout class="QFormLayout" name="formLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="freqLabel">
-               <property name="text">
-                <string>Freq.</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="freqSpinBox">
-               <property name="suffix">
-                <string> °</string>
-               </property>
-               <property name="minimum">
-                <double>0.010000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>100.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>20.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="lowLabel">
-               <property name="text">
-                <string>Low Level</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="lowLevelSpinBox">
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="maximum">
-                <double>1000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="highLabel">
-               <property name="text">
-                <string>High Level</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="highLevelSpinBox">
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="maximum">
-                <double>1000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="phaseLabel">
-               <property name="text">
-                <string>Phase Shift</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QDoubleSpinBox" name="phaseShiftSpinBox">
-               <property name="suffix">
-                <string> °</string>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>0.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>360.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>0.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <spacer name="verticalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Policy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>0</width>
-                 <height>10</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="cyclesLabel">
-               <property name="text">
-                <string>Cycles</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="1">
-              <widget class="QSpinBox" name="cyclesSpinBox">
-               <property name="maximum">
-                <number>65535</number>
-               </property>
-               <property name="value">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="2">
-              <widget class="QPushButton" name="uploadButton">
-               <property name="text">
-                <string>Upload</string>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0" colspan="2">
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QPushButton" name="startButton">
-                 <property name="text">
-                  <string>Start</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="stopButton">
-                 <property name="text">
-                  <string>Stop</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
           </widget>
          </item>
         </layout>
-       </widget>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="spacing">
-        <number>0</number>
-       </property>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="consoleWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <property name="leftMargin">
         <number>0</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <widget class="MplWidget" name="mplCanvasWidget" native="true">
+        <widget class="QLabel" name="consoleLabel">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Command Line Interface</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="Console" name="console">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QTextEdit { background: black; }</string>
+         </property>
         </widget>
        </item>
       </layout>
-     </item>
-    </layout>
+     </widget>
+    </widget>
    </item>
    <item>
     <widget class="TimedProgressBar" name="moveProgressBar">

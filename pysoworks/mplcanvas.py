@@ -22,7 +22,7 @@ class MplCanvas(FigureCanvas):
         self.axes = self._fig.add_subplot(111)
         self._fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
         self.axes.set_xlabel('Time (ms)')
-        self.axes.set_ylabel('Value (ms)')
+        self.axes.set_ylabel('Value')
         self.axes.grid(True, color='darkgray', linestyle='--', linewidth=0.5)
         ax = self.axes
         ax.spines['top'].set_color('darkgray')
@@ -77,6 +77,10 @@ class MplCanvas(FigureCanvas):
             x_data, y_data, 
             linestyle='-', color=color.name(), label=label
         )
+
+        ax.set_autoscale_on(True)       # Turns autoscale mode back on
+        ax.set_xlim(auto=True)          # Reset x-axis limits
+        ax.set_ylim(auto=True)          # Reset y-axis limits
 
         # Autoscale the axes after plotting the data
         ax.relim()
