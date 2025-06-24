@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
         dock_widget = QtAds.CDockWidget(title)
         dock_widget.setWidget(widget)
         self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
-        widget.status_message.connect(self.statusBar().showMessage)
+        widget.status_message.connect(self.show_status_message)
 
 
     def add_nv200_view(self):
@@ -98,6 +98,17 @@ class MainWindow(QMainWindow):
         Adds a new SpiBox view to the main window.
         """
         self.add_view(SpiBoxWidget, "SpiBox")
+
+    def show_status_message(self, message: str, timeout: int | None = 4000):
+        """
+        Displays a status message in the status bar.
+        :param message: The message to display.
+        """
+        if message.startswith("Error"):
+            self.statusBar().setStyleSheet("QStatusBar { color: red; }")
+        else:
+            self.statusBar().setStyleSheet("")
+        self.statusBar().showMessage(message, timeout)
 
    
 def setup_logging():

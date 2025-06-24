@@ -75,29 +75,27 @@ class NV200Widget(QWidget):
         self.ui = Ui_NV200Widget()
         ui = self.ui
         ui.setupUi(self)
+        
         ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
         ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
         ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
-        ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        
-        ui.applySetpointParamButton.setIconSize(QSize(24, 24))
-        ui.applySetpointParamButton.setIcon(get_icon("check", size=24, fill=True))
-        ui.applySetpointParamButton.setText("Apply")
-        ui.applySetpointParamButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
-        ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
-
-        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
-
-        ui.consoleButton.setIcon(get_icon("terminal", size=24, fill=True))
-        ui.consoleButton.setIconSize(QSize(24, 24))
-        ui.consoleButton.clicked.connect(self.toggle_console_visibility)
-        ui.consoleWidget.setVisible(False)
-        
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
 
+        self.init_easy_mode_ui()
+        self.init_settings_ui()
+        self.init_console_ui()
+        self.init_waveform_ui()
+        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
+
+    def init_easy_mode_ui(self):
+        """
+        Initializes the easy mode UI components, including buttons and spin boxes for PID control and target position.
+        """
+        ui = self.ui
+        ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
+        ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
+    
         ui.moveButton.setIcon(get_icon("play_arrow", size=24, fill=True))
         ui.moveButton.setStyleSheet("QPushButton { padding: 0px }")
         ui.moveButton.setIconSize(QSize(24, 24))
@@ -110,129 +108,46 @@ class NV200Widget(QWidget):
         ui.moveButton_2.clicked.connect(self.start_move)
         ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
 
+
+
+    def init_console_ui(self):
+        """
+        Initializes the console UI with a prompt and command history.
+        """
+        ui = self.ui
+        ui.consoleButton.setIcon(get_icon("terminal", size=24, fill=True))
+        ui.consoleButton.setIconSize(QSize(24, 24))
+        ui.consoleButton.clicked.connect(self.toggle_console_visibility)
+        ui.consoleWidget.setVisible(False)
+        ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
+        ui.console.register_commands(NV200Device.help_dict)
+
+    def init_settings_ui(self):
+        """
+        Initializes the settings UI components for setpoint parameter application.
+        """
+        ui = self.ui
+        ui.applySetpointParamButton.setIconSize(QSize(24, 24))
+        ui.applySetpointParamButton.setIcon(get_icon("check", size=24, fill=True))
+        ui.applySetpointParamButton.setText("Apply")
+        ui.applySetpointParamButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
+        ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+        self.init_modsrc_combobox()
+        self.init_spimonitor_combobox()
+
+
+    def init_waveform_ui(self):
+        """
+        Initializes the waveform UI components for waveform generation and control.
+        """
+        ui = self.ui
         ui.lowLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.highLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.freqSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.phaseShiftSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
 
-        ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
-        ui.console.register_commands({
-            # General Commands
-            "s": "Print full command list",
-            "reset": "Hardware-reset of the controller",
-            "fenable": "Enable/disable full range voltage sweep during power-up (0=disabled, 1=enabled)",
-            "sinit": "Set initial actuator position after power-up (0 to 100 %)",
-            "set": "Setpoint: voltage (open loop) or position (closed loop), range limited by actuator",
-            "setst": "Smooth setpoint: setst,<value1>=Setpoint,<value2>=JumpTime; same rules as 'set'",
-            "meas": "Read position (with sensor) or piezo voltage (no sensor)",
-            "imeas": "Read measured piezo current (0=channel 1, 1=channel 2)",
-            "ctrlmode": "Controller mode (0=PID, 1=ILC identification, 2=ILC feedforward, 3=ILC feedback)",
-            "temp": "Read heat sink temperature",
-            "stat": "Read status register",
-            "posmin": "Lower motion range limit",
-            "posmax": "Upper motion range limit",
-            "avmin": "Lower voltage range limit",
-            "avmax": "Upper voltage range limit",
-            "modsrc": "Setpoint source (0=USB/Ethernet, 1=Analog In, 2=SPI, 3=AWG)",
-            "monsrc": (
-                "Analog output source (0=position closed loop, 1=setpoint, 2=piezo voltage, "
-                "3=position error, 4=abs(position error), 5=position open loop, 6=piezo current 1, 7=piezo current 2)"
-            ),
-
-            # PID and Filters
-            "cl": "Loop mode (0=open loop, 1=closed loop)",
-            "sr": "Slew rate limit (0.0000008 to 2000.0 %/ms; 2000=disabled)",
-            "kp": "PID proportional gain (0 to 10000)",
-            "ki": "PID integral gain (0 to 10000)",
-            "kd": "PID differential gain (0 to 10000)",
-            "tf": "PID differential term (time constant)",
-            "pcf": (
-                "PID feedforward gain: pcf,<position_gain>,<velocity_gain>,<acceleration_gain> "
-                "(acceleration scaled internally by 1/1,000,000)"
-            ),
-            "setlpon": "Enable/disable setpoint lowpass filter (0=off, 1=on)",
-            "setlpf": "Setpoint lowpass cutoff frequency (1 to 10000 Hz)",
-            "notchon": "Enable/disable notch filter (0=off, 1=on)",
-            "notchf": "Notch filter frequency (1 to 10000 Hz)",
-            "notchb": "Notch filter bandwidth (-3dB) (1 to 10000 Hz; max = 2 * notchf)",
-            "poslpon": "Enable/disable position lowpass filter (0=off, 1=on)",
-            "poslpf": "Position lowpass cutoff frequency (1 to 10000 Hz)",
-
-            # Arbitrary Waveform Generator
-            "grun": "Start/stop AWG (0=stop, 1=start)",
-            "gsarb": "AWG start index (0 to 1023)",
-            "gearb": "AWG end index (0 to 1023)",
-            "gcarb": "AWG cycles (0=infinite, 1 to 65535)",
-            "goarb": "AWG offset index (0 to 1023)",
-            "giarb": "Read current AWG index",
-            "gtarb": "Output sampling factor (1 to 65535; sample time = factor * 50µs)",
-            "gbarb": "Write AWG buffer in % units (index: 0 to 1023, value: 0.0 to 100.0)",
-            "gparb": "Write AWG buffer in length units (index: 0 to 1023, value: posmin to posmax)",
-            "gsave": "Save AWG buffer to EEPROM",
-            "gload": "Load AWG buffer from EEPROM",
-
-            # Data Recorder
-            "recsrc": (
-                "Set data recorder source: recsrc,<ch>,<src>; ch: 0=A, 1=B; "
-                "src: 0=position, 1=setpoint, 2=voltage, 3=error, 4=abs(error), "
-                "5=position (open loop), 6=piezo current 1, 7=piezo current 2"
-            ),
-            "recast": "Recorder autostart (0=off, 1=start on set, 2=start on grun)",
-            "recstr": "Recorder stride (store every nth value) (1 to 65535)",
-            "reclen": "Recorder length (0 to 6144; 0=infinite loop)",
-            "recrun": "Start/stop recorder (0=stop, 1=start)",
-            "recidx": "Read current recorder write index",
-            "recout": "Read recorder by index: recout,<ch>,<index>,<value>",
-            "recoutf": "Read full recorder buffer (comma-separated)",
-
-            # Trigger In
-            "trgfkt": (
-                "Trigger input function (0=none, 1=AWG start, 2=AWG step, 3=AWG sync, "
-                "4=ILC sync, 5=recorder start)"
-            ),
-
-            # Trigger Out
-            "trgedg": "Trigger edge mode (0=off, 1=rising, 2=falling, 3=both)",
-            "trgsrc": "Trigger signal source (0=position, 1=setpoint)",
-            "trgss": "Trigger start position (posmin+0.001 to posmax-0.001)",
-            "trgse": "Trigger stop position (posmin+0.001 to posmax-0.001)",
-            "trgsi": "Trigger step size (0.001 to posmax-0.001)",
-            "trglen": "Trigger pulse length in samples (0 to 255, time = length * 50µs)",
-
-            # SPI
-            "spisrc": (
-                "SPI return source (0=0x0000, 1=position, 2=setpoint, 3=voltage, 4=error, "
-                "5=abs(error), 6=position open loop, 7=piezo current 1, 8=piezo current 2, 9=test 0x5A5A)"
-            ),
-            "spitrg": "SPI interrupt source (0=internal, 1=SPI)",
-            "spis": "SPI setpoint format (0=hex, 1=decimal, 2=stroke/voltage)",
-
-            # ILC
-            "idata": "Read all ILC parameters",
-            "iemin": "ILC lower error threshold 'emin' (0.0001 to 1.0)",
-            "irho": "ILC learning rate 'rho' (0.0001 to 1.0)",
-            "in0": "Number of basic scans (≥ in1) (2 to 65535)",
-            "in1": "Number of subsamples (power of 2: 2, 4, 8...1024)",
-            "inx": "Frequency components to learn (1 to 128, must be < ½ * in1)",
-            "iut": "Read piezo voltage profile (time domain)",
-            "iyt": "Read measured position profile (time domain)",
-            "ii1t": "Read piezo current channel 1 (time domain)",
-            "ii2t": "Read piezo current channel 2 (time domain)",
-            "igc": "Read learning function (frequency domain)",
-            "iuc": "Read piezo voltage profile (frequency domain)",
-            "iwc": (
-                "Set/read desired position profile (frequency domain): "
-                "iwc,<index>,<real>,<imag>; index: 0 to inx"
-            ),
-            "iyc": "Read measured position profile (frequency domain)",
-            "igt": "Correction mode (0=no learning, 1=offline ID, 2=online ID)",
-            "isave": "Save ILC learning profiles to actuator",
-            "iload": "Load ILC learning profiles from actuator",
-        })
-
-        self.init_modsrc_combobox()
-        self.init_spimonitor_combobox()
 
 
     def init_modsrc_combobox(self):
@@ -610,7 +525,7 @@ class NV200Widget(QWidget):
         Asynchronously uploads the waveform to the device.
         """
         if self._device is None:
-            print("No device connected.")
+            self.status_message.emit("Error: No device connected", 4000)
             return
         
         wg = self.waveform_generator()
@@ -625,14 +540,15 @@ class NV200Widget(QWidget):
             phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value())
         )
         
-       
         try:
-            await wg.set_waveform(waveform)
-            print("Waveform uploaded successfully.")
+            self.setCursor(Qt.WaitCursor)
+            await wg.set_waveform(waveform, on_progress=self.report_progress)
             self.status_message.emit("Waveform uploaded successfully.", 2000)
         except Exception as e:
-            print(f"Error uploading waveform: {e}")
             self.status_message.emit(f"Error uploading waveform: {e}", 4000)
+        finally:#
+            self.setCursor(Qt.ArrowCursor)
+            self.ui.moveProgressBar.reset()
         
 
     async def start_waveform_generator(self):
@@ -684,3 +600,17 @@ class NV200Widget(QWidget):
             self.ui.consoleWidget.hide()
         else:
             self.ui.consoleWidget.show()
+
+    async def report_progress(self, current_index: int, total: int):
+        """
+        Asynchronously updates the progress bar and status message to reflect the current progress of an upload operation.
+
+        Args:
+            current_index (int): The current item index being processed.
+            total (int): The total number of items to process.
+        """
+        percent = 100 * current_index / total
+        ui = self.ui
+        ui.moveProgressBar.setMaximum(total)
+        ui.moveProgressBar.setValue(current_index)
+        self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)

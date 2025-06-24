@@ -33,6 +33,7 @@ class Ui_NV200Widget(object):
         NV200Widget.resize(1498, 793)
         self.verticalLayout_3 = QVBoxLayout(NV200Widget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(9, -1, -1, -1)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -423,6 +424,7 @@ class Ui_NV200Widget(object):
         self.moveProgressBar = TimedProgressBar(NV200Widget)
         self.moveProgressBar.setObjectName(u"moveProgressBar")
         self.moveProgressBar.setMaximumSize(QSize(16777215, 5))
+        self.moveProgressBar.setStyleSheet(u"QProgressBar { background: transparent;}")
         self.moveProgressBar.setValue(0)
         self.moveProgressBar.setTextVisible(False)
 
