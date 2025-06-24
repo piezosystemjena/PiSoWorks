@@ -30,7 +30,7 @@ class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):
         if not NV200Widget.objectName():
             NV200Widget.setObjectName(u"NV200Widget")
-        NV200Widget.resize(1498, 793)
+        NV200Widget.resize(997, 957)
         self.verticalLayout_3 = QVBoxLayout(NV200Widget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(9, -1, -1, -1)
@@ -71,16 +71,16 @@ class Ui_NV200Widget(object):
         self.splitter = QSplitter(NV200Widget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Orientation.Vertical)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.horizontalLayout_2 = QHBoxLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.horizontalLayout_2 = QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_2.setSpacing(12)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_10 = QVBoxLayout()
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.verticalLayout_10.setContentsMargins(0, -1, -1, -1)
-        self.scrollArea = QScrollArea(self.widget)
+        self.scrollArea = QScrollArea(self.layoutWidget)
         self.scrollArea.setObjectName(u"scrollArea")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
@@ -93,7 +93,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 240, 617))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 240, 556))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -202,7 +202,7 @@ class Ui_NV200Widget(object):
 
         self.slewRateSpinBox = QDoubleSpinBox(self.setpointParamGroupBox)
         self.slewRateSpinBox.setObjectName(u"slewRateSpinBox")
-        self.slewRateSpinBox.setDecimals(7)
+        self.slewRateSpinBox.setDecimals(3)
         self.slewRateSpinBox.setMinimum(0.000000000000000)
         self.slewRateSpinBox.setMaximum(2000.000000000000000)
         self.slewRateSpinBox.setValue(0.000000000000000)
@@ -227,17 +227,17 @@ class Ui_NV200Widget(object):
         self.applySetpointParamButton.setSizePolicy(sizePolicy1)
         self.applySetpointParamButton.setAutoRaise(True)
 
-        self.verticalLayout_6.addWidget(self.applySetpointParamButton, 0, Qt.AlignmentFlag.AlignRight)
+        self.verticalLayout_6.addWidget(self.applySetpointParamButton)
 
 
         self.verticalLayout_8.addWidget(self.setpointParamGroupBox)
 
         self.settingsGroupBox = QGroupBox(self.settingsTab)
         self.settingsGroupBox.setObjectName(u"settingsGroupBox")
-        self.settingsGroupBox.setMinimumSize(QSize(0, 100))
+        self.settingsGroupBox.setMinimumSize(QSize(0, 0))
         self.verticalLayout_5 = QVBoxLayout(self.settingsGroupBox)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
+        self.verticalLayout_5.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.label_2 = QLabel(self.settingsGroupBox)
         self.label_2.setObjectName(u"label_2")
 
@@ -245,11 +245,18 @@ class Ui_NV200Widget(object):
 
         self.modsrcComboBox = QComboBox(self.settingsGroupBox)
         self.modsrcComboBox.setObjectName(u"modsrcComboBox")
+        sizePolicy3.setHeightForWidth(self.modsrcComboBox.sizePolicy().hasHeightForWidth())
+        self.modsrcComboBox.setSizePolicy(sizePolicy3)
 
         self.verticalLayout_5.addWidget(self.modsrcComboBox)
 
+        self.verticalSpacer_5 = QSpacerItem(0, 6, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.verticalLayout_5.addItem(self.verticalSpacer_5)
+
         self.label_3 = QLabel(self.settingsGroupBox)
         self.label_3.setObjectName(u"label_3")
+        self.label_3.setStyleSheet(u"")
 
         self.verticalLayout_5.addWidget(self.label_3)
 
@@ -344,15 +351,15 @@ class Ui_NV200Widget(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.startButton = QPushButton(self.waveformTab)
-        self.startButton.setObjectName(u"startButton")
+        self.startWaveformButton = QPushButton(self.waveformTab)
+        self.startWaveformButton.setObjectName(u"startWaveformButton")
 
-        self.horizontalLayout_6.addWidget(self.startButton)
+        self.horizontalLayout_6.addWidget(self.startWaveformButton)
 
-        self.stopButton = QPushButton(self.waveformTab)
-        self.stopButton.setObjectName(u"stopButton")
+        self.stopWaveformButton = QPushButton(self.waveformTab)
+        self.stopWaveformButton.setObjectName(u"stopWaveformButton")
 
-        self.horizontalLayout_6.addWidget(self.stopButton)
+        self.horizontalLayout_6.addWidget(self.stopWaveformButton)
 
 
         self.formLayout.setLayout(7, QFormLayout.ItemRole.SpanningRole, self.horizontalLayout_6)
@@ -365,7 +372,7 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_10.addWidget(self.scrollArea)
 
-        self.consoleButton = QToolButton(self.widget)
+        self.consoleButton = QToolButton(self.layoutWidget)
         self.consoleButton.setObjectName(u"consoleButton")
         sizePolicy1.setHeightForWidth(self.consoleButton.sizePolicy().hasHeightForWidth())
         self.consoleButton.setSizePolicy(sizePolicy1)
@@ -380,7 +387,7 @@ class Ui_NV200Widget(object):
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, -1, 0)
-        self.mplCanvasWidget = MplWidget(self.widget)
+        self.mplCanvasWidget = MplWidget(self.layoutWidget)
         self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
         sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy4.setHorizontalStretch(0)
@@ -393,7 +400,7 @@ class Ui_NV200Widget(object):
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_4)
 
-        self.splitter.addWidget(self.widget)
+        self.splitter.addWidget(self.layoutWidget)
         self.consoleWidget = QWidget(self.splitter)
         self.consoleWidget.setObjectName(u"consoleWidget")
         sizePolicy4.setHeightForWidth(self.consoleWidget.sizePolicy().hasHeightForWidth())
@@ -433,7 +440,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(NV200Widget)
@@ -469,15 +476,15 @@ class Ui_NV200Widget(object):
 #endif // QT_CONFIG(tooltip)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
         self.freqLabel.setText(QCoreApplication.translate("NV200Widget", u"Freq.", None))
-        self.freqSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" \u00b0", None))
+        self.freqSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))
         self.phaseLabel.setText(QCoreApplication.translate("NV200Widget", u"Phase Shift", None))
         self.phaseShiftSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" \u00b0", None))
         self.highLabel.setText(QCoreApplication.translate("NV200Widget", u"High Level", None))
         self.lowLabel.setText(QCoreApplication.translate("NV200Widget", u"Low Level", None))
         self.uploadButton.setText(QCoreApplication.translate("NV200Widget", u"Upload", None))
         self.cyclesLabel.setText(QCoreApplication.translate("NV200Widget", u"Cycles", None))
-        self.startButton.setText(QCoreApplication.translate("NV200Widget", u"Start", None))
-        self.stopButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
+        self.startWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Start", None))
+        self.stopWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.consoleButton.setText(QCoreApplication.translate("NV200Widget", u"PushButton", None))
         self.consoleLabel.setText(QCoreApplication.translate("NV200Widget", u"Command Line Interface", None))

@@ -75,10 +75,12 @@ class NV200Widget(QWidget):
         self.ui = Ui_NV200Widget()
         ui = self.ui
         ui.setupUi(self)
-        
+
         ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
+        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
         ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
         ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
+        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
 
@@ -147,6 +149,11 @@ class NV200Widget(QWidget):
         ui.freqSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.phaseShiftSpinBox.valueChanged.connect(self.updateWaveformPlot)
         ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
+        ui.uploadButton.setIcon(get_icon("upload", size=24, fill=True))
+        ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
+        ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
+        ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
+        ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
 
 
 
@@ -564,13 +571,40 @@ class NV200Widget(QWidget):
             print("Waveform generator not initialized.")
             return
         
+        ui = self.ui
         try:
+            ui.startWaveformButton.setEnabled(False)
             await wg.start(cycles=self.ui.cyclesSpinBox.value())
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
+            await wg.wait_until_finished()
         except Exception as e:
             print(f"Error starting waveform generator: {e}")
             self.status_message.emit(f"Error starting waveform generator: {e}", 4000)
+        finally:
+            ui.startWaveformButton.setEnabled(True)
+
+
+    async def stop_waveform_generator(self):
+        """
+        Asynchronously stops the waveform generator.
+        """
+        if self._device is None:
+            print("No device connected.")
+            return
+        
+        wg = self.waveform_generator()
+        if wg is None:
+            print("Waveform generator not initialized.")
+            return
+        
+        try:
+            await wg.stop()
+            print("Waveform generator stopped successfully.")
+            self.status_message.emit("Waveform generator stopped successfully.", 2000)
+        except Exception as e:
+            print(f"Error stopping waveform generator: {e}")
+            self.status_message.emit(f"Error stopping waveform generator: {e}", 4000)
 
 
     async def send_console_cmd(self, command: str):
@@ -614,3 +648,5 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.setMaximum(total)
         ui.moveProgressBar.setValue(current_index)
         self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)
+
+
