@@ -30,12 +30,14 @@ class TimedProgressBar(QProgressBar):
         self._steps = self.duration / self.update_interval
         self._step_value = 100 / self._steps
         self._current_value = 0
+        self.setMaximum(100)
 
     def start(self, default_duration: int = 5000, context: str = ""):
         """
         Start the progress bar from 0. Resets any existing state.
         Starts the internal timer and begins tracking elapsed time.
         """
+        self.setMaximum(100)
         self.reset()
         self._current_value = 0
         self.setValue(0)
