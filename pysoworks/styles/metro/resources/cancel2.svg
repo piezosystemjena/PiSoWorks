@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   x="0"
+   y="0"
+   width="512"
+   height="512"
+   version="1.1"
+   viewBox="0 0 512 512"
+   id="svg4136"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="cancel2.svg">
+  <metadata
+     id="metadata4152">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4150" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview4148"
+     showgrid="false"
+     inkscape:zoom="1.6601562"
+     inkscape:cx="256"
+     inkscape:cy="236.75876"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4136" />
+  <title
+     id="title4138">delete icon</title>
+  <desc
+     id="desc4140">delete icon from the IconExperience.com G-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+  <polygon
+     style="fill:#ff9f00;fill-opacity:1"
+     id="polygon4144"
+     points="346.5,256 482.3,391.75 391.75,482.25 256,346.5 120.25,482.25 29.75,391.75 165.5,256 29.75,120.25 120.25,29.75 256,165.5 391.75,29.75 482.3,120.25 " />
+  <polygon
+     style="fill:#ff8d00;fill-opacity:1"
+     id="polygon4146"
+     points="346.5,256 482.3,391.75 391.75,482.25 256,346.5 120.25,482.25 75,437 437,75 482.3,120.25 " />
+</svg>

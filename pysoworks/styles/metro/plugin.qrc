@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/metro">
+        <file>images/style_preview.png</file>
+        <file>images/style_thumbnail.png</file>
+    </qresource>
+</RCC>

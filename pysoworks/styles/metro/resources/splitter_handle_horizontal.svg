@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="5" height="115" version="1.1" viewBox="0 0 1.3229 30.427" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-225.51 -227.18)">
+  <g transform="matrix(1 0 0 1.0004 0 -.08074)" stroke-width=".99982">
+   <path d="m225.51 227.32h1.3229" fill="none" stroke="#a7a6aa" stroke-width=".26454px"/>
+   <path d="m225.77 228.52v1.3167l0.8136-0.66454z" fill="#a7a6aa" fill-rule="evenodd"/>
+   <g fill="none" stroke="#a7a6aa" stroke-width=".26454px">
+    <path d="m226.04 231.03h0.2635"/>
+    <path d="m226.04 231.82h0.2635"/>
+    <path d="m226.04 232.62h0.2635"/>
+    <path d="m226.04 233.41h0.2635"/>
+    <path d="m226.04 234.2h0.2635"/>
+    <path d="m226.04 235h0.2635"/>
+    <path d="m226.04 235.79h0.2635"/>
+    <path d="m226.04 236.58h0.2635"/>
+    <path d="m226.04 237.38h0.2635"/>
+    <path d="m226.04 238.17h0.2635"/>
+    <path d="m226.04 238.96h0.2635"/>
+    <path d="m226.04 239.76h0.2635"/>
+    <path d="m226.04 240.55h0.2635"/>
+    <path d="m226.04 241.34h0.2635"/>
+    <path d="m226.04 242.14h0.2635"/>
+    <path d="m226.04 242.93h0.2635"/>
+    <path d="m226.04 243.72h0.2635"/>
+    <path d="m226.04 244.52h0.2635"/>
+    <path d="m226.04 245.31h0.2635"/>
+    <path d="m226.04 246.1h0.2635"/>
+    <path d="m226.04 246.9h0.2635"/>
+    <path d="m226.04 247.69h0.2635"/>
+    <path d="m226.04 248.48h0.2635"/>
+    <path d="m226.04 249.28h0.2635"/>
+    <path d="m226.04 250.07h0.2635"/>
+    <path d="m226.04 250.86h0.2635"/>
+    <path d="m226.04 251.65h0.2635"/>
+    <path d="m226.04 252.45h0.2635"/>
+    <path d="m226.04 253.24h0.2635"/>
+    <path d="m226.04 254.03h0.2635"/>
+    <path d="m226.83 257.47h-1.3229"/>
+   </g>
+   <path d="m226.58 256.27v-1.3167l-0.8136 0.66454z" fill="#a7a6aa" fill-rule="evenodd"/>
+  </g>
+ </g>
+</svg>

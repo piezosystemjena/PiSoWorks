@@ -1,0 +1,10 @@
+<svg x="0" y="0" width="512" height="512" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+    <title>undo icon</title>
+    <desc>undo icon from the IconExperience.com G-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <g>
+        <path d="M112,48l0,80l256,0c79.35,0 144,64.65 144,144c0,79.35 -64.65,144 -144,144l-160,0l0,-64l160,0c44,0 80,-36 80,-80c0,-44 -36,-80 -80,-80l-256,0l0,80l-112,-112z" fill="#28b5f5"/>
+        <path d="M208,384l0,-32l160,0c44,0 80,-36 80,-80c0,-44 -36,-80 -80,-80l-256,0l0,80l-112,-112l368,0c61.7,0 112,50.3 112,112c0,61.7 -50.3,112 -112,112z" fill="#0299e3"/>
+    </g>
+</svg>

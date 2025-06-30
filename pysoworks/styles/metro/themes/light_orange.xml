@@ -1,0 +1,19 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<resources dark="0">
+  <color name="accentColor" comment="rgb(247, 138, 9)">#f78a09</color>
+  <color name="backgroundColor" comment="rgb(255, 255, 255)">#fafafa</color>
+  <color name="backgroundLighter" comment="rgb(245, 245, 245)">#f0f0f0</color>
+  <color name="backgroundDarker" comment="rgb(255, 255, 255)">#ffffff</color>
+  <color name="backgroundDark" comment="rgb(170, 170, 170)">#aaaaaa</color>
+  <color name="borderColor" comment="rgb(226, 226, 226)">#dcdcdc</color>
+  <color name="textColor" comment="rgb(60, 60, 60)">#3c3c3c</color>
+  <color name="textColorDisabled" comment="rgb(160, 160, 160)">#a0a0a0</color>
+  <color name="textColorDarker" comment="rgb(160, 160, 160)">#a0a0a0</color>
+  <color name="iconColor" comment="rgb(90, 90, 90)">#5a5a5a</color>
+  <color name="backgroundHoverColor" comment="rgb(190, 190, 190)">#bebebe</color>
+  <color name="arrowsColor" comment="rgb(255, 255, 255)">#ffffff</color>
+  <color name="tooltipColor" comment="rgb(232, 226, 123)">#e8e27b</color>
+  <color name="light" comment="rgb(1, 1, 1)">#010101</color>
+  <color name="shadow" comment="rgb(254, 254, 254)">#fefefe</color>
+</resources>
+

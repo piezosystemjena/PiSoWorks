@@ -1,0 +1,18 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<resources dark="1">
+  <color name="accentColor" comment="rgb(247, 138, 9)">#f78a09</color>
+  <color name="backgroundColor" comment="rgb(32, 32, 32)">#202020</color>
+  <color name="backgroundLighter" comment="rgb(46, 46, 46)">#2e2e2e</color>
+  <color name="backgroundDarker" comment="rgb(22, 22, 22)">#161616</color>
+  <color name="backgroundDark" comment="rgb(12, 12, 12)">#0c0c0c</color>
+  <color name="borderColor" comment="rgb(61, 61, 61)">#3d3d3d</color>
+  <color name="textColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
+  <color name="textColorDisabled" comment="rgb(89, 89, 89)">#595959</color>
+  <color name="textColorDarker" comment="rgb(146, 146, 146)">#929292</color>
+  <color name="iconColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
+  <color name="backgroundHoverColor" comment="rgb(102, 102, 102)">#666666</color>
+  <color name="arrowsColor" comment="rgb(180, 180, 180)">#b4b4b4</color>
+  <color name="tooltipColor" comment="rgb(232, 226, 123)">#e8e27b</color>
+  <color name="shadow" comment="rgb(1, 1, 1)">#010101</color>
+  <color name="light" comment="rgb(254, 254, 254)">#fefefe</color>
+</resources>

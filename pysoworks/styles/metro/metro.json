@@ -1,0 +1,89 @@
+{
+    "name" : "metro",
+    "icon" : "metro_icon.svg",
+    "css_template" : "metro.css",
+    "default_theme" : "dark_orange",
+    "plugin" : "qtlabb_style_metro",
+
+    "resources" : {
+        "normal" : {
+            "#f78a09" : "accentColor",
+            "#e0e0e0" : "textColor",
+            "#fe0000" : "light",
+            "#010000" : "shadow",
+            "#595959" : "textColorDisabled",
+            "#515151" : "borderColor",
+            "#333333" : "backgroundColor",
+            "#292929" : "backgroundDarker",
+            "#c8c8c8" : "textColor"
+        },
+        "disabled" : {
+            "#f78a09" : "accentColor",
+            "#e0e0e0" : "textColor",
+            "#fe0000" : "light",
+            "#010000" : "shadow",
+            "#595959" : "textColorDisabled"
+        },
+        "hover" : {
+            "#f78a09" : "accentColor",
+            "#e0e0e0" : "textColor",
+            "#fe0000" : "light",
+            "#010000" : "shadow",
+            "#595959" : "textColorDisabled"
+        }
+    },
+
+    "icon_colors" : {
+        "#e0e0e0" : "iconColor",
+        "#ffffff" : "iconColor",
+        "#f78a09" : "accentColor"
+    },
+
+    "palette" : {
+        "base_color" : "backgroundColor",
+
+        "active" : {
+            "Highlight" : "accentColor",
+            "Mid" : "borderColor",
+            "Window" : "backgroundColor",
+            "Base" : "backgroundColor",
+            "Text" : "textColor",
+            "ButtonText" : "textColor",
+            "HighlightedText" : "backgroundColor", 
+            "Link" : "accentColor",
+            "LinkVisited": "accentColor"          
+        },
+
+        "inactive" : {
+            "Highlight" : "accentColor",
+            "Base" : "backgroundColor"
+        },
+
+        "disabled" : {
+            "Highlight" : "borderColor",
+            "Window" : "backgroundColor",
+            "Text" : "textColorDisabled",
+            "ButtonText" : "textColorDisabled"
+        }
+    },
+
+    "accent_colors" : [
+        {"#ab47bc" : "Purple"},
+        {"#ff009d" : "Intense"},
+        {"#c51162" : "Berry"},
+        {"#ff4081" : "Pink"},
+        {"#ff1744" : "Red"},
+        {"#f95c5c" : "Lipstick"},
+        {"#f78a09" : "Default"},
+        {"#ffb300" : "Flame"},
+        {"#ffd740" : "Amber"},
+        {"#cddc39" : "Neon Green"},
+        {"#85cf36" : "Apple"},
+        {"#93bd38" : "Lime"},
+        {"#61ff18" : "Poison"},
+        {"#1de9b6" : "Teal"},
+        {"#26a69a" : "Petrol"},
+        {"#4dd0e1" : "Cyan"},
+        {"#1b93f0" : "CETONI Light Blue"}
+    ]
+}

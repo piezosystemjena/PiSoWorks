@@ -1,0 +1,11 @@
+<svg x="0" y="0" width="512" height="512" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+    <title>document empty icon</title>
+    <desc>document empty icon from the IconExperience.com G-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <g>
+        <path d="M288,0l-216,0c-4.4,0 -8,3.6 -8,8l0,496c0,4.4 3.6,8 8,8l368,0c4.4,0 8,-3.6 8,-8l0,-344c0,-8.85 -3.6,-16.85 -9.4,-22.65l-127.95,-127.95c-5.8,-5.8 -13.8,-9.4 -22.65,-9.4z" fill="#dff3fd"/>
+        <path d="M66.1,509.35c1.45,1.65 3.55,2.65 5.9,2.65l368,0c4.4,0 8,-3.6 8,-8l0,-344c0,-8.85 -3.6,-16.85 -9.4,-22.65c-5.8,-5.75 -13.8,-9.35 -22.6,-9.35l-48,0z" fill="#b1e3fb"/>
+        <path d="M438.6,137.35c-5.8,-5.75 -13.8,-9.35 -22.6,-9.35l-88,0c-4.4,0 -8,-3.6 -8,-8l0,-88c0,-8.5 -3.4,-16.6 -9.4,-22.6z" fill="#28b5f5"/>
+    </g>
+</svg>
