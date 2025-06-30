@@ -173,31 +173,12 @@
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout">
                     <item>
-                     <widget class="QRadioButton" name="openLoopButton">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
+                     <widget class="QCheckBox" name="closedLoopCheckBox">
                       <property name="text">
                        <string>Open Loop</string>
                       </property>
-                      <property name="checked">
+                      <property name="toggleSwitch" stdset="0">
                        <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="closedLoopButton">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Closed Loop</string>
                       </property>
                      </widget>
                     </item>
@@ -378,7 +359,10 @@
                        </sizepolicy>
                       </property>
                       <property name="text">
-                       <string>LP Filter</string>
+                       <string>LP Filter OFF</string>
+                      </property>
+                      <property name="toggleSwitch" stdset="0">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>

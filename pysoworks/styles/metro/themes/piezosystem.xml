@@ -7,8 +7,8 @@
   <color name="backgroundDark" comment="rgb(10,35,52)">#05111b</color>
   <color name="borderColor" comment="rgb(27,70,93)">#133549</color>
   <color name="textColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
-  <color name="textColorDisabled" comment="rgb(89, 89, 89)">#595959</color>
-  <color name="textColorDarker" comment="rgb(146, 146, 146)">#929292</color>
+  <color name="textColorDisabled" comment="rgb(89, 89, 89)">#3e5867</color>
+  <color name="textColorDarker" comment="rgb(146, 146, 146)">#3e5867</color>
   <color name="iconColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
   <color name="backgroundHoverColor" comment="rgb(102, 102, 102)">#666666</color>
   <color name="arrowsColor" comment="rgb(180, 180, 180)">#b4b4b4</color>

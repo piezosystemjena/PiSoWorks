@@ -94,8 +94,7 @@ class NV200Widget(QWidget):
         Initializes the easy mode UI components, including buttons and spin boxes for PID control and target position.
         """
         ui = self.ui
-        ui.openLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
-        ui.closedLoopButton.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
+        ui.closedLoopCheckBox.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
     
         ui.moveButton.setIcon(get_icon("play_arrow", size=24, fill=True))
         ui.moveButton.setStyleSheet("QPushButton { padding: 0px }")
@@ -108,6 +107,10 @@ class NV200Widget(QWidget):
         ui.moveButton_2.setIconSize(ui.moveButton.iconSize())
         ui.moveButton_2.clicked.connect(self.start_move)
         ui.moveButton_2.setProperty("value_edit", ui.targetPosSpinBox_2)
+
+        ui.closedLoopCheckBox.toggled.connect(
+            (lambda checked: ui.closedLoopCheckBox.setText("Closed Loop" if checked else "Open Loop"))
+        )
 
 
 
@@ -134,6 +137,9 @@ class NV200Widget(QWidget):
         ui.applySetpointParamButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
         ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+        ui.setpointFilterCheckBox.toggled.connect(
+            (lambda checked: ui.setpointFilterCheckBox.setText("LP Filter ON" if checked else "LP Filter OFF"))
+        )
         self.init_modsrc_combobox()
         self.init_spimonitor_combobox()
 
@@ -330,7 +336,7 @@ class NV200Widget(QWidget):
         sends the mode to the device asynchronously, and updates the UI status bar with any errors encountered.
         """
         ui = self.ui
-        pid_mode = PidLoopMode.CLOSED_LOOP if ui.closedLoopButton.isChecked() else PidLoopMode.OPEN_LOOP
+        pid_mode = PidLoopMode.CLOSED_LOOP if ui.closedLoopCheckBox.isChecked() else PidLoopMode.OPEN_LOOP
         try:
             await self._device.set_pid_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
@@ -372,10 +378,7 @@ class NV200Widget(QWidget):
         dev = self._device
         ui = self.ui
         pid_mode = await dev.get_pid_mode()
-        if pid_mode == PidLoopMode.OPEN_LOOP:
-            ui.openLoopButton.setChecked(True)
-        else:
-            ui.closedLoopButton.setChecked(True)
+        ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
         

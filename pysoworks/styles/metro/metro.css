@@ -619,9 +619,14 @@ QToolButton
 {
 	background-color: none;
     border: 1px solid transparent;
-    padding: 0.2em;
-    font-size: 9px;
 }
+
+QToolBar > QToolButton
+{
+    font-size: 9px;
+    padding: 0.2em;
+}
+    
 
 QToolButton[style="pushButton"]
 {
@@ -1961,6 +1966,15 @@ QtLabb--CToggleSwitch::indicator::checked
    image: url(icon:/normal/toggle_switch_on.svg);
    border: 1px solid {{accentColor}};
    background: {{accentColor}};
+   image-position: center right;
+}
+
+QCheckBox[toggleSwitch="true"]::indicator::checked:disabled,
+QtLabb--CToggleSwitch::indicator::checked
+{
+   image: url(icon:/normal/toggle_switch_on.svg);
+   border: 1px solid {{borderColor}};
+   background: {{borderColor}};
    image-position: center right;
 }
 

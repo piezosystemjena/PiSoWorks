@@ -18,9 +18,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QComboBox,
     QDoubleSpinBox, QFormLayout, QFrame, QGridLayout,
     QGroupBox, QHBoxLayout, QLabel, QLayout,
-    QPushButton, QRadioButton, QScrollArea, QSizePolicy,
-    QSpacerItem, QSpinBox, QSplitter, QTabWidget,
-    QToolButton, QVBoxLayout, QWidget)
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QSpinBox, QSplitter, QTabWidget, QToolButton,
+    QVBoxLayout, QWidget)
 
 from pysoworks.consolewidget import Console
 from pysoworks.mplcanvas import MplWidget
@@ -123,23 +123,11 @@ class Ui_NV200Widget(object):
         self.easyModeGroupBox.setEnabled(False)
         self.verticalLayout = QVBoxLayout(self.easyModeGroupBox)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.openLoopButton = QRadioButton(self.easyModeGroupBox)
-        self.openLoopButton.setObjectName(u"openLoopButton")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.openLoopButton.sizePolicy().hasHeightForWidth())
-        self.openLoopButton.setSizePolicy(sizePolicy5)
-        self.openLoopButton.setChecked(True)
+        self.closedLoopCheckBox = QCheckBox(self.easyModeGroupBox)
+        self.closedLoopCheckBox.setObjectName(u"closedLoopCheckBox")
+        self.closedLoopCheckBox.setProperty(u"toggleSwitch", True)
 
-        self.verticalLayout.addWidget(self.openLoopButton)
-
-        self.closedLoopButton = QRadioButton(self.easyModeGroupBox)
-        self.closedLoopButton.setObjectName(u"closedLoopButton")
-        sizePolicy5.setHeightForWidth(self.closedLoopButton.sizePolicy().hasHeightForWidth())
-        self.closedLoopButton.setSizePolicy(sizePolicy5)
-
-        self.verticalLayout.addWidget(self.closedLoopButton)
+        self.verticalLayout.addWidget(self.closedLoopCheckBox)
 
         self.verticalSpacer_3 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
@@ -155,6 +143,9 @@ class Ui_NV200Widget(object):
         self.gridLayout.setContentsMargins(-1, 0, -1, -1)
         self.targetPosSpinBox_2 = QDoubleSpinBox(self.easyModeGroupBox)
         self.targetPosSpinBox_2.setObjectName(u"targetPosSpinBox_2")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.targetPosSpinBox_2.sizePolicy().hasHeightForWidth())
         self.targetPosSpinBox_2.setSizePolicy(sizePolicy5)
         self.targetPosSpinBox_2.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
@@ -232,6 +223,7 @@ class Ui_NV200Widget(object):
         self.setpointFilterCheckBox.setObjectName(u"setpointFilterCheckBox")
         sizePolicy5.setHeightForWidth(self.setpointFilterCheckBox.sizePolicy().hasHeightForWidth())
         self.setpointFilterCheckBox.setSizePolicy(sizePolicy5)
+        self.setpointFilterCheckBox.setProperty(u"toggleSwitch", True)
 
         self.verticalLayout_6.addWidget(self.setpointFilterCheckBox)
 
@@ -490,8 +482,7 @@ class Ui_NV200Widget(object):
         self.searchDevicesButton.setText(QCoreApplication.translate("NV200Widget", u"Search Devices ...", None))
         self.connectButton.setText(QCoreApplication.translate("NV200Widget", u"Connect", None))
         self.easyModeGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
-        self.openLoopButton.setText(QCoreApplication.translate("NV200Widget", u"Open Loop", None))
-        self.closedLoopButton.setText(QCoreApplication.translate("NV200Widget", u"Closed Loop", None))
+        self.closedLoopCheckBox.setText(QCoreApplication.translate("NV200Widget", u"Open Loop", None))
         self.targetPositionsLabel.setText(QCoreApplication.translate("NV200Widget", u"Target Positions:", None))
         self.moveButton_2.setText("")
         self.targetPosSpinBox.setPrefix("")
@@ -501,7 +492,7 @@ class Ui_NV200Widget(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.easyModeTab), QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
         self.setpointParamGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Setpoint Param.", None))
         self.slewRateLabel.setText(QCoreApplication.translate("NV200Widget", u"Slew Rate", None))
-        self.setpointFilterCheckBox.setText(QCoreApplication.translate("NV200Widget", u"LP Filter", None))
+        self.setpointFilterCheckBox.setText(QCoreApplication.translate("NV200Widget", u"LP Filter OFF", None))
         self.setpointFilterCutoffSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))
         self.applySetpointParamButton.setText(QCoreApplication.translate("NV200Widget", u"Apply", None))
         self.settingsGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Settings", None))
