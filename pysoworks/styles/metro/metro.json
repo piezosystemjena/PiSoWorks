@@ -63,7 +63,8 @@
             "Highlight" : "borderColor",
             "Window" : "backgroundColor",
             "Text" : "textColorDisabled",
-            "ButtonText" : "textColorDisabled"
+            "ButtonText" : "textColorDisabled",
+            "WindowText": "textColorDisabled"
         }
     },
 

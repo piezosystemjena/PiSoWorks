@@ -49,7 +49,6 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
         color (QPalette.ColorRole, optional): The color role to use for the icon. Defaults to QPalette.ColorRole.Highlight.
     """
     icon = MaterialIcon(icon_name, size=size, fill=fill)
-    #icon.set_color(QColor.fromString(os.environ.get("QTMATERIAL_PRIMARYCOLOR", "")))
     icon.set_color(QPalette().color(color))
     return icon
 

@@ -193,7 +193,7 @@ QProgressBar
     border: none;
     background: {{borderColor}};
     color: {{backgroundDark}};
-    padding: 2px;
+    /*padding: 2px;*/
 }
 
 
@@ -278,6 +278,17 @@ QTabBar::tab:bottom
     border-left: 1px solid {{borderColor}};
     border-bottom: 1px solid {{borderColor}};
 }
+
+QTabBar::tab:left
+{
+    padding: 6px;
+}
+
+QTabBar::tab:left:selected
+{
+    border-left: 2px solid {{accentColor}};
+}
+
 
 
 QTabBar::tab:top:last
@@ -742,7 +753,7 @@ QToolBar#sidebar > QToolButton
 QtLabb--CColoredStateButton
 {
     background-color: {{backgroundLighter}};
-    border: 1px solid {{borderColor}};
+    border: 1px solid {{accentColor}};
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 5px;
@@ -756,6 +767,11 @@ QtLabb--CColoredStateButton
 	margin-left: 2px;
 }
 
+.QPushButton:!enabled
+{
+    border: 1px solid {{accentColor|opacity(0.50)}};
+}
+
 
 .QPushButton:focus,
 QtLabb--CColoredStateButton:focus
@@ -766,13 +782,13 @@ QtLabb--CColoredStateButton:focus
 .QPushButton:hover,
 QtLabb--CColoredStateButton:hover
 {
-    background-color: {{borderColor}};
+    background-color: {{accentColor|opacity(0.50)}};
 }
 
 .QPushButton:hover:!focus,
 QtLabb--CColoredStateButton:hover:!focus
 {
-	border: 1px solid {{backgroundHoverColor}};
+	border: 1px solid {{accentColor}};
 }
 
 .QPushButton:pressed,

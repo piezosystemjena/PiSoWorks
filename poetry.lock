@@ -1169,6 +1169,21 @@ files = [
 dev = ["PySide6", "black", "python-semantic-release"]
 
 [[package]]
+name = "qtawesome"
+version = "1.4.0"
+description = "FontAwesome icons in PyQt and PySide applications"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "qtawesome-1.4.0-py3-none-any.whl", hash = "sha256:a4d689fa071c595aa6184171ce1f0f847677cb8d2db45382c43129f1d72a3d93"},
+    {file = "qtawesome-1.4.0.tar.gz", hash = "sha256:783e414d1317f3e978bf67ea8e8a1b1498bad9dbd305dec814027e3b50521be6"},
+]
+
+[package.dependencies]
+qtpy = "*"
+
+[[package]]
 name = "qtinter"
 version = "0.11.0"
 description = "Interop between asyncio and Qt for Python"
@@ -1185,6 +1200,24 @@ pyqt5 = ["PyQt5"]
 pyqt6 = ["PyQt6"]
 pyside2 = ["PySide2"]
 pyside6 = ["PySide6"]
+
+[[package]]
+name = "qtpy"
+version = "2.4.3"
+description = "Provides an abstraction layer on top of the various Qt bindings (PyQt5/6 and PySide2/6)."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "QtPy-2.4.3-py3-none-any.whl", hash = "sha256:72095afe13673e017946cc258b8d5da43314197b741ed2890e563cf384b51aa1"},
+    {file = "qtpy-2.4.3.tar.gz", hash = "sha256:db744f7832e6d3da90568ba6ccbca3ee2b3b4a890c3d6fbbc63142f6e4cdf5bb"},
+]
+
+[package.dependencies]
+packaging = "*"
+
+[package.extras]
+test = ["pytest (>=6,!=7.0.0,!=7.0.1)", "pytest-cov (>=3.0.0)", "pytest-qt"]
 
 [[package]]
 name = "requests"
@@ -1600,4 +1633,4 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12,<3.14"
-content-hash = "75c1851ff5536b26ad8476906e0feccc2a9ef54fc44045a3f120fb590278f20c"
+content-hash = "5caefeebe6701ffae221c6a6705c5cca7e5201b7da2b8a87896fe133eaf83926"

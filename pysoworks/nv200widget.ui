@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>997</width>
-    <height>957</height>
+    <width>1376</width>
+    <height>994</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,14 +84,14 @@
          <item>
           <widget class="QScrollArea" name="scrollArea">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
-             <width>240</width>
+             <width>0</width>
              <height>0</height>
             </size>
            </property>
@@ -101,6 +101,9 @@
            <property name="horizontalScrollBarPolicy">
             <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
            </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
@@ -109,9 +112,18 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>240</width>
-              <height>556</height>
+              <width>242</width>
+              <height>582</height>
              </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="spacing">
@@ -124,18 +136,27 @@
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>30</number>
              </property>
              <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
               <widget class="QTabWidget" name="tabWidget">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
                <property name="tabPosition">
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -153,6 +174,12 @@
                    <layout class="QVBoxLayout" name="verticalLayout">
                     <item>
                      <widget class="QRadioButton" name="openLoopButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="text">
                        <string>Open Loop</string>
                       </property>
@@ -163,6 +190,12 @@
                     </item>
                     <item>
                      <widget class="QRadioButton" name="closedLoopButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="text">
                        <string>Closed Loop</string>
                       </property>
@@ -316,6 +349,12 @@
                     </item>
                     <item>
                      <widget class="QDoubleSpinBox" name="slewRateSpinBox">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="decimals">
                        <number>3</number>
                       </property>
@@ -332,6 +371,12 @@
                     </item>
                     <item>
                      <widget class="QCheckBox" name="setpointFilterCheckBox">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="text">
                        <string>LP Filter</string>
                       </property>
@@ -339,6 +384,12 @@
                     </item>
                     <item>
                      <widget class="QSpinBox" name="setpointFilterCutoffSpinBox">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="suffix">
                        <string> Hz</string>
                       </property>
@@ -469,6 +520,12 @@
                  </item>
                  <item row="0" column="1">
                   <widget class="QDoubleSpinBox" name="freqSpinBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="suffix">
                     <string> Hz</string>
                    </property>
@@ -492,6 +549,12 @@
                  </item>
                  <item row="1" column="1">
                   <widget class="QDoubleSpinBox" name="phaseShiftSpinBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="suffix">
                     <string> °</string>
                    </property>
@@ -518,6 +581,12 @@
                  </item>
                  <item row="2" column="1">
                   <widget class="QDoubleSpinBox" name="highLevelSpinBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="decimals">
                     <number>3</number>
                    </property>
@@ -535,6 +604,12 @@
                  </item>
                  <item row="3" column="1">
                   <widget class="QDoubleSpinBox" name="lowLevelSpinBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="decimals">
                     <number>3</number>
                    </property>
@@ -545,6 +620,12 @@
                  </item>
                  <item row="4" column="0" colspan="2">
                   <widget class="QPushButton" name="uploadButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="text">
                     <string>Upload</string>
                    </property>
@@ -575,6 +656,12 @@
                  </item>
                  <item row="6" column="1">
                   <widget class="QSpinBox" name="cyclesSpinBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="maximum">
                     <number>65535</number>
                    </property>
@@ -587,6 +674,12 @@
                   <layout class="QHBoxLayout" name="horizontalLayout_6">
                    <item>
                     <widget class="QPushButton" name="startWaveformButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>Start</string>
                      </property>
@@ -594,6 +687,12 @@
                    </item>
                    <item>
                     <widget class="QPushButton" name="stopWaveformButton">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>Stop</string>
                      </property>
@@ -618,7 +717,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>PushButton</string>
+            <string>Console</string>
            </property>
            <property name="autoRaise">
             <bool>true</bool>
@@ -716,7 +815,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>5</height>
+       <height>3</height>
       </size>
      </property>
      <property name="styleSheet">

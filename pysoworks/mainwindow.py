@@ -6,6 +6,7 @@ import json
 import pkgutil
 import os
 
+
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import (
     Qt,
@@ -22,6 +23,7 @@ import qt_material
 from pathlib import Path
 from qt_material_icons import MaterialIcon
 import PySide6QtAds as QtAds
+import qtass
 import qdarktheme
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
@@ -253,6 +255,22 @@ def set_qt_material_style(app: QApplication):
     qt_material.apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
 
 
+def set_qtass_style(app: QApplication):
+    """
+    Applies the QtAss stylesheet with the 'dark_teal' theme to the given QApplication instance.
+    """
+    QApplication.setStyle('Fusion')
+    stylesheet = qtass.QtAdvancedStylesheet()
+    app_path = Path(__file__).resolve().parent
+    stylesheet.output_dir = str(app_path / 'assets/qtass')
+    stylesheet.set_styles_dir_path(app_path / 'styles')
+    stylesheet.set_current_style("metro")
+    stylesheet.set_current_theme("piezosystem")
+    stylesheet.update_stylesheet()
+    app.setStyleSheet(stylesheet.stylesheet)
+
+
+
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller"""
     base_path = ''
@@ -268,14 +286,21 @@ def main():
     Initializes and runs the main application window.
     """
     setup_logging()
+
+    QApplication.setDesktopSettingsAware(True)
+
+    QApplication.setEffectEnabled(Qt.UI_AnimateMenu, False)
+    QApplication.setEffectEnabled(Qt.UI_AnimateCombo, False)
+
     app = QApplication(sys.argv)
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
 
-    set_dark_fusion_style(app)
+    #set_dark_fusion_style(app)
     #set_qt_material_style(app)
     #set_qdarktheme_style(app)
+    set_qtass_style(app)
 
     widget = MainWindow()
     widget.show()

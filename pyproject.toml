@@ -50,6 +50,7 @@ nv200 = "^1.2.0"
 pyside6-qtads = "^4.4.0"
 pyqtdarktheme2 = "^2.1.2"
 rich = "^14.0.0"
+qtawesome = "^1.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
