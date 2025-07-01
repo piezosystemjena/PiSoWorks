@@ -82,6 +82,7 @@ class NV200Widget(QWidget):
         ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
+        ui.tabWidget.currentChanged.connect(self.on_tab_changed)
 
         self.init_easy_mode_ui()
         self.init_settings_ui()
@@ -652,3 +653,8 @@ class NV200Widget(QWidget):
         self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)
 
 
+    def on_tab_changed(self, index):
+        """
+        Handles the event when the current tab in the tab widget is changed.
+        """
+        self.ui.stackedWidget.setCurrentIndex(1 if index == 1 else 0)

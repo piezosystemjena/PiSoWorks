@@ -15,7 +15,7 @@ from PySide6.QtCore import (
     qDebug,
     QProcessEnvironment
 )
-from PySide6.QtGui import QColor, QIcon, QPalette
+from PySide6.QtGui import QColor, QIcon, QPalette, QGuiApplication
 from PySide6.QtWidgets import QDoubleSpinBox
 
 import qtinter
@@ -297,7 +297,8 @@ def main():
     Initializes and runs the main application window.
     """
     setup_logging()
-
+    QGuiApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QGuiApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     QApplication.setDesktopSettingsAware(True)
 
     QApplication.setEffectEnabled(Qt.UI_AnimateMenu, False)

@@ -3531,3 +3531,33 @@ QToolButton#collapsibleSectionToggleButton:checked:!pressed
 }
 
 
+
+/*============================================================================
+ * Piezo App specific styles
+ *===========================================================================*/
+ #controllerStrcutureFrame QAbstractSpinBox
+ {
+    /*background: {{accentColor|opacity(0.7)}};*/
+    border: 1px solid {{accentColor}};
+ }
+
+#controllerStrcutureFrame QAbstractSpinBox:focus
+ {
+    /*background: {{accentColor|opacity(0.5)}};*/
+    border: 2px solid {{accentColor}};
+ }
+
+
+
+#controllerStrcutureFrame QCheckBox[toggleSwitch="true"]::indicator:!checked,
+#controllerStrcutureFrame QtLabb--CToggleSwitch::indicator:!checked
+{
+   image: url(icon:/normal/toggle_switch_off.svg);
+   image-position: center left;
+   border: 1px solid {{accentColor}};
+   border-radius: 8px;
+   width: 30px;
+   height: 12px;
+   padding: 2px;
+}
+

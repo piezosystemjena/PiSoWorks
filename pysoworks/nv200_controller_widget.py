@@ -1,14 +1,24 @@
 from pathlib import Path
 from PySide6.QtWidgets import QFrame
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtGui import QPainter
-from PySide6.QtCore import QSize, QRect, Signal, Qt
+from PySide6.QtGui import QPainter, QPixmap
+from PySide6.QtCore import QSize, QRect, Signal, Qt, QRectF
 
 from pysoworks.ui_nv200_controller_widget import Ui_nv200ControllerWidget
 
 
-
 class Nv200ControllerWidget(QFrame):
+    """
+    This widget renders an SVG diagram of the NV200 controller with support for high-DPI displays and global opacity.
+    It uses an offscreen high-DPI pixmap to avoid blurry rendering when opacity is applied, ensuring sharp visuals
+    on all display types.
+
+    Attributes:
+        status_message (Signal): Signal emitted with a status message (str) and a timeout (int, ms).
+
+    Args:
+        parent (QWidget, optional): The parent widget. Defaults to None.
+    """
 
     status_message = Signal(str, int)  # message text, timeout in ms   
 
@@ -19,24 +29,57 @@ class Nv200ControllerWidget(QFrame):
         ui.setupUi(self)
         base_dir = Path(__file__).parent
         svg_path = base_dir / "assets" / "images" / "nv200_controller_structure.svg"
-        self.ui.controllerStrcutureFrame.setStyleSheet(""
-            "#controllerStrcutureFrame {"
-            "background-image: url(:/assets/images/nv200_controller_structure.svg) no-repeat left top;"
-            "}"
-        )
-        #self.svg_renderer = QSvgRenderer(str(svg_path))  # Replace with your SVG file path
-        #self.svg_renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
+        # Clear the stylesheet - it is only used in designer for absolute positioning of
+        # widgets in the controller diagramm
+        self.ui.controllerStrcutureFrame.setStyleSheet("")
+        self.svg_renderer = QSvgRenderer(str(svg_path))  # Replace with your SVG file path
+        self.svg_renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
 
-        # Optional: Set a fixed widget size or minimum size
-        #self.setMinimumSize(self.svg_renderer.defaultSize)  # Give some padding around the SVG if
 
-    # def paintEvent(self, event):
-    #     painter = QPainter(self)
 
-    #     fixed_size = self.svg_renderer.defaultSize()
-    #     target_rect = QRect(0, 0, fixed_size.width(), fixed_size.height())
+    def paintEvent(self, event):
+        """_
+        Paints a high DPI SVG image onto the widget with global opacity.
 
-    #     self.svg_renderer.render(painter, target_rect)
+        Normally the following code would be used to render the SVG directly onto the widget:
+        code-block:: python
 
-    #     super().paintEvent(event)
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+            size = self.svg_renderer.defaultSize()
+            painter.setOpacity(0.5)  # 🔸 Apply global opacity
+            self.svg_renderer.render(painter, QRectF(0, 0, size.width(), size.height()))
 
+        But this approach can lead to blurry rendering on high DPI displays.
+        When you call painter.setOpacity(0.5), Qt internally switches to software-based 
+        composition (a transparent paint layer), which often causes the rendered SVG to 
+        be rasterized at the logical (lower) resolution, losing the High DPI sharpness.
+
+        To solve this, we render to a high-DPI offscreen pixmap manually, then paint it with opacity
+        """
+        dpr = self.devicePixelRatioF()
+        size = self.svg_renderer.defaultSize()
+        size_scaled = size * dpr
+
+        # Create a high DPI pixmap to render the SVG offscreen
+        pixmap = QPixmap(size_scaled)
+        pixmap.setDevicePixelRatio(dpr)
+        pixmap.fill(Qt.transparent)
+
+        # Render SVG into pixmap at native resolution
+        pixmap_painter = QPainter(pixmap)
+        self.svg_renderer.render(pixmap_painter, QRectF(0, 0, size.width(), size.height()))
+        pixmap_painter.end()
+
+        # Paint the pixmap onto the widget with opacity
+        painter = QPainter(self)
+        painter.setOpacity(0.7)
+        painter.drawPixmap(0, 0, pixmap)
+
+
+    def sizeHint(self):
+        return QSize(10, 10)
+
+    def minimumSizeHint(self):
+        return QSize(10, 10)

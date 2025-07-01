@@ -92,7 +92,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>0</height>
+             <height>10</height>
             </size>
            </property>
            <property name="frameShape">
@@ -112,7 +112,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>242</width>
+              <width>247</width>
               <height>582</height>
              </rect>
             </property>
@@ -711,30 +711,19 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <property name="spacing">
+        <widget class="QStackedWidget" name="stackedWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="currentIndex">
           <number>0</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="MplWidget" name="mplCanvasWidget" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <widget class="MplWidget" name="mplCanvasWidget"/>
+         <widget class="Nv200ControllerWidget" name="controllerStructureWidget"/>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -831,6 +820,12 @@
    <class>Console</class>
    <extends>QTextEdit</extends>
    <header location="global">pysoworks.consolewidget</header>
+  </customwidget>
+  <customwidget>
+   <class>Nv200ControllerWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">pysoworks.nv200_controller_widget</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
