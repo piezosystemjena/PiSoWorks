@@ -31,6 +31,7 @@ from rich.logging import RichHandler
 from pysoworks import assets
 from pysoworks.nv200widget import NV200Widget
 from pysoworks.spiboxwidget import SpiBoxWidget
+from pysoworks.nv200_controller_widget import Nv200ControllerWidget
 
 def qt_message_handler(mode, context, message):
     if mode == QtMsgType.QtDebugMsg:
@@ -72,8 +73,9 @@ class MainWindow(QMainWindow):
         # the dock manager registers itself as the central widget.
         self.dock_manager = QtAds.CDockManager(self)
         self.dock_manager.setStyleSheet("")
-        ui.actionAdd_NV200_View.triggered.connect(self.add_nv200_view)
-        ui.actionAdd_SpiBox_View.triggered.connect(self.add_spibox_view)
+        ui.actionNv200View.triggered.connect(self.add_nv200_view)
+        ui.actionSpiBoxView.triggered.connect(self.add_spibox_view)
+        ui.actionTestView.triggered.connect(self.add_test_view)
         self.add_nv200_view()
 
     def add_view(self, widget_class, title):
@@ -100,6 +102,15 @@ class MainWindow(QMainWindow):
         Adds a new SpiBox view to the main window.
         """
         self.add_view(SpiBoxWidget, "SpiBox")
+
+    def add_test_view(self):
+        """
+        Adds a test view to the main window.
+        This is a placeholder for future widget implementations.
+        """
+        # Example of adding a test widget
+        # self.add_view(TestWidget, "Test View")
+        self.add_view(Nv200ControllerWidget, "Test View")
 
     def show_status_message(self, message: str, timeout: int | None = 4000):
         """
