@@ -3535,22 +3535,32 @@ QToolButton#collapsibleSectionToggleButton:checked:!pressed
 /*============================================================================
  * Piezo App specific styles
  *===========================================================================*/
- #controllerStrcutureFrame QAbstractSpinBox
- {
-    /*background: {{accentColor|opacity(0.7)}};*/
+Nv200ControllerWidget QAbstractSpinBox
+{
     border: 1px solid {{accentColor}};
- }
+}
 
-#controllerStrcutureFrame QAbstractSpinBox:focus
- {
-    /*background: {{accentColor|opacity(0.5)}};*/
+Nv200ControllerWidget QAbstractSpinBox:focus
+{
     border: 2px solid {{accentColor}};
- }
+}
+
+Nv200ControllerWidget QAbstractSpinBox[readOnly="true"]
+{
+    border: 2px solid {{light|opacity(0.7)}};
+    color: {{light|opacity(0.7)}};
+}
+
+Nv200ControllerWidget QAbstractSpinBox[readOnly="true"]:focus
+{
+    border: 2px solid {{light|opacity(0.7)}};
+    color: {{light|opacity(0.7)}};
+}
 
 
 
-#controllerStrcutureFrame QCheckBox[toggleSwitch="true"]::indicator:!checked,
-#controllerStrcutureFrame QtLabb--CToggleSwitch::indicator:!checked
+Nv200ControllerWidget QCheckBox[toggleSwitch="true"]::indicator:!checked,
+Nv200ControllerWidget QtLabb--CToggleSwitch::indicator:!checked
 {
    image: url(icon:/normal/toggle_switch_off.svg);
    image-position: center left;

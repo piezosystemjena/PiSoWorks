@@ -25,13 +25,14 @@ class Nv200ControllerWidget(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_nv200ControllerWidget()
+        self.setObjectName("uwer_controller_widget")
         ui = self.ui
         ui.setupUi(self)
         base_dir = Path(__file__).parent
         svg_path = base_dir / "assets" / "images" / "nv200_controller_structure.svg"
         # Clear the stylesheet - it is only used in designer for absolute positioning of
         # widgets in the controller diagramm
-        self.ui.controllerStrcutureFrame.setStyleSheet("")
+        self.setStyleSheet("")
         self.svg_renderer = QSvgRenderer(str(svg_path))  # Replace with your SVG file path
         self.svg_renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
 

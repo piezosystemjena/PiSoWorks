@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>738</height>
+    <width>1376</width>
+    <height>850</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,446 +16,400 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="0" rowspan="2" colspan="2">
-    <widget class="QFrame" name="controllerStrcutureFrame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>934</width>
-       <height>479</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#controllerStrcutureFrame{
-background-image: url(:/assets/images/nv200_controller_structure.png) no-repeat left top;}
+  <property name="styleSheet">
+   <string notr="true">#nv200ControllerWidget{
+background-image: url(:/assets/images/nv200_controller_structure.png);
+background-repeat: no-repeat;}
 </string>
-     </property>
-     <widget class="QDoubleSpinBox" name="pcfsEdit">
-      <property name="geometry">
-       <rect>
-        <x>509</x>
-        <y>87</y>
-        <width>135</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>pcf_s   </string>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="pcfaEdit">
-      <property name="geometry">
-       <rect>
-        <x>509</x>
-        <y>25</y>
-        <width>135</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>pcf_a   </string>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
-      <property name="geometry">
-       <rect>
-        <x>239</x>
-        <y>175</y>
-        <width>75</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>sr   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="pcfvEdit">
-      <property name="geometry">
-       <rect>
-        <x>509</x>
-        <y>51</y>
-        <width>135</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>pcv_v   </string>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox">
-      <property name="geometry">
-       <rect>
-        <x>87</x>
-        <y>56</y>
-        <width>104</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>setst   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
-      <property name="geometry">
-       <rect>
-        <x>87</x>
-        <y>87</y>
-        <width>104</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>set   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="pEdit">
-      <property name="geometry">
-       <rect>
-        <x>522</x>
-        <y>146</y>
-        <width>120</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>P   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="iEdit">
-      <property name="geometry">
-       <rect>
-        <x>522</x>
-        <y>176</y>
-        <width>120</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>I   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="dEdit">
-      <property name="geometry">
-       <rect>
-        <x>522</x>
-        <y>206</y>
-        <width>120</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>D  </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinBox">
-      <property name="geometry">
-       <rect>
-        <x>347</x>
-        <y>191</y>
-        <width>94</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>setlpf   </string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox">
-      <property name="geometry">
-       <rect>
-        <x>347</x>
-        <y>162</y>
-        <width>96</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>setlpon</string>
-      </property>
-      <property name="toggleSwitch" stdset="0">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_2">
-      <property name="geometry">
-       <rect>
-        <x>807</x>
-        <y>161</y>
-        <width>96</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>notchon</string>
-      </property>
-      <property name="toggleSwitch" stdset="0">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinBox_2">
-      <property name="geometry">
-       <rect>
-        <x>807</x>
-        <y>188</y>
-        <width>118</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>notchf   </string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinBox_3">
-      <property name="geometry">
-       <rect>
-        <x>807</x>
-        <y>218</y>
-        <width>118</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>notchb   </string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_3">
-      <property name="geometry">
-       <rect>
-        <x>237</x>
-        <y>317</y>
-        <width>105</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>poslpon</string>
-      </property>
-      <property name="toggleSwitch" stdset="0">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="pEdit_2">
-      <property name="geometry">
-       <rect>
-        <x>237</x>
-        <y>344</y>
-        <width>110</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-      </property>
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="prefix">
-       <string>poslpf   </string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>10</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>10</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-  </layout>
+  </property>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+   <property name="geometry">
+    <rect>
+     <x>239</x>
+     <y>174</y>
+     <width>75</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>sr   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>190</y>
+     <width>94</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>setlpf   </string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_2">
+   <property name="geometry">
+    <rect>
+     <x>807</x>
+     <y>160</y>
+     <width>96</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>notchon</string>
+   </property>
+   <property name="toggleSwitch" stdset="0">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_3">
+   <property name="geometry">
+    <rect>
+     <x>807</x>
+     <y>217</y>
+     <width>118</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>notchb   </string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox_2">
+   <property name="geometry">
+    <rect>
+     <x>807</x>
+     <y>187</y>
+     <width>118</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>notchf   </string>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="iEdit">
+   <property name="geometry">
+    <rect>
+     <x>522</x>
+     <y>175</y>
+     <width>120</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>I   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="pcfsEdit">
+   <property name="geometry">
+    <rect>
+     <x>509</x>
+     <y>86</y>
+     <width>135</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>pcf_s   </string>
+   </property>
+   <property name="decimals">
+    <number>6</number>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>161</y>
+     <width>96</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>setlpon</string>
+   </property>
+   <property name="toggleSwitch" stdset="0">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox">
+   <property name="geometry">
+    <rect>
+     <x>87</x>
+     <y>55</y>
+     <width>104</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="specialValueText">
+    <string notr="true">setst</string>
+   </property>
+   <property name="prefix">
+    <string>setst   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="pcfvEdit">
+   <property name="geometry">
+    <rect>
+     <x>509</x>
+     <y>50</y>
+     <width>135</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>pcv_v   </string>
+   </property>
+   <property name="decimals">
+    <number>6</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="dEdit">
+   <property name="geometry">
+    <rect>
+     <x>522</x>
+     <y>205</y>
+     <width>120</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>D  </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="pEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>237</x>
+     <y>343</y>
+     <width>110</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>poslpf   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="pcfaEdit">
+   <property name="geometry">
+    <rect>
+     <x>509</x>
+     <y>24</y>
+     <width>135</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>pcf_a   </string>
+   </property>
+   <property name="decimals">
+    <number>6</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="pEdit">
+   <property name="geometry">
+    <rect>
+     <x>522</x>
+     <y>145</y>
+     <width>120</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="prefix">
+    <string>P   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+   <property name="geometry">
+    <rect>
+     <x>87</x>
+     <y>86</y>
+     <width>104</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="buttonSymbols">
+    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+   </property>
+   <property name="specialValueText">
+    <string>set</string>
+   </property>
+   <property name="prefix">
+    <string>set   </string>
+   </property>
+   <property name="decimals">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_3">
+   <property name="geometry">
+    <rect>
+     <x>237</x>
+     <y>316</y>
+     <width>105</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>poslpon</string>
+   </property>
+   <property name="toggleSwitch" stdset="0">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="pysoworks.qrc"/>
