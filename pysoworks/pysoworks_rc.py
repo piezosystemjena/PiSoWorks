@@ -6,7 +6,7 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x10A\xcc\
+\x00\x10Aw\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
@@ -66242,361 +66242,356 @@ s=\x22all\x22/>\x0a  </g>\
 inter-events=\x22al\
 l\x22 stroke-width=\
 \x222\x22/>\x0a  <g strok\
-e-width=\x223\x22>\x0a   \
-<g stroke-miterl\
-imit=\x2210\x22>\x0a    <\
-path d=\x22m650 187\
-.5t12.9 0\x22 fill=\
-\x22none\x22 pointer-e\
-vents=\x22stroke\x22/>\
-\x0a    <path d=\x22m6\
-66.65 187.5-5 2.\
-5 1.25-2.5-1.25-\
-2.5z\x22 fill=\x22#257\
-33c\x22 pointer-eve\
-nts=\x22all\x22/>\x0a    \
-<path d=\x22m650 57\
-h15q10 0 10 10v1\
-08.4\x22 fill=\x22none\
-\x22 pointer-events\
-=\x22stroke\x22/>\x0a    \
-<path d=\x22m675 17\
-9.15-1.67-5 1.67\
- 1.25 1.67-1.25z\
-\x22 fill=\x22#25733c\x22\
- pointer-events=\
-\x22all\x22/>\x0a   </g>\x0a\
-   <path d=\x22m679\
- 187.5h10q10 0 1\
-0.74-0.14l0.73-0\
-.14\x22 fill=\x22none\x22\
- pointer-events=\
-\x22stroke\x22 stroke-\
-miterlimit=\x2210\x22/\
->\x0a   <circle cx=\
-\x22703.42\x22 cy=\x22186\
-.66\x22 r=\x223\x22 fill=\
-\x22#fff\x22 pointer-e\
-vents=\x22all\x22/>\x0a  \
- <circle cx=\x22675\
-\x22 cy=\x22187.5\x22 r=\x22\
-5\x22 fill=\x22none\x22 p\
-ointer-events=\x22a\
-ll\x22/>\x0a   <path d\
-=\x22m764 199.5h25.\
-8\x22 fill=\x22none\x22 p\
-ointer-events=\x22s\
-troke\x22 stroke-mi\
-terlimit=\x2210\x22/>\x0a\
-   <path d=\x22m793\
-.55 199.5-5 2.5 \
-1.25-2.5-1.25-2.\
-5z\x22 fill=\x22#25733\
-c\x22 pointer-event\
-s=\x22all\x22 stroke-m\
-iterlimit=\x2210\x22/>\
-\x0a   <path d=\x22m76\
-4 199.5h-12.6m-2\
-7.6 12h-19.8m19.\
-8-24h-19.8m43.2 \
-12.96-23.4 11.04\
-\x22 fill=\x22none\x22 po\
-inter-events=\x22al\
-l\x22 stroke-miterl\
-imit=\x2210\x22/>\x0a   <\
-circle transform\
-=\x22scale(-1)\x22 cx=\
-\x22-749.6\x22 cy=\x22-19\
-9.5\x22 r=\x222.4\x22 fil\
-l=\x22#fff\x22 pointer\
--events=\x22all\x22/>\x0a\
-   <path d=\x22m494\
- 187.5h10q10 0 0\
- 0h-5q-5 0 1.86 \
-0h6.85\x22 fill=\x22no\
-ne\x22 pointer-even\
-ts=\x22stroke\x22 stro\
-ke-miterlimit=\x221\
-0\x22/>\x0a   <path d=\
-\x22m511.46 187.5-5\
- 2.5 1.25-2.5-1.\
-25-2.5z\x22 fill=\x22#\
-25733c\x22 pointer-\
-events=\x22all\x22 str\
-oke-miterlimit=\x22\
-10\x22/>\x0a   <circle\
- cx=\x22489\x22 cy=\x2218\
-7.5\x22 r=\x225\x22 fill=\
-\x22none\x22 pointer-e\
-vents=\x22all\x22/>\x0a  \
- <path d=\x22m448.4\
- 186.69h9.3q9.3 \
-0.01 9.3 10.01v5\
-1.3q0 10 10 10h1\
-83q10 0 10-10v-2\
-6.5q0-10 10-10h2\
-1\x22 fill=\x22none\x22 p\
-ointer-events=\x22s\
-troke\x22 stroke-mi\
-terlimit=\x2210\x22/>\x0a\
-   <circle cx=\x227\
-04\x22 cy=\x22211.5\x22 r\
-=\x223\x22 fill=\x22#fff\x22\
- pointer-events=\
-\x22all\x22/>\x0a   <path\
- d=\x22m721 433.5h-\
-10q-10 0-4 0h3q3\
- 0-3.45 0h-6.45\x22\
- fill=\x22none\x22 poi\
-nter-events=\x22str\
-oke\x22 stroke-mite\
-rlimit=\x2210\x22/>\x0a  \
- <path d=\x22m696.3\
-5 433.5 5-2.5-1.\
-25 2.5 1.25 2.5z\
-\x22 fill=\x22#25733c\x22\
- pointer-events=\
-\x22all\x22 stroke-mit\
-erlimit=\x2210\x22/>\x0a \
- </g>\x0a  <rect x=\
-\x22721\x22 y=\x22413.46\x22\
- width=\x2240\x22 heig\
-ht=\x2240\x22 fill=\x22no\
-ne\x22 pointer-even\
-ts=\x22all\x22 stroke-\
-width=\x222\x22/>\x0a  <p\
-ath d=\x22m633 433.\
-5h-66q-10 0-10-1\
-0v-28.5q0-10-10-\
-10h-33.2q-10 0-9\
-.99 5.82l0.01 5.\
-81\x22 fill=\x22none\x22 \
-pointer-events=\x22\
-stroke\x22 stroke-m\
-iterlimit=\x2210\x22 s\
-troke-width=\x223\x22/\
->\x0a  <path d=\x22m50\
-3.82 400.38-2.5-\
-4.99 2.5 1.24 2.\
-5-1.25z\x22 fill=\x22#\
-25733c\x22 pointer-\
-events=\x22all\x22 str\
-oke-miterlimit=\x22\
-10\x22 stroke-width\
-=\x223\x22/>\x0a  <g fill\
-=\x22none\x22>\x0a   <rec\
-t x=\x22633\x22 y=\x22413\
-.46\x22 width=\x2260\x22 \
-height=\x2240\x22 poin\
-ter-events=\x22all\x22\
- stroke-width=\x222\
-\x22/>\x0a   <rect x=\x22\
-414\x22 y=\x22413.46\x22 \
-width=\x2270\x22 heigh\
-t=\x2250\x22 pointer-e\
-vents=\x22all\x22/>\x0a  \
- <path d=\x22m857 2\
-49.5v175.6q0 10-\
-10 10l-79.98 0.0\
-4\x22 pointer-event\
-s=\x22stroke\x22 strok\
 e-miterlimit=\x2210\
 \x22 stroke-width=\x22\
-3\x22/>\x0a  </g>\x0a  <p\
-ath d=\x22m763.27 4\
-35.14 5-2.5-1.25\
- 2.5 1.26 2.5z\x22 \
+3\x22>\x0a   <path d=\x22\
+m650 187.5t12.9 \
+0\x22 fill=\x22none\x22 p\
+ointer-events=\x22s\
+troke\x22/>\x0a   <pat\
+h d=\x22m666.65 187\
+.5-5 2.5 1.25-2.\
+5-1.25-2.5z\x22 fil\
+l=\x22#25733c\x22 poin\
+ter-events=\x22all\x22\
+/>\x0a   <path d=\x22m\
+650 57h15q10 0 1\
+0 10v108.4\x22 fill\
+=\x22none\x22 pointer-\
+events=\x22stroke\x22/\
+>\x0a   <path d=\x22m6\
+75 179.15-1.67-5\
+ 1.67 1.25 1.67-\
+1.25z\x22 fill=\x22#25\
+733c\x22 pointer-ev\
+ents=\x22all\x22/>\x0a  <\
+/g>\x0a </g>\x0a <g fi\
+ll=\x22none\x22 stroke\
+=\x22#fff\x22 stroke-w\
+idth=\x223\x22>\x0a  <pat\
+h d=\x22m679 187.5h\
+10q10 0 10.74-0.\
+14l0.73-0.14\x22 po\
+inter-events=\x22st\
+roke\x22 stroke-mit\
+erlimit=\x2210\x22/>\x0a \
+ <circle cx=\x22675\
+\x22 cy=\x22187.5\x22 r=\x22\
+5\x22 pointer-event\
+s=\x22all\x22/>\x0a  <pat\
+h d=\x22m764 199.5h\
+25.8\x22 pointer-ev\
+ents=\x22stroke\x22 st\
+roke-miterlimit=\
+\x2210\x22/>\x0a </g>\x0a <g\
+ stroke=\x22#fff\x22 s\
+troke-width=\x223\x22>\
+\x0a  <g stroke-mit\
+erlimit=\x2210\x22>\x0a  \
+ <path d=\x22m793.5\
+5 199.5-5 2.5 1.\
+25-2.5-1.25-2.5z\
+\x22 fill=\x22#25733c\x22\
+/>\x0a   <path d=\x22m\
+494 187.5h10q10 \
+0 0 0h-5q-5 0 1.\
+86 0h6.85\x22 fill=\
+\x22none\x22 pointer-e\
+vents=\x22stroke\x22/>\
+\x0a   <path d=\x22m51\
+1.46 187.5-5 2.5\
+ 1.25-2.5-1.25-2\
+.5z\x22 fill=\x22#2573\
+3c\x22 pointer-even\
+ts=\x22all\x22/>\x0a  </g\
+>\x0a  <circle cx=\x22\
+489\x22 cy=\x22187.5\x22 \
+r=\x225\x22 fill=\x22none\
+\x22 pointer-events\
+=\x22all\x22/>\x0a  <path\
+ d=\x22m448.4 186.6\
+9h9.3q9.3 0.01 9\
+.3 10.01v51.3q0 \
+10 10 10h183q10 \
+0 10-10v-26.5q0-\
+10 10-10h21\x22 fil\
+l=\x22none\x22 pointer\
+-events=\x22stroke\x22\
+ stroke-miterlim\
+it=\x2210\x22/>\x0a </g>\x0a\
+ <g fill-opacity\
+=\x220\x22 stroke-opac\
+ity=\x220\x22>\x0a  <circ\
+le cx=\x22703.42\x22 c\
+y=\x22186.66\x22 r=\x223\x22\
+ fill=\x22#fff\x22 poi\
+nter-events=\x22all\
+\x22/>\x0a  <path d=\x22m\
+764 199.5h-12.6m\
+-27.6 12h-19.8m1\
+9.8-24h-19.8m43.\
+2 12.96-23.4 11.\
+04\x22 fill=\x22none\x22 \
+stroke-miterlimi\
+t=\x2210\x22/>\x0a  <circ\
+le transform=\x22sc\
+ale(-1)\x22 cx=\x22-74\
+9.6\x22 cy=\x22-199.5\x22\
+ r=\x222.4\x22 fill=\x22#\
+fff\x22/>\x0a  <circle\
+ cx=\x22704\x22 cy=\x2221\
+1.5\x22 r=\x223\x22 fill=\
+\x22#fff\x22 pointer-e\
+vents=\x22all\x22/>\x0a <\
+/g>\x0a <g stroke=\x22\
+#fff\x22>\x0a  <path d\
+=\x22m721 433.5h-10\
+q-10 0-4 0h3q3 0\
+-3.45 0h-6.45\x22 f\
+ill=\x22none\x22 point\
+er-events=\x22strok\
+e\x22 stroke-miterl\
+imit=\x2210\x22 stroke\
+-width=\x223\x22/>\x0a  <\
+path d=\x22m696.35 \
+433.5 5-2.5-1.25\
+ 2.5 1.25 2.5z\x22 \
 fill=\x22#25733c\x22 p\
 ointer-events=\x22a\
 ll\x22 stroke-miter\
 limit=\x2210\x22 strok\
 e-width=\x223\x22/>\x0a  \
-<rect x=\x22798\x22 y=\
-\x22137\x22 width=\x22133\
-\x22 height=\x22112.5\x22\
- fill=\x22none\x22 poi\
-nter-events=\x22all\
-\x22 stroke-width=\x22\
-2\x22/>\x0a  <path d=\x22\
-m240 439.26-43 0\
-.03q-10 0.01-10-\
-9.99v-84.5q0-10 \
-10-10.01l26.9-0.\
-03\x22 fill=\x22none\x22 \
-pointer-events=\x22\
-stroke\x22 stroke-m\
-iterlimit=\x2210\x22 s\
-troke-width=\x223\x22/\
->\x0a  <path d=\x22m22\
-7.65 334.75-5 2.\
-51 1.25-2.5-1.26\
--2.5z\x22 fill=\x22#25\
-733c\x22 pointer-ev\
-ents=\x22all\x22 strok\
-e-miterlimit=\x2210\
-\x22 stroke-width=\x22\
-3\x22/>\x0a  <rect x=\x22\
-231\x22 y=\x22294.5\x22 w\
-idth=\x22120\x22 heigh\
-t=\x2280.5\x22 fill=\x22n\
-one\x22 pointer-eve\
-nts=\x22all\x22 stroke\
--width=\x222\x22/>\x0a  <\
-g stroke-miterli\
-mit=\x2210\x22 stroke-\
-width=\x223\x22>\x0a   <p\
-ath d=\x22m351 334.\
-8h128q10 0 10-10\
-v-125.2\x22 fill=\x22n\
-one\x22 pointer-eve\
-nts=\x22stroke\x22/>\x0a \
-  <path d=\x22m489 \
-195.85 2.5 5-2.5\
--1.25-2.5 1.25z\x22\
- fill=\x22#25733c\x22 \
-pointer-events=\x22\
-all\x22/>\x0a   <path \
-d=\x22m414 439.3h-1\
-0q-10 0-13.45-0.\
-01l-3.45-0.01\x22 f\
-ill=\x22none\x22 point\
-er-events=\x22strok\
-e\x22/>\x0a   <path d=\
-\x22m383.35 439.27 \
-5.01-2.49-1.26 2\
-.5 1.25 2.5z\x22 fi\
-ll=\x22#25733c\x22 poi\
-nter-events=\x22all\
-\x22/>\x0a  </g>\x0a  <g \
-fill=\x22#fff\x22 poin\
+<rect x=\x22721\x22 y=\
+\x22413.46\x22 width=\x22\
+40\x22 height=\x2240\x22 \
+fill=\x22none\x22 poin\
 ter-events=\x22all\x22\
->\x0a   <g stroke-w\
-idth=\x223\x22>\x0a    <p\
-ath transform=\x22r\
-otate(180,202.5,\
-185.25)\x22 d=\x22m165\
- 185.25h15m36-28\
-.89h24m-15 19.36\
-h15m-15 19.06h15\
-m-24 19.36h24\x22 s\
-troke-miterlimit\
-=\x2210\x22/>\x0a    <ell\
-ipse transform=\x22\
-rotate(180,202.5\
-,185.25)\x22 cx=\x2218\
-3\x22 cy=\x22185.25\x22 r\
-x=\x223\x22 ry=\x222.8575\
-\x22/>\x0a    <ellipse\
- transform=\x22rota\
-te(180,202.5,185\
-.25)\x22 cx=\x22213\x22 c\
-y=\x22156.36\x22 rx=\x223\
-\x22 ry=\x222.8575\x22/>\x0a\
-    <ellipse tra\
-nsform=\x22rotate(1\
-80,202.5,185.25)\
-\x22 cx=\x22222\x22 cy=\x221\
-75.72\x22 rx=\x223\x22 ry\
-=\x222.8575\x22/>\x0a    \
-<ellipse transfo\
-rm=\x22rotate(180,2\
-02.5,185.25)\x22 cx\
-=\x22222\x22 cy=\x22194.7\
-8\x22 rx=\x223\x22 ry=\x222.\
-8575\x22/>\x0a    <ell\
-ipse transform=\x22\
-rotate(180,202.5\
-,185.25)\x22 cx=\x2221\
-3\x22 cy=\x22214.14\x22 r\
-x=\x223\x22 ry=\x222.8575\
-\x22/>\x0a    <path tr\
-ansform=\x22rotate(\
-180,202.5,185.25\
-)\x22 d=\x22m185.25 18\
-7.16 23.25 22.85\
-\x22 stroke-miterli\
-mit=\x2210\x22/>\x0a   </\
-g>\x0a   <path tran\
-sform=\x22rotate(18\
-0,202.5,185.25)\x22\
- d=\x22m203.63 209.\
-7 7.12 2.22-2.25\
--6.35z\x22/>\x0a  </g>\
-\x0a  <path d=\x22m305\
- 438h-12.9\x22 fill\
+ stroke-width=\x222\
+\x22/>\x0a  <path d=\x22m\
+633 433.5h-66q-1\
+0 0-10-10v-28.5q\
+0-10-10-10h-33.2\
+q-10 0-9.99 5.82\
+l0.01 5.81\x22 fill\
 =\x22none\x22 pointer-\
 events=\x22stroke\x22 \
 stroke-miterlimi\
 t=\x2210\x22 stroke-wi\
 dth=\x223\x22/>\x0a  <pat\
-h d=\x22m288.35 438\
- 5-2.5-1.25 2.5 \
-1.25 2.5z\x22 fill=\
-\x22#25733c\x22 pointe\
-r-events=\x22all\x22 s\
-troke-miterlimit\
-=\x2210\x22 stroke-wid\
-th=\x223\x22/>\x0a  <g fi\
-ll=\x22none\x22>\x0a   <g\
- pointer-events=\
-\x22all\x22 stroke-wid\
-th=\x222\x22>\x0a    <rec\
-t x=\x22305\x22 y=\x22412\
-.96\x22 width=\x2270\x22 \
-height=\x2250\x22/>\x0a  \
-  <rect x=\x22244\x22 \
-y=\x22417.96\x22 width\
-=\x2240\x22 height=\x2240\
-\x22/>\x0a    <rect x=\
-\x22240\x22 y=\x22404.01\x22\
- width=\x22140\x22 hei\
-ght=\x2270.5\x22/>\x0a   \
-</g>\x0a   <g strok\
-e-miterlimit=\x2210\
-\x22>\x0a    <g stroke\
--width=\x223\x22>\x0a    \
- <path d=\x22m447 1\
-87h13q10 0 10-10\
-v-70q0-10 10-10.\
-01l11.4-0.02\x22 po\
-inter-events=\x22st\
-roke\x22/>\x0a     <pa\
-th d=\x22m495.15 96\
-.97-5 1.67 1.25-\
-1.67-1.26-1.66z\x22\
- pointer-events=\
-\x22all\x22/>\x0a     <g \
+h d=\x22m503.82 400\
+.38-2.5-4.99 2.5\
+ 1.24 2.5-1.25z\x22\
+ fill=\x22#25733c\x22 \
 pointer-events=\x22\
-stroke\x22>\x0a      <\
-path d=\x22m500.3 8\
-0.2 149.4-0.55\x22/\
->\x0a      <path d=\
-\x22m504 402.96-0.0\
-2 26.57\x22/>\x0a     \
- <path d=\x22m504.1\
-6 443.21 0.02 7.\
-4q0.02 7.39-0.08\
- 14.87l-0.1 7.48\
-\x22/>\x0a     </g>\x0a  \
-  </g>\x0a    <path\
- d=\x22m494 429.46h\
+all\x22 stroke-mite\
+rlimit=\x2210\x22 stro\
+ke-width=\x223\x22/>\x0a \
+ <g fill=\x22none\x22>\
+\x0a   <rect x=\x22633\
+\x22 y=\x22413.46\x22 wid\
+th=\x2260\x22 height=\x22\
+40\x22 pointer-even\
+ts=\x22all\x22 stroke-\
+width=\x222\x22/>\x0a   <\
+rect x=\x22414\x22 y=\x22\
+413.46\x22 width=\x227\
+0\x22 height=\x2250\x22 p\
+ointer-events=\x22a\
+ll\x22/>\x0a   <path d\
+=\x22m857 249.5v175\
+.6q0 10-10 10l-7\
+9.98 0.04\x22 point\
+er-events=\x22strok\
+e\x22 stroke-miterl\
+imit=\x2210\x22 stroke\
+-width=\x223\x22/>\x0a  <\
+/g>\x0a  <path d=\x22m\
+763.27 435.14 5-\
+2.5-1.25 2.5 1.2\
+6 2.5z\x22 fill=\x22#2\
+5733c\x22 pointer-e\
+vents=\x22all\x22 stro\
+ke-miterlimit=\x221\
+0\x22 stroke-width=\
+\x223\x22/>\x0a  <rect x=\
+\x22798\x22 y=\x22137\x22 wi\
+dth=\x22133\x22 height\
+=\x22112.5\x22 fill=\x22n\
+one\x22 pointer-eve\
+nts=\x22all\x22 stroke\
+-width=\x222\x22/>\x0a  <\
+path d=\x22m240 439\
+.26-43 0.03q-10 \
+0.01-10-9.99v-84\
+.5q0-10 10-10.01\
+l26.9-0.03\x22 fill\
+=\x22none\x22 pointer-\
+events=\x22stroke\x22 \
+stroke-miterlimi\
+t=\x2210\x22 stroke-wi\
+dth=\x223\x22/>\x0a  <pat\
+h d=\x22m227.65 334\
+.75-5 2.51 1.25-\
+2.5-1.26-2.5z\x22 f\
+ill=\x22#25733c\x22 po\
+inter-events=\x22al\
+l\x22 stroke-miterl\
+imit=\x2210\x22 stroke\
+-width=\x223\x22/>\x0a  <\
+rect x=\x22231\x22 y=\x22\
+294.5\x22 width=\x2212\
+0\x22 height=\x2280.5\x22\
+ fill=\x22none\x22 poi\
+nter-events=\x22all\
+\x22 stroke-width=\x22\
+2\x22/>\x0a  <g stroke\
+-miterlimit=\x2210\x22\
+ stroke-width=\x223\
+\x22>\x0a   <path d=\x22m\
+351 334.8h128q10\
+ 0 10-10v-125.2\x22\
+ fill=\x22none\x22 poi\
+nter-events=\x22str\
+oke\x22/>\x0a   <path \
+d=\x22m489 195.85 2\
+.5 5-2.5-1.25-2.\
+5 1.25z\x22 fill=\x22#\
+25733c\x22 pointer-\
+events=\x22all\x22/>\x0a \
+  <path d=\x22m414 \
+439.3h-10q-10 0-\
+13.45-0.01l-3.45\
+-0.01\x22 fill=\x22non\
+e\x22 pointer-event\
+s=\x22stroke\x22/>\x0a   \
+<path d=\x22m383.35\
+ 439.27 5.01-2.4\
+9-1.26 2.5 1.25 \
+2.5z\x22 fill=\x22#257\
+33c\x22 pointer-eve\
+nts=\x22all\x22/>\x0a  </\
+g>\x0a  <g fill=\x22#f\
+ff\x22 stroke-width\
+=\x223\x22>\x0a   <path d\
+=\x22m240 185.25h-1\
+5m-36 28.89h-24m\
+15-19.36h-15m15-\
+19.06h-15m24-19.\
+36h-24\x22 stroke-m\
+iterlimit=\x2210\x22/>\
+\x0a   <ellipse tra\
+nsform=\x22scale(-1\
+)\x22 cx=\x22-222\x22 cy=\
+\x22-185.25\x22 rx=\x223\x22\
+ ry=\x222.8575\x22/>\x0a \
+  <ellipse trans\
+form=\x22scale(-1)\x22\
+ cx=\x22-192\x22 cy=\x22-\
+214.14\x22 rx=\x223\x22 r\
+y=\x222.8575\x22/>\x0a   \
+<ellipse transfo\
+rm=\x22scale(-1)\x22 c\
+x=\x22-183\x22 cy=\x22-19\
+4.78\x22 rx=\x223\x22 ry=\
+\x222.8575\x22/>\x0a   <e\
+llipse transform\
+=\x22scale(-1)\x22 cx=\
+\x22-183\x22 cy=\x22-175.\
+72\x22 rx=\x223\x22 ry=\x222\
+.8575\x22/>\x0a   <ell\
+ipse transform=\x22\
+scale(-1)\x22 cx=\x22-\
+192\x22 cy=\x22-156.36\
+\x22 rx=\x223\x22 ry=\x222.8\
+575\x22/>\x0a  </g>\x0a <\
+/g>\x0a <path d=\x22m2\
+19.75 183.34-23.\
+25-22.85\x22 fill=\x22\
+#787878\x22 stroke-\
+miterlimit=\x2210\x22 \
+stroke-opacity=\x22\
+0\x22/>\x0a <path d=\x22m\
+201.37 160.8-7.1\
+2-2.22 2.25 6.35\
+z\x22 fill-opacity=\
+\x220\x22 stroke-opaci\
+ty=\x220\x22/>\x0a <g str\
+oke=\x22#fff\x22>\x0a  <p\
+ath d=\x22m305 438h\
+-12.9\x22 fill=\x22non\
+e\x22 pointer-event\
+s=\x22stroke\x22 strok\
+e-miterlimit=\x2210\
+\x22 stroke-width=\x22\
+3\x22/>\x0a  <path d=\x22\
+m288.35 438 5-2.\
+5-1.25 2.5 1.25 \
+2.5z\x22 fill=\x22#257\
+33c\x22 pointer-eve\
+nts=\x22all\x22 stroke\
+-miterlimit=\x2210\x22\
+ stroke-width=\x223\
+\x22/>\x0a  <g fill=\x22n\
+one\x22>\x0a   <g poin\
+ter-events=\x22all\x22\
+ stroke-width=\x222\
+\x22>\x0a    <rect x=\x22\
+305\x22 y=\x22412.96\x22 \
+width=\x2270\x22 heigh\
+t=\x2250\x22/>\x0a    <re\
+ct x=\x22244\x22 y=\x2241\
+7.96\x22 width=\x2240\x22\
+ height=\x2240\x22/>\x0a \
+   <rect x=\x22240\x22\
+ y=\x22404.01\x22 widt\
+h=\x22140\x22 height=\x22\
+70.5\x22/>\x0a   </g>\x0a\
+   <g stroke-mit\
+erlimit=\x2210\x22>\x0a  \
+  <g stroke-widt\
+h=\x223\x22>\x0a     <pat\
+h d=\x22m447 187h13\
+q10 0 10-10v-70q\
+0-10 10-10.01l11\
+.4-0.02\x22 pointer\
+-events=\x22stroke\x22\
+/>\x0a     <path d=\
+\x22m495.15 96.97-5\
+ 1.67 1.25-1.67-\
+1.26-1.66z\x22 poin\
+ter-events=\x22all\x22\
+/>\x0a     <g point\
+er-events=\x22strok\
+e\x22>\x0a      <path \
+d=\x22m500.3 80.2 1\
+49.4-0.55\x22/>\x0a   \
+   <path d=\x22m504\
+ 402.96-0.02 26.\
+57\x22/>\x0a      <pat\
+h d=\x22m504.16 443\
+.21 0.02 7.4q0.0\
+2 7.39-0.08 14.8\
+7l-0.1 7.48\x22/>\x0a \
+    </g>\x0a    </g\
+>\x0a    <path d=\x22m\
+494 429.46h20\x22 p\
+ointer-events=\x22a\
+ll\x22 stroke-width\
+=\x222\x22/>\x0a    <path\
+ d=\x22m494 442.96h\
 20\x22 pointer-even\
 ts=\x22all\x22 stroke-\
-width=\x222\x22/>\x0a    \
-<path d=\x22m494 44\
-2.96h20\x22 pointer\
--events=\x22all\x22 st\
-roke-width=\x222\x22/>\
-\x0a   </g>\x0a  </g>\x0a\
-  <g fill=\x22#fff\x22\
->\x0a   <rect x=\x2249\
-4\x22 y=\x22434.46\x22 wi\
-dth=\x2220\x22 height=\
-\x223.5\x22 fill=\x22#fff\
-\x22 pointer-events\
-=\x22all\x22 stroke=\x22#\
-fff\x22/>\x0a  </g>\x0a <\
-/g>\x0a</svg>\x0a\
+width=\x222\x22/>\x0a   <\
+/g>\x0a  </g>\x0a  <g \
+fill=\x22#fff\x22>\x0a   \
+<rect x=\x22494\x22 y=\
+\x22434.46\x22 width=\x22\
+20\x22 height=\x223.5\x22\
+ fill=\x22#fff\x22 poi\
+nter-events=\x22all\
+\x22 stroke=\x22#fff\x22/\
+>\x0a  </g>\x0a </g>\x0a<\
+/svg>\x0a\
 \x00\x00\x9ah\
 \x89\
 PNG\x0d\x0a\x1a\x0a\x00\x00\x00\x0dIHDR\x00\
@@ -69101,8 +69096,8 @@ qt_resource_struct = b"\
 \x00\x00\x00\x12\x00\x02\x00\x00\x00\x02\x00\x00\x00\x03\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00$\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x97\xc4\xcf\x9d\xfe\
-\x00\x00\x00f\x00\x00\x00\x00\x00\x01\x00\x10A\xd0\
+\x00\x00\x01\x97\xcby\xaa\x86\
+\x00\x00\x00f\x00\x00\x00\x00\x00\x01\x00\x10A{\
 \x00\x00\x01\x97\xc5Qb\xbc\
 "
 

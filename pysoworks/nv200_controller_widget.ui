@@ -22,7 +22,7 @@ background-image: url(:/assets/images/nv200_controller_structure.png);
 background-repeat: no-repeat;}
 </string>
   </property>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+  <widget class="QDoubleSpinBox" name="srSpinBox">
    <property name="geometry">
     <rect>
      <x>239</x>
@@ -37,6 +37,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Sew Rate Limit&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the slew rate limit (% per millisecond). Limits how fast the value can change over time.&lt;/p&gt;&lt;p&gt;Range: 0.0000008 to 2000.0 %/ms.  &lt;/p&gt;&lt;p&gt;2000 disables the limit.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -50,7 +53,7 @@ background-repeat: no-repeat;}
     <number>3</number>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBox">
+  <widget class="QSpinBox" name="setlpfSpinBox">
    <property name="geometry">
     <rect>
      <x>347</x>
@@ -59,6 +62,9 @@ background-repeat: no-repeat;}
      <height>24</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Setpoint Lowpass Filter On&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Enables or disables the setpoint lowpass filter. &lt;/p&gt;&lt;p&gt;When enabled, it smooths rapid changes in the setpoint to reduce oscillations and improve system stability.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="buttonSymbols">
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
@@ -66,7 +72,7 @@ background-repeat: no-repeat;}
     <string>setlpf   </string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_2">
+  <widget class="QCheckBox" name="notchonCheckBox">
    <property name="geometry">
     <rect>
      <x>807</x>
@@ -75,6 +81,9 @@ background-repeat: no-repeat;}
      <height>20</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Notch Filter On&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Enables or disables the notch filter.&lt;/p&gt;&lt;p&gt;When enabled, the filter attenuates specific frequency components to reduce unwanted vibrations or noise.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>notchon</string>
    </property>
@@ -82,7 +91,7 @@ background-repeat: no-repeat;}
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBox_3">
+  <widget class="QSpinBox" name="notchbSpinBox">
    <property name="geometry">
     <rect>
      <x>807</x>
@@ -91,6 +100,9 @@ background-repeat: no-repeat;}
      <height>24</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Notch Filter Bandwidth&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the -3 dB bandwidth of the notch filter around the center frequency.&lt;/p&gt;&lt;p&gt;Range: 1 to 10,000 Hz (maximum 2 × Notch Filter Frequency).&lt;/p&gt;&lt;p&gt;Defines the width of the frequency range that will be attenuated.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="buttonSymbols">
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
@@ -98,7 +110,7 @@ background-repeat: no-repeat;}
     <string>notchb   </string>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBox_2">
+  <widget class="QSpinBox" name="notchfSpinBox">
    <property name="geometry">
     <rect>
      <x>807</x>
@@ -107,6 +119,9 @@ background-repeat: no-repeat;}
      <height>24</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Notch Filter Frequency&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the center frequency of the notch filter.&lt;/p&gt;&lt;p&gt;Range: 1 to 10,000 Hz.&lt;/p&gt;&lt;p&gt;This frequency is attenuated to reduce vibrations or noise at that specific frequency&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="buttonSymbols">
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
@@ -114,7 +129,7 @@ background-repeat: no-repeat;}
     <string>notchf   </string>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="iEdit">
+  <widget class="QDoubleSpinBox" name="kiSpinBox">
    <property name="geometry">
     <rect>
      <x>522</x>
@@ -129,6 +144,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Integral Gain (Ki)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the amplification factor of the PID controller’s integral term.&lt;/p&gt;&lt;p&gt;Range: 0 to 10,000. &lt;/p&gt;&lt;p&gt;A value of 0 disables the integral action.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -136,13 +154,13 @@ background-repeat: no-repeat;}
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
    <property name="prefix">
-    <string>I   </string>
+    <string>ki   </string>
    </property>
    <property name="decimals">
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="pcfsEdit">
+  <widget class="QDoubleSpinBox" name="pcfxSpinBox">
    <property name="geometry">
     <rect>
      <x>509</x>
@@ -157,6 +175,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Position Feedforward Gain&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the feedforward gain applied to the position component in the PID controller.&lt;br/&gt;Enhances control accuracy by anticipating position errors.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -164,13 +185,13 @@ background-repeat: no-repeat;}
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
    <property name="prefix">
-    <string>pcf_s   </string>
+    <string>pcf_x   </string>
    </property>
    <property name="decimals">
     <number>6</number>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="setlponCheckBox">
    <property name="geometry">
     <rect>
      <x>347</x>
@@ -179,6 +200,9 @@ background-repeat: no-repeat;}
      <height>20</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Measured Position Lowpass Filter On&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Enables or disables the lowpass filter applied to the measured position signal.&lt;/p&gt;&lt;p&gt;When enabled, it smooths the position data to reduce measurement noise.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>setlpon</string>
    </property>
@@ -186,7 +210,7 @@ background-repeat: no-repeat;}
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox">
+  <widget class="QDoubleSpinBox" name="setstSpinBox">
    <property name="geometry">
     <rect>
      <x>87</x>
@@ -220,7 +244,7 @@ background-repeat: no-repeat;}
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="pcfvEdit">
+  <widget class="QDoubleSpinBox" name="pcfvSpinBox">
    <property name="geometry">
     <rect>
      <x>509</x>
@@ -235,6 +259,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Velocity Feedforward Gain&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the feedforward gain applied to the velocity component in the PID controller.&lt;br/&gt;Improves response by directly contributing to the control output based on target velocity.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -248,7 +275,7 @@ background-repeat: no-repeat;}
     <number>6</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="dEdit">
+  <widget class="QDoubleSpinBox" name="kdSpinBox">
    <property name="geometry">
     <rect>
      <x>522</x>
@@ -263,6 +290,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Derivative Gain (Kd)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the amplification factor of the PID controller’s differential term.&lt;/p&gt;&lt;p&gt;Range: 0 to 10,000. &lt;/p&gt;&lt;p&gt;A value of 0 disables the derivative action.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -270,13 +300,13 @@ background-repeat: no-repeat;}
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
    <property name="prefix">
-    <string>D  </string>
+    <string>kd  </string>
    </property>
    <property name="decimals">
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="pEdit_2">
+  <widget class="QDoubleSpinBox" name="poslpfSpinBox">
    <property name="geometry">
     <rect>
      <x>237</x>
@@ -291,6 +321,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Measured Position Lowpass Filter Cutoff&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the cutoff frequency of the lowpass filter applied to the measured position.&lt;/p&gt;&lt;p&gt;Higher values allow more signal detail; lower values provide stronger smoothing.&lt;/p&gt;&lt;p&gt;Range: 1 to 10,000 Hz.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -304,7 +337,7 @@ background-repeat: no-repeat;}
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="pcfaEdit">
+  <widget class="QDoubleSpinBox" name="pcfaSpinBox">
    <property name="geometry">
     <rect>
      <x>509</x>
@@ -319,6 +352,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Acceleration Feedforward Gain&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the feedforward gain applied to the acceleration component in the PID controller.&lt;br/&gt;Helps improve control response by anticipating acceleration demands.&lt;br/&gt;Internally scaled by 1⁄1,000,000 to allow fine adjustment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -332,7 +368,7 @@ background-repeat: no-repeat;}
     <number>6</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="pEdit">
+  <widget class="QDoubleSpinBox" name="kpSpinBox">
    <property name="geometry">
     <rect>
      <x>522</x>
@@ -347,6 +383,9 @@ background-repeat: no-repeat;}
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Proportional Gain (Kp)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Sets the amplification factor of the PID controller’s proportional term.&lt;/p&gt;&lt;p&gt;Range: 0 to 10,000. &lt;/p&gt;&lt;p&gt;A value of 0 disables the proportional action.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
    </property>
@@ -354,13 +393,13 @@ background-repeat: no-repeat;}
     <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
    </property>
    <property name="prefix">
-    <string>P   </string>
+    <string>kp   </string>
    </property>
    <property name="decimals">
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+  <widget class="QDoubleSpinBox" name="setSpinBox">
    <property name="geometry">
     <rect>
      <x>87</x>
@@ -394,7 +433,7 @@ background-repeat: no-repeat;}
     <number>3</number>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_3">
+  <widget class="QCheckBox" name="poslponCheckBox">
    <property name="geometry">
     <rect>
      <x>237</x>
@@ -403,6 +442,9 @@ background-repeat: no-repeat;}
      <height>20</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Measured Position Lowpass Filter On&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Enables or disables the lowpass filter applied to the measured position.&lt;/p&gt;&lt;p&gt;When enabled, it smooths the position signal to reduce noise before further processing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>poslpon</string>
    </property>
@@ -410,7 +452,41 @@ background-repeat: no-repeat;}
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="SvgCycleWidget" name="modsrcToggleWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>187</x>
+     <y>159</y>
+     <width>40</width>
+     <height>54</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: red;</string>
+   </property>
+  </widget>
+  <widget class="SvgCycleWidget" name="clToggleWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>183</y>
+     <width>65</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: red;</string>
+   </property>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SvgCycleWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">pysoworks.svg_cycle_widget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="pysoworks.qrc"/>
  </resources>

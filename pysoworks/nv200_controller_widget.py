@@ -29,12 +29,21 @@ class Nv200ControllerWidget(QFrame):
         ui = self.ui
         ui.setupUi(self)
         base_dir = Path(__file__).parent
-        svg_path = base_dir / "assets" / "images" / "nv200_controller_structure.svg"
+        images_path = base_dir / "assets" / "images"
+        svg_path = images_path / "nv200_controller_structure.svg"
         # Clear the stylesheet - it is only used in designer for absolute positioning of
         # widgets in the controller diagramm
         self.setStyleSheet("")
         self.svg_renderer = QSvgRenderer(str(svg_path))  # Replace with your SVG file path
         self.svg_renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
+
+        # Generate list of absolute paths for modsrc_toggle01.svg to modsrc_toggle04.svg
+        svg_paths = [ (images_path / f"modsrc_toggle0{i}.svg").resolve() for i in range(1, 5) ]
+        self.ui.modsrcToggleWidget.set_svg_paths(svg_paths)
+
+        svg_paths = [ (images_path / f"cl_toggle0{i}.svg").resolve() for i in range(1, 3) ]
+        self.ui.clToggleWidget.set_svg_paths(svg_paths)
+
 
 
 

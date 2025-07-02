@@ -1,14 +1,14 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources dark="1">
-  <color name="accentColor" comment="rgb(41, 128, 67)">#2db159</color>
-  <color name="backgroundLighter" comment="rgb(27,70,93)">#0A2334</color>
-  <color name="backgroundColor" comment="rgb(19,52,72)">#081a27</color>
-  <color name="backgroundDarker" comment="rgb(10,35,52)">#05111b</color>
-  <color name="backgroundDark" comment="rgb(10,35,52)">#05111b</color>
-  <color name="borderColor" comment="rgb(27,70,93)">#133549</color>
+  <color name="accentColor" comment="rgb(45, 177, 89)">#2db159</color>
+  <color name="backgroundLighter" comment="rgb(10, 35, 52)">#0A2334</color>
+  <color name="backgroundColor" comment="rgb(8, 26, 39)">#081a27</color>
+  <color name="backgroundDarker" comment="rgb(5, 17, 27)">#05111b</color>
+  <color name="backgroundDark" comment="rgb(5, 17, 27)">#05111b</color>
+  <color name="borderColor" comment="rgb(19, 53, 73)">#133549</color>
   <color name="textColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
-  <color name="textColorDisabled" comment="rgb(89, 89, 89)">#3e5867</color>
-  <color name="textColorDarker" comment="rgb(146, 146, 146)">#3e5867</color>
+  <color name="textColorDisabled" comment="rgb(62, 88, 103)">#3e5867</color>
+  <color name="textColorDarker" comment="rgb(62, 88, 103)">#3e5867</color>
   <color name="iconColor" comment="rgb(227, 227, 227)">#e3e3e3</color>
   <color name="backgroundHoverColor" comment="rgb(102, 102, 102)">#666666</color>
   <color name="arrowsColor" comment="rgb(180, 180, 180)">#b4b4b4</color>

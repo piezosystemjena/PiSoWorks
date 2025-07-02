@@ -376,24 +376,87 @@ class NV200Widget(QWidget):
         """
         Asynchronously initializes the UI elements for easy mode UI.
         """
+        print("Initializing UI from device...")
         dev = self._device
         ui = self.ui
         pid_mode = await dev.get_pid_mode()
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
+        await self.initialize_controller_settings_from_device()
         
-    async def initialize_settings_tab_from_device(self):
+
+
+    async def initialize_controller_settings_from_device(self):
         """
-        Asynchronously initializes the settings tab UI elements based on the device's current settings.
+        Asynchronously initializes the controller settings UI elements based on the device's current settings.
         """
         dev = self._device
+        if dev is None:
+            print("No device connected.")
+            return
+        
+        print("Initializing controller settings from device...")
         ui = self.ui
-        ui.slewRateSpinBox.setValue(await dev.get_slew_rate())
-        ui.setpointFilterCheckBox.setChecked(await dev.is_setpoint_lowpass_filter_enabled())
-        ui.setpointFilterCutoffSpinBox.setValue(await dev.get_setpoint_lowpass_filter_cutoff_freq())
-        self.set_combobox_index_by_value(ui.modsrcComboBox, await dev.get_modulation_source())
-        self.set_combobox_index_by_value(ui.spisrcComboBox, await dev.get_spi_monitor_source())
+        cui = ui.controllerStructureWidget.ui
+        cui.srSpinBox.setMinimum(0.0000008)
+        cui.srSpinBox.setMaximum(2000)
+        cui.srSpinBox.setValue(await dev.get_slew_rate())
+
+        setpoint_lpf = dev.setpoint_lpf
+        cui.setlponCheckBox.setChecked(await setpoint_lpf.is_enabled())
+        cui.setlpfSpinBox.setMinimum(int(setpoint_lpf.cutoff_range.min))
+        cui.setlpfSpinBox.setMaximum(int(setpoint_lpf.cutoff_range.max))
+        cui.setlpfSpinBox.setValue(int(await setpoint_lpf.get_cutoff()))
+
+        poslpf = dev.position_lpf
+        cui.poslponCheckBox.setChecked(await poslpf.is_enabled())
+        cui.poslpfSpinBox.setMinimum(poslpf.cutoff_range.min)
+        cui.poslpfSpinBox.setMaximum(poslpf.cutoff_range.max)
+        cui.poslpfSpinBox.setValue(await poslpf.get_cutoff())
+
+        notch_filter = dev.notch_filter
+        cui.notchonCheckBox.setChecked(await notch_filter.is_enabled())
+        cui.notchfSpinBox.setMinimum(notch_filter.freq_range.min)
+        cui.notchfSpinBox.setMaximum(notch_filter.freq_range.max)  
+        cui.notchfSpinBox.setValue(await notch_filter.get_frequency())
+        cui.notchbSpinBox.setMinimum(notch_filter.bandwidth_range.min)
+        cui.notchbSpinBox.setMaximum(notch_filter.bandwidth_range.max)
+        cui.notchbSpinBox.setValue(await notch_filter.get_bandwidth())
+
+        pidgains = await dev.get_pid_gains()
+        print(f"PID Gains: {pidgains}")
+        cui.kpSpinBox.setMinimum(0.0)
+        cui.kpSpinBox.setMaximum(10000.0)
+        cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
+        cui.kpSpinBox.setValue(pidgains.kp)
+
+        cui.kiSpinBox.setMinimum(0.0)
+        cui.kiSpinBox.setMaximum(10000.0)
+        cui.kiSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
+        cui.kiSpinBox.setValue(pidgains.ki)
+
+        cui.kdSpinBox.setMinimum(0.0)
+        cui.kdSpinBox.setMaximum(10000.0)
+        cui.kdSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
+        cui.kdSpinBox.setValue(pidgains.kd)
+        
+        pcfgains = await dev.get_pcf_gains()
+        cui.pcfaSpinBox.setMinimum(0.0)
+        cui.pcfaSpinBox.setMaximum(10000.0)
+        cui.pcfaSpinBox.setSpecialValueText(cui.pcfaSpinBox.prefix() + "0.0 (disabled)")
+        cui.pcfaSpinBox.setValue(pcfgains.acceleration)
+
+        cui.pcfvSpinBox.setMinimum(0.0)
+        cui.pcfvSpinBox.setMaximum(10000.0)
+        cui.pcfvSpinBox.setSpecialValueText(cui.pcfvSpinBox.prefix() + "0.0 (disabled)")
+        cui.pcfvSpinBox.setValue(pcfgains.velocity)
+
+        cui.pcfxSpinBox.setMinimum(0.0)
+        cui.pcfxSpinBox.setMaximum(10000.0)
+        cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
+        cui.pcfxSpinBox.setValue(pcfgains.position)
+        
 
 
 
