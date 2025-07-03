@@ -23,6 +23,7 @@ from nv200.shared_types import (
     DiscoverFlags,
     ModulationSource,
     SPIMonitorSource,
+    AnalogMonitorSource
 )
 from nv200.device_discovery import discover_devices
 from nv200.nv200_device import NV200Device
@@ -131,16 +132,22 @@ class NV200Widget(QWidget):
         Initializes the settings UI components for setpoint parameter application.
         """
         ui = self.ui
-        ui.applySetpointParamButton.setIconSize(QSize(24, 24))
-        ui.applySetpointParamButton.setIcon(get_icon("check", size=24, fill=True))
-        ui.applySetpointParamButton.setText("Apply")
-        ui.applySetpointParamButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        ui.applySetpointParamButton.setToolTip("Apply Setpoint Parameters")
-        ui.applySetpointParamButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
-        ui.setpointFilterCheckBox.toggled.connect(
-            (lambda checked: ui.setpointFilterCheckBox.setText("LP Filter ON" if checked else "LP Filter OFF"))
-        )
-        self.init_modsrc_combobox()
+        ui.applyButton.setIconSize(QSize(24, 24))
+        ui.applyButton.setIcon(get_icon("check", size=24, fill=True))
+        ui.applyButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+
+        ui.retrieveButton.setIconSize(QSize(24, 24))
+        ui.retrieveButton.setIcon(get_icon("sync", size=24, fill=True))
+        ui.retrieveButton.clicked.connect(qtinter.asyncslot(self.update_controller_ui_from_device))
+
+        ui.restoreButton.setIconSize(QSize(24, 24))
+        ui.restoreButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
+
+        
+        # ui.setpointFilterCheckBox.toggled.connect(
+        #     (lambda checked: ui.setpointFilterCheckBox.setText("LP Filter ON" if checked else "LP Filter OFF"))
+        # )
+        self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
 
 
@@ -160,46 +167,12 @@ class NV200Widget(QWidget):
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
         ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
 
-
-
-    def init_modsrc_combobox(self):
-        """
-        Initializes the modsrcComboBox with available modulation sources.
-        """
-        cb = self.ui.modsrcComboBox
-        cb.clear()
-        cb.addItem("Setpoint (set cmd)", ModulationSource.SET_CMD)
-        cb.addItem("Analog In", ModulationSource.ANALOG_IN)
-        cb.addItem("SPI Interface", ModulationSource.SPI)
-        cb.addItem("Waveform Generator", ModulationSource.WAVEFORM_GENERATOR)
-        cb.activated.connect(qtinter.asyncslot(self.on_modsrc_combobox_activated))
-
-
-    async def on_modsrc_combobox_activated(self, index: int):
-        """
-        Handles the event when a modulation source is selected from the modsrcComboBox.
-        """
-        if index == -1:
-            print("No modulation source selected.")
-            return
-
-        source = self.ui.modsrcComboBox.itemData(index)
-        if source is None:
-            print("No modulation source data found.")
-            return
-        
-        print(f"Selected modulation source: {source}")
-        try:
-            await self._device.set_modulation_source(source)
-        except Exception as e:
-            self.status_message.emit(f"Error setting modulation source: {e}", 0)
-
     
     def init_spimonitor_combobox(self):
         """
         Initializes the SPI monitor source combo box with available monitoring options.
         """
-        cb = self.ui.spisrcComboBox
+        cb = self.ui.controllerStructureWidget.ui.spiSrcComboBox
         cb.clear()
         cb.addItem("Zero (0x0000)", SPIMonitorSource.ZERO)
         cb.addItem("Closed Loop Pos.", SPIMonitorSource.CLOSED_LOOP_POS)
@@ -209,29 +182,22 @@ class NV200Widget(QWidget):
         cb.addItem("Open Loop Pos.", SPIMonitorSource.OPEN_LOOP_POS)
         cb.addItem("Piezo Current 1", SPIMonitorSource.PIEZO_CURRENT_1)
         cb.addItem("Piezo Current 2", SPIMonitorSource.PIEZO_CURRENT_2)
-        cb.addItem("Test Value", SPIMonitorSource.TEST_VALUE)
-        cb.activated.connect(qtinter.asyncslot(self.on_spimonitor_combobox_activated))
+        cb.addItem("Test Value (0x5a5a)", SPIMonitorSource.TEST_VALUE_0x5A5A)
 
-
-    async def on_spimonitor_combobox_activated(self, index: int):
+    def init_monsrc_combobox(self):
         """
-        Handles the event when a SPI monitor source is selected from the spisrcComboBox.
+        Initializes the modsrcComboBox with available modulation sources.
         """
-        if index == -1:
-            print("No SPI monitor source selected.")
-            return
-
-        source = self.ui.spisrcComboBox.itemData(index)
-        if source is None:
-            print("No SPI monitor source data found.")
-            return
-        
-        print(f"Selected SPI monitor source: {source}")
-        try:
-            await self._device.set_spi_monitor_source(source)
-        except Exception as e:
-            self.status_message.emit(f"Error setting SPI monitor source: {e}", 0)
-
+        cb = self.ui.controllerStructureWidget.ui.monsrcComboBox
+        cb.clear()
+        cb.addItem("Closed Loop Pos.", AnalogMonitorSource.CLOSED_LOOP_POS)
+        cb.addItem("Setpoint", AnalogMonitorSource.SETPOINT)
+        cb.addItem("Piezo Voltage", AnalogMonitorSource.PIEZO_VOLTAGE)
+        cb.addItem("Position Error", AnalogMonitorSource.ABS_POSITION_ERROR)
+        cb.addItem("Open Loop Pos.", AnalogMonitorSource.OPEN_LOOP_POS)
+        cb.addItem("Piezo Current 1", AnalogMonitorSource.PIEZO_CURRENT_1)
+        cb.addItem("Piezo Current 2", AnalogMonitorSource.PIEZO_CURRENT_2)
+  
 
     def set_combobox_index_by_value(self, combobox: QComboBox, value: Any) -> None:
         """
@@ -354,9 +320,9 @@ class NV200Widget(QWidget):
         try:
             print("Applying setpoint parameters...")
             dev = self._device
-            await dev.set_slew_rate(self.ui.slewRateSpinBox.value())
-            await dev.set_setpoint_lowpass_filter_cutoff_freq(self.ui.setpointFilterCutoffSpinBox.value())
-            await dev.enable_setpoint_lowpass_filter(self.ui.setpointFilterCheckBox.isChecked())
+            # await dev.set_slew_rate(self.ui.slewRateSpinBox.value())
+            # await dev.set_setpoint_lowpass_filter_cutoff_freq(self.ui.setpointFilterCutoffSpinBox.value())
+            # await dev.enable_setpoint_lowpass_filter(self.ui.setpointFilterCheckBox.isChecked())
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -461,6 +427,9 @@ class NV200Widget(QWidget):
 
         modsrc = await dev.get_modulation_source()
         cui.modsrcToggleWidget.setCurrent(modsrc.value)
+
+        self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
+        self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
         
 
 

@@ -17,10 +17,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QComboBox,
     QDoubleSpinBox, QFormLayout, QFrame, QGridLayout,
-    QGroupBox, QHBoxLayout, QLabel, QLayout,
-    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
-    QSpinBox, QSplitter, QStackedWidget, QTabWidget,
-    QToolButton, QVBoxLayout, QWidget)
+    QGroupBox, QHBoxLayout, QLabel, QPushButton,
+    QScrollArea, QSizePolicy, QSpacerItem, QSpinBox,
+    QSplitter, QStackedWidget, QTabWidget, QToolButton,
+    QVBoxLayout, QWidget)
 
 from pysoworks.consolewidget import Console
 from pysoworks.mplcanvas import MplWidget
@@ -200,89 +200,20 @@ class Ui_NV200Widget(object):
         self.settingsTab.setObjectName(u"settingsTab")
         self.verticalLayout_8 = QVBoxLayout(self.settingsTab)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.setpointParamGroupBox = QGroupBox(self.settingsTab)
-        self.setpointParamGroupBox.setObjectName(u"setpointParamGroupBox")
-        self.verticalLayout_6 = QVBoxLayout(self.setpointParamGroupBox)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.slewRateLabel = QLabel(self.setpointParamGroupBox)
-        self.slewRateLabel.setObjectName(u"slewRateLabel")
+        self.applyButton = QPushButton(self.settingsTab)
+        self.applyButton.setObjectName(u"applyButton")
 
-        self.verticalLayout_6.addWidget(self.slewRateLabel)
+        self.verticalLayout_8.addWidget(self.applyButton)
 
-        self.slewRateSpinBox = QDoubleSpinBox(self.setpointParamGroupBox)
-        self.slewRateSpinBox.setObjectName(u"slewRateSpinBox")
-        sizePolicy5.setHeightForWidth(self.slewRateSpinBox.sizePolicy().hasHeightForWidth())
-        self.slewRateSpinBox.setSizePolicy(sizePolicy5)
-        self.slewRateSpinBox.setDecimals(3)
-        self.slewRateSpinBox.setMinimum(0.000000000000000)
-        self.slewRateSpinBox.setMaximum(2000.000000000000000)
-        self.slewRateSpinBox.setValue(0.000000000000000)
+        self.retrieveButton = QPushButton(self.settingsTab)
+        self.retrieveButton.setObjectName(u"retrieveButton")
 
-        self.verticalLayout_6.addWidget(self.slewRateSpinBox)
+        self.verticalLayout_8.addWidget(self.retrieveButton)
 
-        self.setpointFilterCheckBox = QCheckBox(self.setpointParamGroupBox)
-        self.setpointFilterCheckBox.setObjectName(u"setpointFilterCheckBox")
-        sizePolicy5.setHeightForWidth(self.setpointFilterCheckBox.sizePolicy().hasHeightForWidth())
-        self.setpointFilterCheckBox.setSizePolicy(sizePolicy5)
-        self.setpointFilterCheckBox.setProperty(u"toggleSwitch", True)
+        self.restoreButton = QPushButton(self.settingsTab)
+        self.restoreButton.setObjectName(u"restoreButton")
 
-        self.verticalLayout_6.addWidget(self.setpointFilterCheckBox)
-
-        self.setpointFilterCutoffSpinBox = QSpinBox(self.setpointParamGroupBox)
-        self.setpointFilterCutoffSpinBox.setObjectName(u"setpointFilterCutoffSpinBox")
-        sizePolicy5.setHeightForWidth(self.setpointFilterCutoffSpinBox.sizePolicy().hasHeightForWidth())
-        self.setpointFilterCutoffSpinBox.setSizePolicy(sizePolicy5)
-        self.setpointFilterCutoffSpinBox.setMinimum(1)
-        self.setpointFilterCutoffSpinBox.setMaximum(10000)
-
-        self.verticalLayout_6.addWidget(self.setpointFilterCutoffSpinBox)
-
-        self.applySetpointParamButton = QToolButton(self.setpointParamGroupBox)
-        self.applySetpointParamButton.setObjectName(u"applySetpointParamButton")
-        sizePolicy1.setHeightForWidth(self.applySetpointParamButton.sizePolicy().hasHeightForWidth())
-        self.applySetpointParamButton.setSizePolicy(sizePolicy1)
-        self.applySetpointParamButton.setAutoRaise(True)
-
-        self.verticalLayout_6.addWidget(self.applySetpointParamButton)
-
-
-        self.verticalLayout_8.addWidget(self.setpointParamGroupBox)
-
-        self.settingsGroupBox = QGroupBox(self.settingsTab)
-        self.settingsGroupBox.setObjectName(u"settingsGroupBox")
-        self.settingsGroupBox.setMinimumSize(QSize(0, 0))
-        self.verticalLayout_5 = QVBoxLayout(self.settingsGroupBox)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.label_2 = QLabel(self.settingsGroupBox)
-        self.label_2.setObjectName(u"label_2")
-
-        self.verticalLayout_5.addWidget(self.label_2)
-
-        self.modsrcComboBox = QComboBox(self.settingsGroupBox)
-        self.modsrcComboBox.setObjectName(u"modsrcComboBox")
-        sizePolicy5.setHeightForWidth(self.modsrcComboBox.sizePolicy().hasHeightForWidth())
-        self.modsrcComboBox.setSizePolicy(sizePolicy5)
-
-        self.verticalLayout_5.addWidget(self.modsrcComboBox)
-
-        self.verticalSpacer_5 = QSpacerItem(0, 6, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-
-        self.verticalLayout_5.addItem(self.verticalSpacer_5)
-
-        self.label_3 = QLabel(self.settingsGroupBox)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setStyleSheet(u"")
-
-        self.verticalLayout_5.addWidget(self.label_3)
-
-        self.spisrcComboBox = QComboBox(self.settingsGroupBox)
-        self.spisrcComboBox.setObjectName(u"spisrcComboBox")
-
-        self.verticalLayout_5.addWidget(self.spisrcComboBox)
-
-
-        self.verticalLayout_8.addWidget(self.settingsGroupBox)
+        self.verticalLayout_8.addWidget(self.restoreButton)
 
         self.verticalSpacer_2 = QSpacerItem(20, 654, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -491,20 +422,18 @@ class Ui_NV200Widget(object):
         self.moveButton.setText("")
         self.rangeLabel.setText("")
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.easyModeTab), QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
-        self.setpointParamGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Setpoint Param.", None))
-        self.slewRateLabel.setText(QCoreApplication.translate("NV200Widget", u"Slew Rate", None))
-        self.setpointFilterCheckBox.setText(QCoreApplication.translate("NV200Widget", u"LP Filter OFF", None))
-        self.setpointFilterCutoffSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))
-        self.applySetpointParamButton.setText(QCoreApplication.translate("NV200Widget", u"Apply", None))
-        self.settingsGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Settings", None))
-        self.label_2.setText(QCoreApplication.translate("NV200Widget", u"Setpoint Source:", None))
 #if QT_CONFIG(tooltip)
-        self.modsrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>Signal source for setppoint (modsrc)</p></body></html>", None))
+        self.applyButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Apply Parameters</span></p><p>Send the currently edited parameters to the device to update its configuration.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_3.setText(QCoreApplication.translate("NV200Widget", u"SPI-Monitor Source:", None))
+        self.applyButton.setText(QCoreApplication.translate("NV200Widget", u"Apply Parameters", None))
 #if QT_CONFIG(tooltip)
-        self.spisrcComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p>SPI monitor/ Return value via MISO (spisrc)</p></body></html>", None))
+        self.retrieveButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Retrieve Parameters</span></p><p>Read the current parameters from the device and update the local view.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
+        self.retrieveButton.setText(QCoreApplication.translate("NV200Widget", u"Retrieve Parameters", None))
+#if QT_CONFIG(tooltip)
+        self.restoreButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Default Parameters</span></p><p>Reset the device parameters to their previous values.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.restoreButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Default Parameters", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
         self.freqLabel.setText(QCoreApplication.translate("NV200Widget", u"Freq.", None))
         self.freqSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))

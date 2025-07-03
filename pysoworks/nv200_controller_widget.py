@@ -30,7 +30,7 @@ class Nv200ControllerWidget(QFrame):
         ui.setupUi(self)
         base_dir = Path(__file__).parent
         images_path = base_dir / "assets" / "images"
-        svg_path = images_path / "nv200_controller_structure.svg"
+        svg_path = images_path / "nv200_controller_structure_new.svg"
         # Clear the stylesheet - it is only used in designer for absolute positioning of
         # widgets in the controller diagramm
         self.setStyleSheet("")

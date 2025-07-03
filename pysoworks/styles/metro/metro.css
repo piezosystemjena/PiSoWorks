@@ -3557,6 +3557,11 @@ Nv200ControllerWidget QAbstractSpinBox[readOnly="true"]:focus
     color: {{light|opacity(0.7)}};
 }
 
+Nv200ControllerWidget QComboBox
+{
+    border: 1px solid {{accentColor}};
+}
+
 
 
 Nv200ControllerWidget QCheckBox[toggleSwitch="true"]::indicator:!checked,

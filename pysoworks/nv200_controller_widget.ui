@@ -18,15 +18,14 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#nv200ControllerWidget{
-background-image: url(:/assets/images/nv200_controller_structure.png);
-background-repeat: no-repeat;}
-</string>
+background-image: url(:/assets/images/nv200_controller_structure_new.png);
+background-repeat: no-repeat;}</string>
   </property>
   <widget class="QDoubleSpinBox" name="srSpinBox">
    <property name="geometry">
     <rect>
-     <x>239</x>
-     <y>174</y>
+     <x>245</x>
+     <y>90</y>
      <width>75</width>
      <height>24</height>
     </rect>
@@ -56,9 +55,9 @@ background-repeat: no-repeat;}
   <widget class="QSpinBox" name="setlpfSpinBox">
    <property name="geometry">
     <rect>
-     <x>347</x>
-     <y>190</y>
-     <width>94</width>
+     <x>352</x>
+     <y>109</y>
+     <width>106</width>
      <height>24</height>
     </rect>
    </property>
@@ -75,8 +74,8 @@ background-repeat: no-repeat;}
   <widget class="QCheckBox" name="notchonCheckBox">
    <property name="geometry">
     <rect>
-     <x>807</x>
-     <y>160</y>
+     <x>811</x>
+     <y>156</y>
      <width>96</width>
      <height>20</height>
     </rect>
@@ -94,8 +93,8 @@ background-repeat: no-repeat;}
   <widget class="QSpinBox" name="notchbSpinBox">
    <property name="geometry">
     <rect>
-     <x>807</x>
-     <y>217</y>
+     <x>811</x>
+     <y>213</y>
      <width>118</width>
      <height>24</height>
     </rect>
@@ -113,8 +112,8 @@ background-repeat: no-repeat;}
   <widget class="QSpinBox" name="notchfSpinBox">
    <property name="geometry">
     <rect>
-     <x>807</x>
-     <y>187</y>
+     <x>811</x>
+     <y>183</y>
      <width>118</width>
      <height>24</height>
     </rect>
@@ -132,8 +131,8 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="kiSpinBox">
    <property name="geometry">
     <rect>
-     <x>522</x>
-     <y>175</y>
+     <x>528</x>
+     <y>196</y>
      <width>120</width>
      <height>24</height>
     </rect>
@@ -163,9 +162,9 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="pcfxSpinBox">
    <property name="geometry">
     <rect>
-     <x>509</x>
-     <y>86</y>
-     <width>135</width>
+     <x>527</x>
+     <y>82</y>
+     <width>120</width>
      <height>24</height>
     </rect>
    </property>
@@ -194,8 +193,8 @@ background-repeat: no-repeat;}
   <widget class="QCheckBox" name="setlponCheckBox">
    <property name="geometry">
     <rect>
-     <x>347</x>
-     <y>161</y>
+     <x>352</x>
+     <y>80</y>
      <width>96</width>
      <height>20</height>
     </rect>
@@ -210,46 +209,12 @@ background-repeat: no-repeat;}
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="setstSpinBox">
-   <property name="geometry">
-    <rect>
-     <x>87</x>
-     <y>55</y>
-     <width>104</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="buttonSymbols">
-    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-   </property>
-   <property name="specialValueText">
-    <string notr="true">setst</string>
-   </property>
-   <property name="prefix">
-    <string>setst   </string>
-   </property>
-   <property name="decimals">
-    <number>3</number>
-   </property>
-  </widget>
   <widget class="QDoubleSpinBox" name="pcfvSpinBox">
    <property name="geometry">
     <rect>
-     <x>509</x>
-     <y>50</y>
-     <width>135</width>
+     <x>527</x>
+     <y>46</y>
+     <width>120</width>
      <height>24</height>
     </rect>
    </property>
@@ -278,8 +243,8 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="kdSpinBox">
    <property name="geometry">
     <rect>
-     <x>522</x>
-     <y>205</y>
+     <x>528</x>
+     <y>226</y>
      <width>120</width>
      <height>24</height>
     </rect>
@@ -309,8 +274,8 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="poslpfSpinBox">
    <property name="geometry">
     <rect>
-     <x>237</x>
-     <y>343</y>
+     <x>351</x>
+     <y>216</y>
      <width>110</width>
      <height>24</height>
     </rect>
@@ -340,9 +305,9 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="pcfaSpinBox">
    <property name="geometry">
     <rect>
-     <x>509</x>
-     <y>24</y>
-     <width>135</width>
+     <x>527</x>
+     <y>20</y>
+     <width>120</width>
      <height>24</height>
     </rect>
    </property>
@@ -371,8 +336,8 @@ background-repeat: no-repeat;}
   <widget class="QDoubleSpinBox" name="kpSpinBox">
    <property name="geometry">
     <rect>
-     <x>522</x>
-     <y>145</y>
+     <x>528</x>
+     <y>166</y>
      <width>120</width>
      <height>24</height>
     </rect>
@@ -399,45 +364,11 @@ background-repeat: no-repeat;}
     <number>3</number>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="setSpinBox">
-   <property name="geometry">
-    <rect>
-     <x>87</x>
-     <y>86</y>
-     <width>104</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="buttonSymbols">
-    <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-   </property>
-   <property name="specialValueText">
-    <string>set</string>
-   </property>
-   <property name="prefix">
-    <string>set   </string>
-   </property>
-   <property name="decimals">
-    <number>3</number>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="poslponCheckBox">
    <property name="geometry">
     <rect>
-     <x>237</x>
-     <y>316</y>
+     <x>351</x>
+     <y>189</y>
      <width>105</width>
      <height>20</height>
     </rect>
@@ -455,8 +386,8 @@ background-repeat: no-repeat;}
   <widget class="SvgCycleWidget" name="modsrcToggleWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>187</x>
-     <y>159</y>
+     <x>192</x>
+     <y>75</y>
      <width>40</width>
      <height>54</height>
     </rect>
@@ -471,8 +402,8 @@ background-repeat: no-repeat;}
   <widget class="SvgCycleWidget" name="clToggleWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>700</x>
-     <y>183</y>
+     <x>706</x>
+     <y>179</y>
      <width>65</width>
      <height>34</height>
     </rect>
@@ -482,6 +413,26 @@ background-repeat: no-repeat;}
    </property>
    <property name="styleSheet">
     <string notr="true">#clToggleWidget {background: #80ff0000;}</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="monsrcComboBox">
+   <property name="geometry">
+    <rect>
+     <x>153</x>
+     <y>302</y>
+     <width>148</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="spiSrcComboBox">
+   <property name="geometry">
+    <rect>
+     <x>153</x>
+     <y>363</y>
+     <width>148</width>
+     <height>24</height>
+    </rect>
    </property>
   </widget>
  </widget>
