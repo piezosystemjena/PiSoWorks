@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="40.187237"
+   height="54.798824"
+   viewBox="0 0 10.632874 14.498856"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="modsrc_toggle_switch.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#474747"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="5.8810095"
+     inkscape:cx="11.64766"
+     inkscape:cy="56.537912"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="-8"
+     inkscape:window-y="-7"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-91.489063,-60.95174)">
+    <ellipse
+       transform="scale(-1)"
+       cx="-100.93131"
+       cy="-68.123177"
+       rx="0.79374999"
+       ry="0.75604689"
+       id="ellipse68"
+       style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.79375;stroke-opacity:1" />
+    <g
+       id="g1"
+       inkscape:transform-center-x="3.901695"
+       inkscape:transform-center-y="-3.8181518"
+       transform="translate(0.17995777,0.08997888)">
+      <path
+         d="M 100.336,67.617824 94.184436,61.572095"
+         stroke-miterlimit="10"
+         id="path72"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.79375;stroke-opacity:1" />
+      <path
+         d="m 95.472957,61.654116 -1.883834,-0.587375 0.595313,1.680104 z"
+         id="path73"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.264583;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2"
+       inkscape:transform-center-x="5.3147637"
+       inkscape:transform-center-y="-1.4832441"
+       transform="rotate(-31.176461,101.67232,66.82155)">
+      <path
+         d="M 100.336,67.617824 94.184436,61.572095"
+         stroke-miterlimit="10"
+         id="path1"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.79375;stroke-opacity:1" />
+      <path
+         d="m 95.472957,61.654116 -1.883834,-0.587375 0.595313,1.680104 z"
+         id="path2"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.264583;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4"
+       inkscape:transform-center-x="5.3001823"
+       inkscape:transform-center-y="1.4966254"
+       transform="rotate(-58.237555,101.17511,67.222393)">
+      <path
+         d="M 100.336,67.617824 94.184436,61.572095"
+         stroke-miterlimit="10"
+         id="path3"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.79375;stroke-opacity:1" />
+      <path
+         d="m 95.472957,61.654116 -1.883834,-0.587375 0.595313,1.680104 z"
+         id="path4"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.264583;stroke-opacity:1" />
+    </g>
+    <g
+       id="g6"
+       inkscape:transform-center-x="3.8515291"
+       inkscape:transform-center-y="3.8687479"
+       transform="rotate(-89.507713,100.88617,68.002194)">
+      <path
+         d="M 100.336,67.617824 94.184436,61.572095"
+         stroke-miterlimit="10"
+         id="path5"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.79375;stroke-opacity:1" />
+      <path
+         d="m 95.472957,61.654116 -1.883834,-0.587375 0.595313,1.680104 z"
+         id="path6"
+         style="fill:#2db159;fill-opacity:1;stroke:#2db159;stroke-width:0.264583;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>

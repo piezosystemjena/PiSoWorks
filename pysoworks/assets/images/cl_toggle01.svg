@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="65.08" height="33.84" version="1.1" viewBox="0 0 17.219 8.9535" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-156.37 -107.69)">
+  <g transform="matrix(.26458 0 0 .26458 -28.554 59.489)" fill="#2db159" stroke="#2db159" stroke-width="3">
+   <circle cx="703.42" cy="186.66" r="3" pointer-events="all"/>
+   <path d="m764 199.5h-12.6m-27.6 12h-19.8m19.8-24h-19.8m43.2 12.96-23.4 11.04" stroke-miterlimit="10"/>
+   <circle transform="scale(-1)" cx="-749.6" cy="-199.5" r="2.4"/>
+   <circle cx="704" cy="211.5" r="3" pointer-events="all"/>
+  </g>
+ </g>
+</svg>
