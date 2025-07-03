@@ -461,8 +461,11 @@ background-repeat: no-repeat;}
      <height>54</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Setpoint Signal Source&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Selects the input source for the control setpoint.&lt;/p&gt;&lt;p&gt;Options:&lt;br/&gt;0 = Set command via USB or Ethernet&lt;br/&gt;1 = Analog Input&lt;br/&gt;2 = SPI&lt;br/&gt;3 = Arbitrary Waveform Generator&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="styleSheet">
-    <string notr="true">background: red;</string>
+    <string notr="true">#modsrcToggleWidget {background: #80ff0000;}</string>
    </property>
   </widget>
   <widget class="SvgCycleWidget" name="clToggleWidget" native="true">
@@ -474,8 +477,11 @@ background-repeat: no-repeat;}
      <height>34</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Control Loop Mode&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Selects between open-loop and closed-loop control modes for the PID controller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="styleSheet">
-    <string notr="true">background: red;</string>
+    <string notr="true">#clToggleWidget {background: #80ff0000;}</string>
    </property>
   </widget>
  </widget>

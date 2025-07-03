@@ -82,7 +82,6 @@ class NV200Widget(QWidget):
         ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
-        ui.tabWidget.currentChanged.connect(self.on_tab_changed)
 
         self.init_easy_mode_ui()
         self.init_settings_ui()
@@ -372,7 +371,7 @@ class NV200Widget(QWidget):
         return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
     
 
-    async def initialize_ui_from_device(self):
+    async def update_ui_from_device(self):
         """
         Asynchronously initializes the UI elements for easy mode UI.
         """
@@ -383,11 +382,11 @@ class NV200Widget(QWidget):
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         ui.targetPosSpinBox.setValue(await dev.get_setpoint())
-        await self.initialize_controller_settings_from_device()
+        await self.update_controller_ui_from_device()
         
 
 
-    async def initialize_controller_settings_from_device(self):
+    async def update_controller_ui_from_device(self):
         """
         Asynchronously initializes the controller settings UI elements based on the device's current settings.
         """
@@ -456,6 +455,12 @@ class NV200Widget(QWidget):
         cui.pcfxSpinBox.setMaximum(10000.0)
         cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfxSpinBox.setValue(pcfgains.position)
+
+        pidmode = await dev.get_pid_mode()
+        cui.clToggleWidget.setCurrent(pidmode.value)
+
+        modsrc = await dev.get_modulation_source()
+        cui.modsrcToggleWidget.setCurrent(modsrc.value)
         
 
 
@@ -486,7 +491,7 @@ class NV200Widget(QWidget):
             await self.disconnect_from_device()
             self._device = await connect_to_detected_device(detected_device)
             self.ui.easyModeGroupBox.setEnabled(True)
-            await self.initialize_ui_from_device()
+            await self.update_ui_from_device()
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
             print(f"Connected to {detected_device.identifier}.")
         except Exception as e:
@@ -573,11 +578,16 @@ class NV200Widget(QWidget):
         """
         Handles the event when the current tab in the tab widget is changed.
         """
+        self.ui.stackedWidget.setCurrentIndex(1 if index == 1 else 0)
         if index == 1:
             print("Settings tab activated")
-            await self.initialize_settings_tab_from_device()
+            await self.update_controller_ui_from_device()
+
 
     def updateWaveformPlot(self):
+        """
+        Updates the waveform plot in the UI when the corresponding tab is active.
+        """
         if self.ui.tabWidget.currentIndex() != 2:
             return
         
@@ -592,6 +602,7 @@ class NV200Widget(QWidget):
         mpl_canvas = self.ui.mplCanvasWidget.canvas
         mpl_canvas.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor(0, 255, 150))
         mpl_canvas.scale_axes(0, 1000, 0, 80)
+
 
     async def upload_waveform(self):
         """
@@ -714,10 +725,3 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.setMaximum(total)
         ui.moveProgressBar.setValue(current_index)
         self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)
-
-
-    def on_tab_changed(self, index):
-        """
-        Handles the event when the current tab in the tab widget is changed.
-        """
-        self.ui.stackedWidget.setCurrentIndex(1 if index == 1 else 0)

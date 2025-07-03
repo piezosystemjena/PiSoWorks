@@ -144,11 +144,11 @@ class Ui_nv200ControllerWidget(object):
         self.modsrcToggleWidget = SvgCycleWidget(nv200ControllerWidget)
         self.modsrcToggleWidget.setObjectName(u"modsrcToggleWidget")
         self.modsrcToggleWidget.setGeometry(QRect(187, 159, 40, 54))
-        self.modsrcToggleWidget.setStyleSheet(u"background: red;")
+        self.modsrcToggleWidget.setStyleSheet(u"#modsrcToggleWidget {background: #80ff0000;}")
         self.clToggleWidget = SvgCycleWidget(nv200ControllerWidget)
         self.clToggleWidget.setObjectName(u"clToggleWidget")
         self.clToggleWidget.setGeometry(QRect(700, 183, 65, 34))
-        self.clToggleWidget.setStyleSheet(u"background: red;")
+        self.clToggleWidget.setStyleSheet(u"#clToggleWidget {background: #80ff0000;}")
 
         self.retranslateUi(nv200ControllerWidget)
 
@@ -216,5 +216,11 @@ class Ui_nv200ControllerWidget(object):
         self.poslponCheckBox.setToolTip(QCoreApplication.translate("nv200ControllerWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Measured Position Lowpass Filter On</span></p><p>Enables or disables the lowpass filter applied to the measured position.</p><p>When enabled, it smooths the position signal to reduce noise before further processing.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.poslponCheckBox.setText(QCoreApplication.translate("nv200ControllerWidget", u"poslpon", None))
+#if QT_CONFIG(tooltip)
+        self.modsrcToggleWidget.setToolTip(QCoreApplication.translate("nv200ControllerWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Setpoint Signal Source</span></p><p>Selects the input source for the control setpoint.</p><p>Options:<br/>0 = Set command via USB or Ethernet<br/>1 = Analog Input<br/>2 = SPI<br/>3 = Arbitrary Waveform Generator</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.clToggleWidget.setToolTip(QCoreApplication.translate("nv200ControllerWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Control Loop Mode</span></p><p>Selects between open-loop and closed-loop control modes for the PID controller.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 
