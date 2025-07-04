@@ -1,8 +1,8 @@
 from typing import List, Optional, Sequence
 from pathlib import Path
 from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import Signal, Qt, QRectF, QSize, QEvent
-from PySide6.QtGui import QPainter, QMouseEvent
+from PySide6.QtCore import Signal, Qt, QRectF, QSize, QEvent, Property
+from PySide6.QtGui import QPainter, QMouseEvent, QColor, QPalette
 from PySide6.QtSvg import QSvgRenderer
 
 
@@ -32,6 +32,7 @@ class SvgCycleWidget(QWidget):
         super().__init__(parent)
         self.renderers: List[QSvgRenderer] = []
         self.current_index: int = 0
+        self._color: QColor = self.palette().color(QPalette.ColorRole.Highlight)
 
 
     def set_svg_paths(self, paths: Sequence[Path]) -> None:
@@ -198,3 +199,28 @@ class SvgCycleWidget(QWidget):
             The index of the currently displayed SVG.
         """
         return self.current_index
+    
+    def get_color(self) -> QColor:
+        """
+        Returns the current color of the widget.
+
+        Returns:
+            QColor: The current color assigned to the widget.
+        """
+        return self._color
+
+    def set_color(self, color: QColor) -> None:
+        """
+        Sets the color of the widget.
+
+        If the new color is different from the current color, updates the internal color,
+        emits the colorChanged signal with the new color, and triggers a repaint of the widget.
+
+        Args:
+            color (QColor): The new color to set for the widget.
+        """
+        if self._color != color:
+            self._color = color
+            self.update()  # Trigger repaint if color affects rendering
+
+    color = Property(QColor, get_color, set_color)
