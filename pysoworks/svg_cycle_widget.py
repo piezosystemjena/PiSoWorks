@@ -16,7 +16,7 @@ class SvgCycleWidget(QWidget):
     - Emits a signal when the current image index changes.
     """
 
-    currentChanged: Signal = Signal(int)
+    currentIndexChanged: Signal = Signal(int)
     """Signal emitted when the current SVG index changes."""
     clicked = Signal(int)
     """Signal emitted when the widget is clicked, passing the current index."""
@@ -49,9 +49,8 @@ class SvgCycleWidget(QWidget):
         self.setFixedSize(self.renderers[0].defaultSize())
         self.updateGeometry()
         self.update()
-        self.currentChanged.emit(self.current_index)
+        self.currentIndexChanged.emit(self.current_index)
         print(f"SVG defautlSize(): ", self.renderers[0].defaultSize() if self.renderers else "No SVGs loaded")
-
 
 
     def current_renderer(self) -> Optional[QSvgRenderer]:
@@ -64,6 +63,7 @@ class SvgCycleWidget(QWidget):
         if not self.renderers:
             return None
         return self.renderers[self.current_index]
+
 
     def aspect_ratio(self) -> float:
         """
@@ -79,6 +79,7 @@ class SvgCycleWidget(QWidget):
                 return size.width() / size.height()
         return 1.0
 
+
     def hasHeightForWidth(self) -> bool:
         """
         Indicate that the widget’s height depends on its width.
@@ -87,6 +88,7 @@ class SvgCycleWidget(QWidget):
             True, since the widget preserves aspect ratio.
         """
         return True
+
 
     def heightForWidth(self, width: int) -> int:
         """
@@ -122,6 +124,7 @@ class SvgCycleWidget(QWidget):
         """
         return self.sizeHint() or QSize(100, 100)
 
+
     def paintEvent(self, event: QEvent) -> None:
         """
         Paint the current SVG centered and scaled in the widget area.
@@ -153,6 +156,7 @@ class SvgCycleWidget(QWidget):
 
         renderer.render(painter, target_rect)
 
+
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """
         Cycle to the next SVG image when the widget is clicked.
@@ -164,12 +168,12 @@ class SvgCycleWidget(QWidget):
             # Cycle to next image on click
             if self.renderers:
                 next_index = (self.current_index + 1) % len(self.renderers)
-                self.setCurrent(next_index)
+                self.setCurrentIndex(next_index)
                 self.clicked.emit(next_index)  # Emit clicked signal with current index
         super().mousePressEvent(event)
 
 
-    def setCurrent(self, index: int) -> None:
+    def setCurrentIndex(self, index: int) -> None:
         """
         Set the current image index, update display and emit currentChanged signal.
 
@@ -184,4 +188,13 @@ class SvgCycleWidget(QWidget):
 
         self.current_index = index
         self.update()
-        self.currentChanged.emit(self.current_index)
+        self.currentIndexChanged.emit(self.current_index)
+
+    def currentIndex(self) -> int:
+        """
+        Get the current image index.
+
+        Returns:
+            The index of the currently displayed SVG.
+        """
+        return self.current_index
