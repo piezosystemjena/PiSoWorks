@@ -1,6 +1,6 @@
-from typing import Callable, Any, Dict, List, Type, Tuple, Optional, Union
 from PySide6.QtWidgets import (
     QWidget,
+    QSpinBox,
     QDoubleSpinBox,
     QCheckBox,
     QComboBox,
@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject
 from typing import Callable, Any, Dict, List, Type, Tuple
 from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QCheckBox, QComboBox
 from PySide6.QtCore import QObject
+
 
 
 class InputWidgetChangeTracker(QObject):
@@ -27,19 +28,45 @@ class InputWidgetChangeTracker(QObject):
     - QComboBox
     """
 
+    widget_handlers: Dict[Type[QWidget], Tuple[str, Callable[[QWidget], Any]]] = {
+        QDoubleSpinBox: ("valueChanged", lambda w: w.value()),
+        QSpinBox: ("valueChanged", lambda w: w.value()),
+        QCheckBox: ("stateChanged", lambda w: w.isChecked()),
+        QComboBox: ("currentIndexChanged", lambda w: w.currentIndex()),
+    }
+
+    @classmethod
+    def register_widget_handler(cls,
+        widget_type: Type[QWidget],
+        signal_name: str,
+        value_getter: Callable[[QWidget], Any]
+    ) -> None:
+        """
+        Register a custom widget type with its signal and value getter.
+
+        Args:
+            widget_type: The QWidget subclass to track.
+            signal_name: Name of the signal to connect (e.g. 'valueChanged').
+            value_getter: Function that returns the widget's current value.
+        """
+        cls.widget_handlers[widget_type] = (signal_name, value_getter)
+
+
+    @classmethod
+    def supported_widget_types(cls) -> list[Type[QWidget]]:
+        """
+        Returns a list of all currently supported QWidget types.
+
+        These are the widget classes that can be tracked by the tracker.
+        """
+        return list(cls.widget_handlers.keys())
+
+
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self.initial_values: Dict[QWidget, Any] = {}
         self.widgets: List[QWidget] = []
 
-        # Map widget classes to (signal name, value getter)
-        self.widget_handlers: Dict[
-            Type[QWidget], Tuple[str, Callable[[QWidget], Any]]
-        ] = {
-            QDoubleSpinBox: ("valueChanged", lambda w: w.value()),
-            QCheckBox: ("stateChanged", lambda w: w.isChecked()),
-            QComboBox: ("currentIndexChanged", lambda w: w.currentIndex()),
-        }
 
     def add_widget(
         self, widget: QWidget) -> None:
