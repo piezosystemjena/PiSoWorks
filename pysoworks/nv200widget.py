@@ -30,6 +30,7 @@ from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator
+from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 
 
 # Important:
@@ -134,7 +135,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.applyButton.setIconSize(QSize(24, 24))
         ui.applyButton.setIcon(get_icon("check", size=24, fill=True))
-        ui.applyButton.clicked.connect(qtinter.asyncslot(self.apply_setpoint_param))
+        ui.applyButton.clicked.connect(qtinter.asyncslot(self.apply_controller_parameters))
 
         ui.retrieveButton.setIconSize(QSize(24, 24))
         ui.retrieveButton.setIcon(get_icon("sync", size=24, fill=True))
@@ -150,6 +151,15 @@ class NV200Widget(QWidget):
         self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
 
+        tracker = self.input_change_tracker = InputWidgetChangeTracker(self)
+        cui = ui.controllerStructureWidget.ui
+        
+        tracker.add_widget(cui.srSpinBox)
+        tracker.add_widget(cui.monsrcComboBox)
+        tracker.add_widget(cui.notchonCheckBox)
+        tracker.add_widget(cui.setlponCheckBox)
+        tracker.add_widget(cui.kpSpinBox)
+        
 
     def init_waveform_ui(self):
         """
@@ -313,16 +323,18 @@ class NV200Widget(QWidget):
             return
         
        
-    async def apply_setpoint_param(self):
+    async def apply_controller_parameters(self):
         """
         Asynchronously applies setpoint parameters to the connected device.
         """
         try:
-            print("Applying setpoint parameters...")
+            print("Applying scontroller parameters...")
             dev = self._device
-            # await dev.set_slew_rate(self.ui.slewRateSpinBox.value())
-            # await dev.set_setpoint_lowpass_filter_cutoff_freq(self.ui.setpointFilterCutoffSpinBox.value())
-            # await dev.enable_setpoint_lowpass_filter(self.ui.setpointFilterCheckBox.isChecked())
+            dirty_widgets = self.input_change_tracker.get_dirty_widgets()
+            for widget in dirty_widgets:
+                print(f"Applying changes from widget: {widget}")
+                await widget._applyfunc(dev, self.input_change_tracker.get_value_of_widget(widget))
+                self.input_change_tracker.reset_widget(widget)
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -367,27 +379,35 @@ class NV200Widget(QWidget):
         cui.srSpinBox.setMinimum(0.0000008)
         cui.srSpinBox.setMaximum(2000)
         cui.srSpinBox.setValue(await dev.get_slew_rate())
+        cui.srSpinBox._applyfunc = dev.set_slew_rate
 
         setpoint_lpf = dev.setpoint_lpf
         cui.setlponCheckBox.setChecked(await setpoint_lpf.is_enabled())
+        cui.setlponCheckBox._applyfunc = setpoint_lpf.enable
         cui.setlpfSpinBox.setMinimum(int(setpoint_lpf.cutoff_range.min))
         cui.setlpfSpinBox.setMaximum(int(setpoint_lpf.cutoff_range.max))
         cui.setlpfSpinBox.setValue(int(await setpoint_lpf.get_cutoff()))
+        cui.setlpfSpinBox._applyfunc = setpoint_lpf.set_cutoff
 
         poslpf = dev.position_lpf
         cui.poslponCheckBox.setChecked(await poslpf.is_enabled())
+        cui.poslponCheckBox._applyfunc = poslpf.enable 
         cui.poslpfSpinBox.setMinimum(poslpf.cutoff_range.min)
         cui.poslpfSpinBox.setMaximum(poslpf.cutoff_range.max)
         cui.poslpfSpinBox.setValue(await poslpf.get_cutoff())
+        cui.poslpfSpinBox._applyfunc = poslpf.set_cutoff
 
         notch_filter = dev.notch_filter
         cui.notchonCheckBox.setChecked(await notch_filter.is_enabled())
+        cui.notchonCheckBox._applyfunc = notch_filter.enable   
         cui.notchfSpinBox.setMinimum(notch_filter.freq_range.min)
         cui.notchfSpinBox.setMaximum(notch_filter.freq_range.max)  
         cui.notchfSpinBox.setValue(await notch_filter.get_frequency())
+        cui.notchfSpinBox._applyfunc = notch_filter.set_frequency
         cui.notchbSpinBox.setMinimum(notch_filter.bandwidth_range.min)
         cui.notchbSpinBox.setMaximum(notch_filter.bandwidth_range.max)
         cui.notchbSpinBox.setValue(await notch_filter.get_bandwidth())
+        cui.notchbSpinBox._applyfunc = notch_filter.set_bandwidth
 
         pidgains = await dev.get_pid_gains()
         print(f"PID Gains: {pidgains}")
@@ -395,6 +415,7 @@ class NV200Widget(QWidget):
         cui.kpSpinBox.setMaximum(10000.0)
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
+        cui.kpSpinBox._applyfunc = lambda self, value: dev.set_pid_gains(kp=value)
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
@@ -430,6 +451,7 @@ class NV200Widget(QWidget):
 
         self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
         self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
+        self.input_change_tracker.reset()
         
 
 

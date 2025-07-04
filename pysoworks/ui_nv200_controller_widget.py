@@ -26,10 +26,10 @@ class Ui_nv200ControllerWidget(object):
     def setupUi(self, nv200ControllerWidget):
         if not nv200ControllerWidget.objectName():
             nv200ControllerWidget.setObjectName(u"nv200ControllerWidget")
-        nv200ControllerWidget.resize(1376, 850)
+        nv200ControllerWidget.resize(1124, 575)
         nv200ControllerWidget.setAutoFillBackground(False)
         nv200ControllerWidget.setStyleSheet(u"#nv200ControllerWidget{\n"
-"background-image: url(:/assets/images/nv200_controller_structure_new.png);\n"
+"background-image: url(:/assets/images/nv200_controller_structure.png);\n"
 "background-repeat: no-repeat;}")
         self.srSpinBox = QDoubleSpinBox(nv200ControllerWidget)
         self.srSpinBox.setObjectName(u"srSpinBox")
@@ -49,6 +49,7 @@ class Ui_nv200ControllerWidget(object):
         self.notchonCheckBox = QCheckBox(nv200ControllerWidget)
         self.notchonCheckBox.setObjectName(u"notchonCheckBox")
         self.notchonCheckBox.setGeometry(QRect(811, 156, 96, 20))
+        self.notchonCheckBox.setChecked(True)
         self.notchonCheckBox.setProperty(u"toggleSwitch", True)
         self.notchbSpinBox = QSpinBox(nv200ControllerWidget)
         self.notchbSpinBox.setObjectName(u"notchbSpinBox")

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1376</width>
-    <height>850</height>
+    <width>1124</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#nv200ControllerWidget{
-background-image: url(:/assets/images/nv200_controller_structure_new.png);
+background-image: url(:/assets/images/nv200_controller_structure.png);
 background-repeat: no-repeat;}</string>
   </property>
   <widget class="QDoubleSpinBox" name="srSpinBox">
@@ -85,6 +85,9 @@ background-repeat: no-repeat;}</string>
    </property>
    <property name="text">
     <string>notchon</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
    <property name="toggleSwitch" stdset="0">
     <bool>true</bool>

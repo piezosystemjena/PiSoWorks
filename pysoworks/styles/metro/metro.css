@@ -3564,8 +3564,7 @@ Nv200ControllerWidget QComboBox
 
 
 
-Nv200ControllerWidget QCheckBox[toggleSwitch="true"]::indicator:!checked,
-Nv200ControllerWidget QtLabb--CToggleSwitch::indicator:!checked
+Nv200ControllerWidget QCheckBox[toggleSwitch="true"]::indicator:!checked
 {
    image: url(icon:/normal/toggle_switch_off.svg);
    image-position: center left;
@@ -3576,3 +3575,33 @@ Nv200ControllerWidget QtLabb--CToggleSwitch::indicator:!checked
    padding: 2px;
 }
 
+Nv200ControllerWidget QCheckBox[toggleSwitch="true"][dirty="true"]::indicator:!checked
+{
+   image: url(icon:/normal/toggle_switch_off.svg);
+   image-position: center left;
+   border: 1px solid #ff9300;
+   border-radius: 8px;
+   width: 30px;
+   height: 12px;
+   padding: 2px;
+}
+
+QCheckBox[toggleSwitch="true"][dirty="true"]::indicator::checked
+{
+   image: url(icon:/normal/toggle_switch_on.svg);
+   border: 1px solid #ff9300;
+   background: #ff9300;
+   image-position: center right;
+}
+
+
+
+Nv200ControllerWidget QAbstractSpinBox[dirty="true"]
+{
+    border-color: #ff9300;
+}
+
+Nv200ControllerWidget QComboBox[dirty="true"]
+{
+    border-color: #ff9300;
+}
