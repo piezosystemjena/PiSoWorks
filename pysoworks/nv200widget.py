@@ -9,7 +9,7 @@ import math
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject, Signal
 from PySide6.QtGui import QColor, QIcon, QPalette
-from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
+from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QCheckBox, QSpinBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
@@ -31,6 +31,7 @@ from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoSt
 from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
+from pysoworks.svg_cycle_widget import SvgCycleWidget
 
 
 # Important:
@@ -86,7 +87,7 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.set_update_interval(20)
 
         self.init_easy_mode_ui()
-        self.init_settings_ui()
+        self.init_controller_param_ui()
         self.init_console_ui()
         self.init_waveform_ui()
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
@@ -128,7 +129,7 @@ class NV200Widget(QWidget):
         ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
         ui.console.register_commands(NV200Device.help_dict)
 
-    def init_settings_ui(self):
+    def init_controller_param_ui(self):
         """
         Initializes the settings UI components for setpoint parameter application.
         """
@@ -144,21 +145,16 @@ class NV200Widget(QWidget):
         ui.restoreButton.setIconSize(QSize(24, 24))
         ui.restoreButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
 
-        
-        # ui.setpointFilterCheckBox.toggled.connect(
-        #     (lambda checked: ui.setpointFilterCheckBox.setText("LP Filter ON" if checked else "LP Filter OFF"))
-        # )
         self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
 
+        InputWidgetChangeTracker.register_widget_handler(
+            SvgCycleWidget, "currentIndexChanged", lambda w: w.currentIndex())
         tracker = self.input_change_tracker = InputWidgetChangeTracker(self)
-        cui = ui.controllerStructureWidget.ui
+        for widget_type in InputWidgetChangeTracker.supported_widget_types():
+            for widget in ui.controllerStructureWidget.findChildren(widget_type):
+                tracker.add_widget(widget)
         
-        tracker.add_widget(cui.srSpinBox)
-        tracker.add_widget(cui.monsrcComboBox)
-        tracker.add_widget(cui.notchonCheckBox)
-        tracker.add_widget(cui.setlponCheckBox)
-        tracker.add_widget(cui.kpSpinBox)
         
 
     def init_waveform_ui(self):
@@ -333,7 +329,7 @@ class NV200Widget(QWidget):
             dirty_widgets = self.input_change_tracker.get_dirty_widgets()
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
-                await widget._applyfunc(dev, self.input_change_tracker.get_value_of_widget(widget))
+                await widget._applyfunc(self.input_change_tracker.get_value_of_widget(widget))
                 self.input_change_tracker.reset_widget(widget)
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
@@ -415,43 +411,52 @@ class NV200Widget(QWidget):
         cui.kpSpinBox.setMaximum(10000.0)
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
-        cui.kpSpinBox._applyfunc = lambda self, value: dev.set_pid_gains(kp=value)
+        cui.kpSpinBox._applyfunc = lambda value: dev.set_pid_gains(kp=value)
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
         cui.kiSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kiSpinBox.setValue(pidgains.ki)
+        cui.kiSpinBox._applyfunc = lambda value: dev.set_pid_gains(ki=value)
 
         cui.kdSpinBox.setMinimum(0.0)
         cui.kdSpinBox.setMaximum(10000.0)
-        cui.kdSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
+        cui.kdSpinBox.setSpecialValueText(cui.kdSpinBox.prefix() + "0.0 (disabled)")
         cui.kdSpinBox.setValue(pidgains.kd)
+        cui.kdSpinBox._applyfunc = lambda value: dev.set_pid_gains(kd=value)
         
         pcfgains = await dev.get_pcf_gains()
         cui.pcfaSpinBox.setMinimum(0.0)
         cui.pcfaSpinBox.setMaximum(10000.0)
         cui.pcfaSpinBox.setSpecialValueText(cui.pcfaSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfaSpinBox.setValue(pcfgains.acceleration)
+        cui.pcfaSpinBox._applyfunc = lambda value: dev.set_pcf_gains(acceleration=value)
 
         cui.pcfvSpinBox.setMinimum(0.0)
         cui.pcfvSpinBox.setMaximum(10000.0)
         cui.pcfvSpinBox.setSpecialValueText(cui.pcfvSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfvSpinBox.setValue(pcfgains.velocity)
+        cui.pcfvSpinBox._applyfunc = lambda value: dev.set_pcf_gains(velocity=value)
 
         cui.pcfxSpinBox.setMinimum(0.0)
         cui.pcfxSpinBox.setMaximum(10000.0)
         cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfxSpinBox.setValue(pcfgains.position)
+        cui.pcfxSpinBox._applyfunc = lambda value: dev.set_pcf_gains(position=value)
 
         pidmode = await dev.get_pid_mode()
-        cui.clToggleWidget.setCurrent(pidmode.value)
+        cui.clToggleWidget.setCurrentIndex(pidmode.value)
+        cui.clToggleWidget._applyfunc = lambda value: dev.set_pid_mode(PidLoopMode(value))
 
         modsrc = await dev.get_modulation_source()
-        cui.modsrcToggleWidget.setCurrent(modsrc.value)
+        cui.modsrcToggleWidget.setCurrentIndex(modsrc.value)
+        cui.modsrcToggleWidget._applyfunc = lambda value: dev.set_modulation_source(ModulationSource(value))
 
         self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
+        cui.monsrcComboBox._applyfunc = lambda value: dev.set_analog_monitor_source(AnalogMonitorSource(value))
         self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
         self.input_change_tracker.reset()
+        cui.spiSrcComboBox._applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
         
 
 
