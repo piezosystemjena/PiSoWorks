@@ -3,7 +3,8 @@ import sys
 import asyncio
 import logging
 import os
-from typing import Any, Tuple
+from enum import Enum
+from typing import Any, cast
 import math
 
 from PySide6.QtWidgets import QApplication, QWidget
@@ -29,7 +30,7 @@ from nv200.device_discovery import discover_devices
 from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from nv200.connection_utils import connect_to_detected_device
-from nv200.waveform_generator import WaveformGenerator
+from nv200.waveform_generator import WaveformGenerator, WaveformType
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 
@@ -55,6 +56,14 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
     icon.set_color(QPalette().color(color))
     return icon
 
+
+class TabWidgetTabs(Enum):
+    """
+    Enumeration for the different tabs in the NV200Widget's tab widget.
+    """
+    EASY_MODE = 0
+    SETTINGS = 1
+    WAVEFORM = 2
 
 
 class NV200Widget(QWidget):
@@ -91,6 +100,38 @@ class NV200Widget(QWidget):
         self.init_console_ui()
         self.init_waveform_ui()
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
+
+    @property
+    def device(self) -> NV200Device:
+        """
+        Returns the connected device instance.
+
+        Raises:
+            RuntimeError: If no device is connected.
+        """
+        if not self._device:
+            raise RuntimeError("Device not connected.")
+        return self._device
+    
+    @property
+    def recorder(self) -> DataRecorder:
+        """
+        Returns the DataRecorder instance associated with the device.
+        """
+        if self._recorder is None:
+            self._recorder = DataRecorder(self.device)
+        return self._recorder
+
+    @property
+    def waveform_generator(self) -> WaveformGenerator:
+        """
+        Returns the WaveformGenerator instance associated with the device.
+        If it does not exist, it creates a new one.
+        """
+        if self._waveform_generator is None:
+            self._waveform_generator = WaveformGenerator(self.device)
+        return self._waveform_generator	
+    
 
     def init_easy_mode_ui(self):
         """
@@ -129,6 +170,7 @@ class NV200Widget(QWidget):
         ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
         ui.console.register_commands(NV200Device.help_dict)
 
+
     def init_controller_param_ui(self):
         """
         Initializes the settings UI components for setpoint parameter application.
@@ -147,6 +189,7 @@ class NV200Widget(QWidget):
 
         self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
+        self.init_waveform_combobox()
 
         InputWidgetChangeTracker.register_widget_handler(
             SvgCycleWidget, "currentIndexChanged", lambda w: w.currentIndex())
@@ -162,10 +205,11 @@ class NV200Widget(QWidget):
         Initializes the waveform UI components for waveform generation and control.
         """
         ui = self.ui
-        ui.lowLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
-        ui.highLevelSpinBox.valueChanged.connect(self.updateWaveformPlot)
-        ui.freqSpinBox.valueChanged.connect(self.updateWaveformPlot)
-        ui.phaseShiftSpinBox.valueChanged.connect(self.updateWaveformPlot)
+        ui.lowLevelSpinBox.valueChanged.connect(self.update_waveform_plot)
+        ui.highLevelSpinBox.valueChanged.connect(self.update_waveform_plot)
+        ui.freqSpinBox.valueChanged.connect(self.update_waveform_plot)
+        ui.phaseShiftSpinBox.valueChanged.connect(self.update_waveform_plot)
+        ui.dutyCycleSpinBox.valueChanged.connect(self.update_waveform_plot)
         ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
         ui.uploadButton.setIcon(get_icon("upload", size=24, fill=True))
         ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
@@ -203,8 +247,30 @@ class NV200Widget(QWidget):
         cb.addItem("Open Loop Pos.", AnalogMonitorSource.OPEN_LOOP_POS)
         cb.addItem("Piezo Current 1", AnalogMonitorSource.PIEZO_CURRENT_1)
         cb.addItem("Piezo Current 2", AnalogMonitorSource.PIEZO_CURRENT_2)
-  
 
+    def init_waveform_combobox(self):
+        """
+        Initializes the waveform type combo box with available waveform options.
+        """
+        cb = self.ui.waveFormComboBox
+        cb.clear()
+        cb.addItem("Sine", WaveformType.SINE)
+        cb.addItem("Triangle", WaveformType.TRIANGLE)
+        cb.addItem("Square", WaveformType.SQUARE)
+        cb.currentIndexChanged.connect(self.on_waveform_type_changed)  # Show duty cycle only for square wave
+        self.on_waveform_type_changed(cb.currentIndex())  # Initialize visibility based on the current selection
+
+    
+    def on_waveform_type_changed(self, index: int):
+        """
+        Handles the event when the waveform type combo box is changed.
+        """
+        visible = (index == WaveformType.SQUARE.value)
+        self.ui.dutyCycleLabel.setVisible(visible)
+        self.ui.dutyCycleSpinBox.setVisible(visible)
+        self.update_waveform_plot()
+
+  
     def set_combobox_index_by_value(self, combobox: QComboBox, value: Any) -> None:
         """
         Sets the current index of a QComboBox based on the given userData value.
@@ -229,7 +295,7 @@ class NV200Widget(QWidget):
         ui.connectButton.setEnabled(False)
         ui.easyModeGroupBox.setEnabled(False)
         self.status_message.emit("Searching for devices...", 0)
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         if self._device is not None:
             await self._device.close()
@@ -272,7 +338,7 @@ class NV200Widget(QWidget):
             print("No device selected.")
             return
 
-        device = self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
+        device = self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
         if device is None:
             print("No device data found.")
             return
@@ -329,7 +395,7 @@ class NV200Widget(QWidget):
             dirty_widgets = self.input_change_tracker.get_dirty_widgets()
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
-                await widget._applyfunc(self.input_change_tracker.get_value_of_widget(widget))
+                await widget.applyfunc(self.input_change_tracker.get_value_of_widget(widget))
                 self.input_change_tracker.reset_widget(widget)
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
@@ -342,7 +408,7 @@ class NV200Widget(QWidget):
         index = self.ui.devicesComboBox.currentIndex()
         if index == -1:
             return None
-        return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
+        return self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
     
 
     async def update_ui_from_device(self):
@@ -350,7 +416,7 @@ class NV200Widget(QWidget):
         Asynchronously initializes the UI elements for easy mode UI.
         """
         print("Initializing UI from device...")
-        dev = self._device
+        dev = self.device
         ui = self.ui
         pid_mode = await dev.get_pid_mode()
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
@@ -375,35 +441,35 @@ class NV200Widget(QWidget):
         cui.srSpinBox.setMinimum(0.0000008)
         cui.srSpinBox.setMaximum(2000)
         cui.srSpinBox.setValue(await dev.get_slew_rate())
-        cui.srSpinBox._applyfunc = dev.set_slew_rate
+        cui.srSpinBox.applyfunc = dev.set_slew_rate
 
         setpoint_lpf = dev.setpoint_lpf
         cui.setlponCheckBox.setChecked(await setpoint_lpf.is_enabled())
-        cui.setlponCheckBox._applyfunc = setpoint_lpf.enable
+        cui.setlponCheckBox.applyfunc = setpoint_lpf.enable
         cui.setlpfSpinBox.setMinimum(int(setpoint_lpf.cutoff_range.min))
         cui.setlpfSpinBox.setMaximum(int(setpoint_lpf.cutoff_range.max))
         cui.setlpfSpinBox.setValue(int(await setpoint_lpf.get_cutoff()))
-        cui.setlpfSpinBox._applyfunc = setpoint_lpf.set_cutoff
+        cui.setlpfSpinBox.applyfunc = setpoint_lpf.set_cutoff
 
         poslpf = dev.position_lpf
         cui.poslponCheckBox.setChecked(await poslpf.is_enabled())
-        cui.poslponCheckBox._applyfunc = poslpf.enable 
+        cui.poslponCheckBox.applyfunc = poslpf.enable 
         cui.poslpfSpinBox.setMinimum(poslpf.cutoff_range.min)
         cui.poslpfSpinBox.setMaximum(poslpf.cutoff_range.max)
         cui.poslpfSpinBox.setValue(await poslpf.get_cutoff())
-        cui.poslpfSpinBox._applyfunc = poslpf.set_cutoff
+        cui.poslpfSpinBox.applyfunc = poslpf.set_cutoff
 
         notch_filter = dev.notch_filter
         cui.notchonCheckBox.setChecked(await notch_filter.is_enabled())
-        cui.notchonCheckBox._applyfunc = notch_filter.enable   
+        cui.notchonCheckBox.applyfunc = notch_filter.enable   
         cui.notchfSpinBox.setMinimum(notch_filter.freq_range.min)
         cui.notchfSpinBox.setMaximum(notch_filter.freq_range.max)  
         cui.notchfSpinBox.setValue(await notch_filter.get_frequency())
-        cui.notchfSpinBox._applyfunc = notch_filter.set_frequency
+        cui.notchfSpinBox.applyfunc = notch_filter.set_frequency
         cui.notchbSpinBox.setMinimum(notch_filter.bandwidth_range.min)
         cui.notchbSpinBox.setMaximum(notch_filter.bandwidth_range.max)
         cui.notchbSpinBox.setValue(await notch_filter.get_bandwidth())
-        cui.notchbSpinBox._applyfunc = notch_filter.set_bandwidth
+        cui.notchbSpinBox.applyfunc = notch_filter.set_bandwidth
 
         pidgains = await dev.get_pid_gains()
         print(f"PID Gains: {pidgains}")
@@ -411,52 +477,52 @@ class NV200Widget(QWidget):
         cui.kpSpinBox.setMaximum(10000.0)
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
-        cui.kpSpinBox._applyfunc = lambda value: dev.set_pid_gains(kp=value)
+        cui.kpSpinBox.applyfunc = lambda value: dev.set_pid_gains(kp=value)
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
         cui.kiSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kiSpinBox.setValue(pidgains.ki)
-        cui.kiSpinBox._applyfunc = lambda value: dev.set_pid_gains(ki=value)
+        cui.kiSpinBox.applyfunc = lambda value: dev.set_pid_gains(ki=value)
 
         cui.kdSpinBox.setMinimum(0.0)
         cui.kdSpinBox.setMaximum(10000.0)
         cui.kdSpinBox.setSpecialValueText(cui.kdSpinBox.prefix() + "0.0 (disabled)")
         cui.kdSpinBox.setValue(pidgains.kd)
-        cui.kdSpinBox._applyfunc = lambda value: dev.set_pid_gains(kd=value)
+        cui.kdSpinBox.applyfunc = lambda value: dev.set_pid_gains(kd=value)
         
         pcfgains = await dev.get_pcf_gains()
         cui.pcfaSpinBox.setMinimum(0.0)
         cui.pcfaSpinBox.setMaximum(10000.0)
         cui.pcfaSpinBox.setSpecialValueText(cui.pcfaSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfaSpinBox.setValue(pcfgains.acceleration)
-        cui.pcfaSpinBox._applyfunc = lambda value: dev.set_pcf_gains(acceleration=value)
+        cui.pcfaSpinBox.applyfunc = lambda value: dev.set_pcf_gains(acceleration=value)
 
         cui.pcfvSpinBox.setMinimum(0.0)
         cui.pcfvSpinBox.setMaximum(10000.0)
         cui.pcfvSpinBox.setSpecialValueText(cui.pcfvSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfvSpinBox.setValue(pcfgains.velocity)
-        cui.pcfvSpinBox._applyfunc = lambda value: dev.set_pcf_gains(velocity=value)
+        cui.pcfvSpinBox.applyfunc = lambda value: dev.set_pcf_gains(velocity=value)
 
         cui.pcfxSpinBox.setMinimum(0.0)
         cui.pcfxSpinBox.setMaximum(10000.0)
         cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfxSpinBox.setValue(pcfgains.position)
-        cui.pcfxSpinBox._applyfunc = lambda value: dev.set_pcf_gains(position=value)
+        cui.pcfxSpinBox.applyfunc = lambda value: dev.set_pcf_gains(position=value)
 
         pidmode = await dev.get_pid_mode()
         cui.clToggleWidget.setCurrentIndex(pidmode.value)
-        cui.clToggleWidget._applyfunc = lambda value: dev.set_pid_mode(PidLoopMode(value))
+        cui.clToggleWidget.applyfunc = lambda value: dev.set_pid_mode(PidLoopMode(value))
 
         modsrc = await dev.get_modulation_source()
         cui.modsrcToggleWidget.setCurrentIndex(modsrc.value)
-        cui.modsrcToggleWidget._applyfunc = lambda value: dev.set_modulation_source(ModulationSource(value))
+        cui.modsrcToggleWidget.applyfunc = lambda value: dev.set_modulation_source(ModulationSource(value))
 
         self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
-        cui.monsrcComboBox._applyfunc = lambda value: dev.set_analog_monitor_source(AnalogMonitorSource(value))
+        cui.monsrcComboBox.applyfunc = lambda value: dev.set_analog_monitor_source(AnalogMonitorSource(value))
         self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
         self.input_change_tracker.reset()
-        cui.spiSrcComboBox._applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
+        cui.spiSrcComboBox.applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
         
 
 
@@ -479,13 +545,13 @@ class NV200Widget(QWidget):
         """
         Asynchronously connects to the selected device.
         """
-        self.setCursor(Qt.WaitCursor)
+        self.setCursor(Qt.CursorShape.WaitCursor)
         detected_device = self.selected_device()
         self.status_message.emit(f"Connecting to {detected_device.identifier}...", 0)
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
-            self._device = await connect_to_detected_device(detected_device)
+            self._device = cast(NV200Device, await connect_to_detected_device(detected_device))
             self.ui.easyModeGroupBox.setEnabled(True)
             await self.update_ui_from_device()
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
@@ -495,31 +561,8 @@ class NV200Widget(QWidget):
             print(f"Connection failed: {e}")
             return
         finally:
-            self.setCursor(Qt.ArrowCursor)
-
-    def recorder(self) -> DataRecorder| None:
-        """
-        Returns the DataRecorder instance associated with the device.
-        """
-        if self._device is None:
-            return None
-
-        if self._recorder is None:
-            self._recorder = DataRecorder(self._device)
-        return self._recorder	
-    
-    def waveform_generator(self) -> WaveformGenerator | None:
-        """
-        Returns the WaveformGenerator instance associated with the device.
-        If it does not exist, it creates a new one.
-        """
-        if self._device is None:
-            return None
-
-        if self._waveform_generator is None:
-            self._waveform_generator = WaveformGenerator(self._device)
-        return self._waveform_generator
-    
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+   
 
     def start_move(self):
         """
@@ -528,38 +571,76 @@ class NV200Widget(QWidget):
         asyncio.create_task(self.start_move_async(self.sender()))
 
 
+    async def setup_data_recorder(self) -> DataRecorder:
+        """
+        Asynchronously configures the data recorder with appropriate data sources and recording duration.
+
+        This method determines the type of position sensor used by the device and sets the first data source
+        of the recorder accordingly:
+            - If no position sensor type is detected, sets the first data source to SETPOINT.
+            - Otherwise, sets it to PIEZO_POSITION.
+        The second data source is always set to PIEZO_VOLTAGE.
+        The recording duration is set to 120 milliseconds.
+
+        Returns:
+            None
+        """
+        dev = self.device
+        recorder = self.recorder
+        pos_sensor_type = await dev.get_actuator_sensor_type()
+        if pos_sensor_type is None:
+            await recorder.set_data_source(0, DataRecorderSource.SETPOINT)
+        else:
+            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
+        await recorder.set_data_source(1, DataRecorderSource.PIEZO_VOLTAGE)
+        await recorder.set_recording_duration_ms(120)
+        return recorder
+
+
+    async def plot_recorder_data(self):
+        """
+        Asynchronously retrieves and plots recorded data from two channels.
+
+        Emits:
+            status_message (str, int): Notifies the UI about the current status.
+
+        Raises:
+            Any exceptions raised by recorder.wait_until_finished() or recorder.read_recorded_data_of_channel().
+        """
+        ui = self.ui
+        recorder = self.recorder
+        await recorder.wait_until_finished()
+        self.status_message.emit("Reading recorded data from device...", 0)
+        rec_data = await recorder.read_recorded_data_of_channel(0)
+        ui.mplCanvasWidget.canvas.plot_recorder_data(rec_data, QColor(0, 255, 0))
+        rec_data = await recorder.read_recorded_data_of_channel(1)
+        ui.mplCanvasWidget.canvas.add_recorder_data_line(rec_data,  QColor('orange'))
+        self.status_message.emit("", 0)
+
+
     async def start_move_async(self, sender: QObject):
         """
         Asynchronously starts the move operation.
         """
-        if self._device is None:
-            print("No device connected.")
-            return
-        
-        spinbox : QDoubleSpinBox = sender.property("value_edit")
-        ui = self.ui
-        ui.easyModeGroupBox.setEnabled(False)
-        ui.moveProgressBar.start(5000, "start_move")
         try:
-            recorder = self.recorder()
-            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
-            await recorder.set_data_source(1, DataRecorderSource.PIEZO_VOLTAGE)
+            dev = self.device
+
+            spinbox : QDoubleSpinBox = sender.property("value_edit")
+            ui = self.ui
+            ui.easyModeGroupBox.setEnabled(False)
+            ui.moveProgressBar.start(5000, "start_move")
+
+            recorder = await self.setup_data_recorder()
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_SET_COMMAND)
-            await recorder.set_recording_duration_ms(120)
             await recorder.start_recording()
 
             # Implement the move logic here
             # For example, you might want to send a command to the device to start moving.
             # await self._device.start_move()
             print("Starting move operation...")
-            await self._device.move(spinbox.value())
+            await dev.move(spinbox.value())
             self.status_message.emit("Move operation started.", 0)
-            await recorder.wait_until_finished()
-            self.status_message.emit("Reading recorded data from device...", 0)
-            rec_data = await recorder.read_recorded_data_of_channel(0)
-            ui.mplCanvasWidget.canvas.plot_recorder_data(rec_data, QColor(0, 255, 0))
-            rec_data = await recorder.read_recorded_data_of_channel(1)
-            ui.mplCanvasWidget.canvas.add_recorder_data_line(rec_data,  QColor('orange'))
+            await self.plot_recorder_data()
             ui.moveProgressBar.stop(success=True, context="start_move")
         except Exception as e:
             self.status_message.emit(f"Error during move operation: {e}", 4000)
@@ -574,13 +655,24 @@ class NV200Widget(QWidget):
         """
         Handles the event when the current tab in the tab widget is changed.
         """
-        self.ui.stackedWidget.setCurrentIndex(1 if index == 1 else 0)
-        if index == 1:
+        self.ui.stackedWidget.setCurrentIndex(1 if index == TabWidgetTabs.SETTINGS.value else 0)
+        if index == TabWidgetTabs.SETTINGS.value:
             print("Settings tab activated")
             await self.update_controller_ui_from_device()
+        elif index == TabWidgetTabs.WAVEFORM.value:
+            print("Waveform tab activated")
+            self.update_waveform_plot()
 
 
-    def updateWaveformPlot(self):
+    def current_waveform_type(self) -> WaveformType:
+        """
+        Returns the currently selected waveform type from the waveform combo box.
+        """
+        cb = self.ui.waveFormComboBox
+        return cb.currentData(role=Qt.ItemDataRole.UserRole)   
+
+
+    def update_waveform_plot(self):
         """
         Updates the waveform plot in the UI when the corresponding tab is active.
         """
@@ -588,13 +680,14 @@ class NV200Widget(QWidget):
             return
         
         print("Updating waveform plot...")
-        waveform = WaveformGenerator.generate_sine_wave(
+        waveform = WaveformGenerator.generate_waveform(
+            waveform_type=self.current_waveform_type(),
             low_level=self.ui.lowLevelSpinBox.value(),
             high_level=self.ui.highLevelSpinBox.value(),
             freq_hz=self.ui.freqSpinBox.value(),
-            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value())
+            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value()),
+            duty_cycle=self.ui.dutyCycleSpinBox.value() / 100.0
         )
-        ui = self.ui
         mpl_canvas = self.ui.mplCanvasWidget.canvas
         mpl_canvas.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor(0, 255, 150))
         mpl_canvas.scale_axes(0, 1000, 0, 80)
@@ -604,56 +697,50 @@ class NV200Widget(QWidget):
         """
         Asynchronously uploads the waveform to the device.
         """
-        if self._device is None:
-            self.status_message.emit("Error: No device connected", 4000)
-            return
-        
-        wg = self.waveform_generator()
-        if wg is None:
-            print("Waveform generator not initialized.")
-            return
-        
-        waveform = WaveformGenerator.generate_sine_wave(
-            low_level=self.ui.lowLevelSpinBox.value(),
-            high_level=self.ui.highLevelSpinBox.value(),
-            freq_hz=self.ui.freqSpinBox.value(),
-            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value())
-        )
-        
         try:
-            self.setCursor(Qt.WaitCursor)
+            wg = self.waveform_generator
+            waveform = WaveformGenerator.generate_waveform(
+                waveform_type=self.current_waveform_type(),
+                low_level=self.ui.lowLevelSpinBox.value(),
+                high_level=self.ui.highLevelSpinBox.value(),
+                freq_hz=self.ui.freqSpinBox.value(),
+                phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value()),
+                duty_cycle=self.ui.dutyCycleSpinBox.value() / 100.0
+            )
+            self.setCursor(Qt.CursorShape.WaitCursor)
             await wg.set_waveform(waveform, on_progress=self.report_progress)
             self.status_message.emit("Waveform uploaded successfully.", 2000)
         except Exception as e:
             self.status_message.emit(f"Error uploading waveform: {e}", 4000)
         finally:#
-            self.setCursor(Qt.ArrowCursor)
+            self.setCursor(Qt.CursorShape.ArrowCursor)
             self.ui.moveProgressBar.reset()
         
 
     async def start_waveform_generator(self):
         """
         Asynchronously starts the waveform generator.
-        """
-        if self._device is None:
-            print("No device connected.")
-            return
-        
-        wg = self.waveform_generator()
-        if wg is None:
-            print("Waveform generator not initialized.")
-            return
-        
+        """       
         ui = self.ui
         try:
+            wg = self.waveform_generator
+            ui.moveProgressBar.start(5000, "start_waveform")
+
+            recorder = await self.setup_data_recorder()
+            await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
+            await recorder.start_recording()
+
             ui.startWaveformButton.setEnabled(False)
             await wg.start(cycles=self.ui.cyclesSpinBox.value())
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
+            await self.plot_recorder_data()
+            ui.moveProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
         except Exception as e:
             print(f"Error starting waveform generator: {e}")
             self.status_message.emit(f"Error starting waveform generator: {e}", 4000)
+            ui.moveProgressBar.reset()
         finally:
             ui.startWaveformButton.setEnabled(True)
 
@@ -661,17 +748,9 @@ class NV200Widget(QWidget):
     async def stop_waveform_generator(self):
         """
         Asynchronously stops the waveform generator.
-        """
-        if self._device is None:
-            print("No device connected.")
-            return
-        
-        wg = self.waveform_generator()
-        if wg is None:
-            print("Waveform generator not initialized.")
-            return
-        
+        """        
         try:
+            wg = self.waveform_generator
             await wg.stop()
             print("Waveform generator stopped successfully.")
             self.status_message.emit("Waveform generator stopped successfully.", 2000)
