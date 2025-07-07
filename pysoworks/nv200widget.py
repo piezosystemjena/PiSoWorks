@@ -676,21 +676,23 @@ class NV200Widget(QWidget):
         """
         Updates the waveform plot in the UI when the corresponding tab is active.
         """
-        if self.ui.tabWidget.currentIndex() != 2:
+        ui = self.ui
+        if ui.tabWidget.currentIndex() != TabWidgetTabs.WAVEFORM.value:
             return
         
         print("Updating waveform plot...")
         waveform = WaveformGenerator.generate_waveform(
             waveform_type=self.current_waveform_type(),
-            low_level=self.ui.lowLevelSpinBox.value(),
-            high_level=self.ui.highLevelSpinBox.value(),
-            freq_hz=self.ui.freqSpinBox.value(),
-            phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value()),
-            duty_cycle=self.ui.dutyCycleSpinBox.value() / 100.0
+            low_level=ui.lowLevelSpinBox.value(),
+            high_level=ui.highLevelSpinBox.value(),
+            freq_hz=ui.freqSpinBox.value(),
+            phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
+            duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
         )
-        mpl_canvas = self.ui.mplCanvasWidget.canvas
+        mpl_canvas = ui.mplCanvasWidget.canvas
         mpl_canvas.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor(0, 255, 150))
-        mpl_canvas.scale_axes(0, 1000, 0, 80)
+        offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
+        mpl_canvas.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
 
 
     async def upload_waveform(self):

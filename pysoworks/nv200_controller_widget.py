@@ -29,7 +29,7 @@ class Nv200ControllerWidget(QFrame):
         ui.setupUi(self)
         base_dir = Path(__file__).parent
         images_path = base_dir / "assets" / "images"
-        self.init_svg_background(images_path)
+        self.init_png_background(images_path)
         self.init_svg_toggle_widgets(images_path)
 
 
@@ -50,64 +50,28 @@ class Nv200ControllerWidget(QFrame):
         svg_paths = [ (images_path / f"cl_toggle0{i}.svg").resolve() for i in range(1, 3) ]
         self.ui.clToggleWidget.set_svg_paths(svg_paths)
 
-    def init_svg_background(self, images_path):
-        """
-        Initializes the SVG background for the controller widget.
 
-        Loads the SVG file from the specified images path, clears any existing stylesheet 
-        (used only for absolute positioning in the designer), and sets up the QSvgRenderer 
-        with the SVG file. The aspect ratio mode is set to keep the original aspect ratio.
-
-        Args:
-            images_path (Path): The directory path containing the SVG image file.
+    def init_png_background(self, images_path):
         """
-        svg_path = images_path / "nv200_controller_structure.svg"
-        # Clear the stylesheet - it is only used in designer for absolute positioning of
-        # widgets in the controller diagramm
+        Initializes the PNG background for the controller widget.
+        """
+        png_path = images_path / "nv200_controller_structure@2x.png"
         self.setStyleSheet("")
-        self.svg_renderer = QSvgRenderer(str(svg_path))  # Replace with your SVG file path
-        self.svg_renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
+        self.background_pixmap = QPixmap(str(png_path))
 
 
     def paintEvent(self, event):
-        """_
-        Paints a high DPI SVG image onto the widget with global opacity.
-
-        Normally the following code would be used to render the SVG directly onto the widget:
-        code-block:: python
-
-            painter = QPainter(self)
-            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-            painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-            size = self.svg_renderer.defaultSize()
-            painter.setOpacity(0.5)  # 🔸 Apply global opacity
-            self.svg_renderer.render(painter, QRectF(0, 0, size.width(), size.height()))
-
-        But this approach can lead to blurry rendering on high DPI displays.
-        When you call painter.setOpacity(0.5), Qt internally switches to software-based 
-        composition (a transparent paint layer), which often causes the rendered SVG to 
-        be rasterized at the logical (lower) resolution, losing the High DPI sharpness.
-
-        To solve this, we render to a high-DPI offscreen pixmap manually, then paint it with opacity
         """
-        dpr = self.devicePixelRatioF()
-        size = self.svg_renderer.defaultSize()
-        size_scaled = size * dpr
+        Paints the PNG image directly onto the widget with global opacity.
+        """
+        if self.background_pixmap.isNull():
+            return
 
-        # Create a high DPI pixmap to render the SVG offscreen
-        pixmap = QPixmap(size_scaled)
-        pixmap.setDevicePixelRatio(dpr)
-        pixmap.fill(Qt.transparent)
-
-        # Render SVG into pixmap at native resolution
-        pixmap_painter = QPainter(pixmap)
-        self.svg_renderer.render(pixmap_painter, QRectF(0, 0, size.width(), size.height()))
-        pixmap_painter.end()
-
-        # Paint the pixmap onto the widget with opacity
         painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         painter.setOpacity(0.7)
-        painter.drawPixmap(0, 0, pixmap)
+
+        painter.drawPixmap(0, 0, self.background_pixmap)
 
 
     def sizeHint(self):
