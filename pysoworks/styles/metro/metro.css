@@ -3542,7 +3542,7 @@ Nv200ControllerWidget QAbstractSpinBox
 
 Nv200ControllerWidget QAbstractSpinBox:focus
 {
-    border: 2px solid {{accentColor}};
+    border-width: 2px;
 }
 
 Nv200ControllerWidget QAbstractSpinBox[readOnly="true"]
@@ -3596,12 +3596,16 @@ QCheckBox[toggleSwitch="true"][dirty="true"]::indicator::checked
 
 
 
-Nv200ControllerWidget QAbstractSpinBox[dirty="true"]
+Nv200ControllerWidget QAbstractSpinBox[dirty="true"],
+Nv200ControllerWidget QAbstractSpinBox[dirty="true"]:focus
 {
     border-color: #ff9300;
 }
 
-Nv200ControllerWidget QComboBox[dirty="true"]
+
+
+Nv200ControllerWidget QComboBox[dirty="true"],
+Nv200ControllerWidget QComboBox[dirty="true"]:focus
 {
     border-color: #ff9300;
 }
