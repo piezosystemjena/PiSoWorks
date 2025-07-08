@@ -134,7 +134,6 @@ class InputWidgetChangeTracker(QObject):
         """
         Check if the widget is dirty and set the 'dirty' property accordingly.
         """
-        print(f"Checking dirty state for widget: {widget}")
         current = self._get_value(widget)
         initial = self.initial_values.get(widget)
         is_dirty = current != initial
