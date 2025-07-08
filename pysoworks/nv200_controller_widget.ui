@@ -448,7 +448,7 @@ background-repeat: no-repeat;}</string>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="pysoworks.qrc"/>
+  <include location="pysoworks.pysoworks.qrc"/>
  </resources>
  <connections/>
  <designerdata>

@@ -3609,3 +3609,14 @@ Nv200ControllerWidget QComboBox[dirty="true"]:focus
 {
     border-color: #ff9300;
 }
+
+
+SvgCycleWidget
+{
+    qproperty-color: {{accentColor}};
+}
+
+SvgCycleWidget[dirty="true"]
+{
+    qproperty-color: #ff9300;
+}

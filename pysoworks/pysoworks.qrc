@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="/">
     <file>assets/images/nv200_controller_structure.svg</file>
-    <file>assets/images/nv200_controller_structure.png</file>
+    <file>assets/images/nv200_controller_structure@2x.png</file>
   </qresource>
 </RCC>

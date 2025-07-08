@@ -46,9 +46,11 @@ class Nv200ControllerWidget(QFrame):
         """
         svg_paths = [ (images_path / f"modsrc_toggle0{i}.svg").resolve() for i in range(1, 5) ]
         self.ui.modsrcToggleWidget.set_svg_paths(svg_paths)
+        self.ui.modsrcToggleWidget.setStyleSheet("")
 
         svg_paths = [ (images_path / f"cl_toggle0{i}.svg").resolve() for i in range(1, 3) ]
         self.ui.clToggleWidget.set_svg_paths(svg_paths)
+        self.ui.clToggleWidget.setStyleSheet("")
 
 
     def init_png_background(self, images_path):

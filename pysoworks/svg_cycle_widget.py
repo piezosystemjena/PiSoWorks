@@ -1,12 +1,12 @@
 from typing import List, Optional, Sequence
 from pathlib import Path
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QFrame
 from PySide6.QtCore import Signal, Qt, QRectF, QSize, QEvent, Property
 from PySide6.QtGui import QPainter, QMouseEvent, QColor, QPalette
-from PySide6.QtSvg import QSvgRenderer
+from pysoworks.themed_svg_renderer import ThemedSvgRenderer
 
 
-class SvgCycleWidget(QWidget):
+class SvgCycleWidget(QFrame):
     """
     A QWidget that displays and cycles through a list of SVG images.
 
@@ -30,7 +30,7 @@ class SvgCycleWidget(QWidget):
             parent: Optional parent widget.
         """
         super().__init__(parent)
-        self.renderers: List[QSvgRenderer] = []
+        self.renderers: List[ThemedSvgRenderer] = []
         self.current_index: int = 0
         self._color: QColor = self.palette().color(QPalette.ColorRole.Highlight)
 
@@ -42,7 +42,10 @@ class SvgCycleWidget(QWidget):
         Args:
             paths: A sequence of Path objects pointing to SVG files.
         """
-        self.renderers = [QSvgRenderer(str(path)) for path in paths]
+        print(f"Setting SVG paths: {[str(path) for path in paths]}")
+        self.renderers = [ThemedSvgRenderer(filename=str(path), parent=self) for path in paths]
+        self.update_svg_colors()
+
         self.current_index = 0
         if not self.renderers[0].isValid():
             raise ValueError(f"Invalid SVG file: {paths[0]}")
@@ -54,7 +57,7 @@ class SvgCycleWidget(QWidget):
         print(f"SVG defautlSize(): ", self.renderers[0].defaultSize() if self.renderers else "No SVGs loaded")
 
 
-    def current_renderer(self) -> Optional[QSvgRenderer]:
+    def current_renderer(self) -> Optional[ThemedSvgRenderer]:
         """
         Get the QSvgRenderer for the currently active SVG.
 
@@ -165,7 +168,7 @@ class SvgCycleWidget(QWidget):
         Args:
             event: The mouse press event.
         """
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             # Cycle to next image on click
             if self.renderers:
                 next_index = (self.current_index + 1) % len(self.renderers)
@@ -208,6 +211,16 @@ class SvgCycleWidget(QWidget):
             QColor: The current color assigned to the widget.
         """
         return self._color
+    
+
+    def update_svg_colors(self) -> None:
+        """
+        Updates the color of the widget based on the current color property.
+        """
+        for renderer in self.renderers:
+            renderer.add_color_replacement(QColor("#2db159"), self._color)
+            renderer.update_svg()
+        self.update()  # Trigger repaint if color affects rendering
 
     def set_color(self, color: QColor) -> None:
         """
@@ -219,8 +232,9 @@ class SvgCycleWidget(QWidget):
         Args:
             color (QColor): The new color to set for the widget.
         """
-        if self._color != color:
-            self._color = color
-            self.update()  # Trigger repaint if color affects rendering
+        if self._color == color:
+            return
+        self._color = color
+        self.update_svg_colors()
 
     color = Property(QColor, get_color, set_color)
