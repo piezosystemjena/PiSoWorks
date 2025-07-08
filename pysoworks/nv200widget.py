@@ -1,21 +1,15 @@
 # This Python file uses the following encoding: utf-8
-import sys
 import asyncio
-import logging
-import os
 from enum import Enum
 from typing import Any, cast
 import math
 
 from PySide6.QtWidgets import QApplication, QWidget
-from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject, Signal
-from PySide6.QtGui import QColor, QIcon, QPalette
-from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QCheckBox, QSpinBox
+from PySide6.QtCore import Qt, QSize, QObject, Signal
+from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
-from matplotlib.figure import Figure
-from qt_material import apply_stylesheet
-from pathlib import Path
 from qt_material_icons import MaterialIcon
 
 from nv200.shared_types import (

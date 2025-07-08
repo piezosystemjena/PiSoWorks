@@ -5,14 +5,10 @@ import logging
 import os
 
 from PySide6.QtWidgets import QApplication, QWidget
-from PySide6.QtCore import Qt, QDir, QCoreApplication, QSize, QObject, Signal
-from PySide6.QtGui import QColor, QIcon, QPalette
-from PySide6.QtWidgets import QDoubleSpinBox
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPalette
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
-from matplotlib.figure import Figure
-from qt_material import apply_stylesheet
-from pathlib import Path
 from qt_material_icons import MaterialIcon
 
 from nv200.shared_types import DetectedDevice, DiscoverFlags
@@ -79,7 +75,7 @@ class SpiBoxWidget(QWidget):
         ui.connectButton.setEnabled(False)
         ui.singleDatasetGroupBox.setEnabled(False)
         self.status_message.emit("Searching for devices...", 0)
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         if self._device is not None:
             await self._device.close()

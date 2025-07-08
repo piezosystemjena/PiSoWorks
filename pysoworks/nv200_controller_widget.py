@@ -1,8 +1,7 @@
 from pathlib import Path
 from PySide6.QtWidgets import QFrame
-from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtGui import QPainter, QPixmap
-from PySide6.QtCore import QSize, QRect, Signal, Qt, QRectF
+from PySide6.QtCore import QSize, Signal
 
 from pysoworks.ui_nv200_controller_widget import Ui_nv200ControllerWidget
 
