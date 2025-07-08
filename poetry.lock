@@ -274,18 +274,6 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
-name = "darkdetect"
-version = "0.7.1"
-description = "Detect OS Dark Mode from Python"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "darkdetect-0.7.1-py2.py3-none-any.whl", hash = "sha256:3efe69f8ecd5f1b7f4fbb0d1d93f656b0e493c45cc49222380ffe2a529cbc866"},
-    {file = "darkdetect-0.7.1.tar.gz", hash = "sha256:47be3cf5134432ddb616bbffc927237718407914993c82809983e7ccebf49013"},
-]
-
-[[package]]
 name = "docutils"
 version = "0.21.2"
 description = "Docutils -- Python Documentation Utilities"
@@ -396,7 +384,7 @@ version = "3.1.6"
 description = "A very fast and expressive template engine."
 optional = false
 python-versions = ">=3.7"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"},
     {file = "jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"},
@@ -545,7 +533,7 @@ version = "3.0.2"
 description = "Safely add untrusted strings to HTML/XML markup."
 optional = false
 python-versions = ">=3.9"
-groups = ["main", "dev"]
+groups = ["dev"]
 files = [
     {file = "MarkupSafe-3.0.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:7e94c425039cde14257288fd61dcfb01963e658efbc0ff54f5306b06054700f8"},
     {file = "MarkupSafe-3.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9e2d922824181480953426608b81967de705c3cef4d1af983af849d7bd619158"},
@@ -1004,21 +992,6 @@ files = [
 diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
-name = "pyqtdarktheme2"
-version = "2.1.2"
-description = "Flat dark theme for PySide and PyQt."
-optional = false
-python-versions = "<3.14,>=3.12"
-groups = ["main"]
-files = [
-    {file = "pyqtdarktheme2-2.1.2-py3-none-any.whl", hash = "sha256:50fe5fce2a2cfa41d142ba3dd51a636f2d562c8cb203de37175cec65bbf28e53"},
-    {file = "pyqtdarktheme2-2.1.2.tar.gz", hash = "sha256:e4027b23384fcccd6f6bf9b2b6344898c76bb9ec9f0aca75b63f8a703c241098"},
-]
-
-[package.dependencies]
-darkdetect = ">=0.7.1,<0.8.0"
-
-[[package]]
 name = "pyserial"
 version = "3.5"
 description = "Python Serial Port Extension"
@@ -1137,21 +1110,6 @@ files = [
     {file = "pywin32-ctypes-0.2.3.tar.gz", hash = "sha256:d162dc04946d704503b2edc4d55f3dba5c1d539ead017afa00142c38b9885755"},
     {file = "pywin32_ctypes-0.2.3-py3-none-any.whl", hash = "sha256:8a1513379d709975552d202d942d9837758905c8d01eb82b8bcc30918929e7b8"},
 ]
-
-[[package]]
-name = "qt-material"
-version = "2.17"
-description = "Material inspired stylesheet for PySide6 and PyQt6."
-optional = false
-python-versions = ">=3.7"
-groups = ["main"]
-files = [
-    {file = "qt_material-2.17-py3-none-any.whl", hash = "sha256:660523341ae45b79d222bf15e202ec76ba3bf5e7e82170b66759738d7bb4873d"},
-    {file = "qt_material-2.17.tar.gz", hash = "sha256:b500a0c1f5ef8f46a8cf037d1aa5bdf9ea4eb618180b6332539dfbdd0647ad0d"},
-]
-
-[package.dependencies]
-Jinja2 = "*"
 
 [[package]]
 name = "qt-material-icons"
@@ -1633,4 +1591,4 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12,<3.14"
-content-hash = "5caefeebe6701ffae221c6a6705c5cca7e5201b7da2b8a87896fe133eaf83926"
+content-hash = "31af903c6eb10ba669ed21092876e4a40d935507547a19436c04b4e4fccf8a6d"

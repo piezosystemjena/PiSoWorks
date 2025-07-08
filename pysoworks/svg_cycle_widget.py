@@ -42,7 +42,6 @@ class SvgCycleWidget(QFrame):
         Args:
             paths: A sequence of Path objects pointing to SVG files.
         """
-        print(f"Setting SVG paths: {[str(path) for path in paths]}")
         self.renderers = [ThemedSvgRenderer(filename=str(path), parent=self) for path in paths]
         self.update_svg_colors()
 
@@ -54,7 +53,6 @@ class SvgCycleWidget(QFrame):
         self.updateGeometry()
         self.update()
         self.currentIndexChanged.emit(self.current_index)
-        print(f"SVG defautlSize(): ", self.renderers[0].defaultSize() if self.renderers else "No SVGs loaded")
 
 
     def current_renderer(self) -> Optional[ThemedSvgRenderer]:

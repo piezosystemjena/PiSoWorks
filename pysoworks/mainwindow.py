@@ -12,23 +12,17 @@ from PySide6.QtCore import (
     Qt,
     QtMsgType,
     qInstallMessageHandler,
-    qDebug,
-    QProcessEnvironment
+    QStandardPaths,
 )
-from PySide6.QtGui import QColor, QIcon, QPalette, QGuiApplication
-from PySide6.QtWidgets import QDoubleSpinBox
+from PySide6.QtGui import QIcon, QGuiApplication
 
 import qtinter
-import qt_material
 from pathlib import Path
-from qt_material_icons import MaterialIcon
 import PySide6QtAds as QtAds
 import qtass
-import qdarktheme
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
 
-from pysoworks import assets
 from pysoworks.nv200widget import NV200Widget
 from pysoworks.spiboxwidget import SpiBoxWidget
 from pysoworks.nv200_controller_widget import Nv200ControllerWidget
@@ -142,130 +136,6 @@ def setup_logging():
     logging.getLogger("nv200.device_base").setLevel(logging.DEBUG)     
 
 
-def set_dark_fusion_style(app : QApplication):
-    """
-    Sets the application style to a dark fusion theme.
-    """
-    ROLE_MAP: dict[str, QPalette.ColorRole] = {
-        "WindowText": QPalette.WindowText,
-        "Button": QPalette.Button,
-        "Light": QPalette.Light,
-        "Midlight": QPalette.Midlight,
-        "Dark": QPalette.Dark,
-        "Mid": QPalette.Mid,
-        "Text": QPalette.Text,
-        "BrightText": QPalette.BrightText,
-        "ButtonText": QPalette.ButtonText,
-        "Base": QPalette.Base,
-        "Window": QPalette.Window,
-        "Shadow": QPalette.Shadow,
-        "Highlight": QPalette.Highlight,
-        "HighlightedText": QPalette.HighlightedText,
-        "Link": QPalette.Link,
-        "LinkVisited": QPalette.LinkVisited,
-        "AlternateBase": QPalette.AlternateBase,
-        "NoRole": QPalette.NoRole,
-        "ToolTipBase": QPalette.ToolTipBase,
-        "ToolTipText": QPalette.ToolTipText,
-        "PlaceholderText": QPalette.PlaceholderText,
-        "Accent": QPalette.Accent
-    }
-
-    def export_palette_to_json(palette):
-        # List of tuples (role_name_str, QPalette.ColorRole)
-        palette_states = {
-            "Active": QPalette.Active,
-            "Inactive": QPalette.Inactive,
-            "Disabled": QPalette.Disabled,
-        }
-
-        output: Dict[str, Dict[str, str]] = {}
-
-        for state_name, state_enum in palette_states.items():
-            state_colors: Dict[str, str] = {}
-            for role_name, role_enum in ROLE_MAP.items():
-                try:
-                    color: QColor = palette.color(state_enum, role_enum)
-                    state_colors[role_name] = color.name()  # Hex string only
-                except Exception:
-                    continue
-            output[state_name] = state_colors
-        print(json.dumps(output, indent=4))
-
-    def load_palette_from_json() -> QPalette:
-        # Use this to ensure that it also works with a PyInstaller package
-        text = pkgutil.get_data('pysoworks.assets', 'dark_palette.json').decode('utf-8')
-        palette_dict: Dict[str, Dict[str, str]] = json.loads(text)
-
-        palette = QPalette()
-
-        state_map: Dict[str, QPalette.ColorGroup] = {
-            "Active": QPalette.Active,
-            "Inactive": QPalette.Inactive,
-            "Disabled": QPalette.Disabled,
-        }
-
-
-        for state_name, colors in palette_dict.items():
-                state_enum = state_map.get(state_name)
-                if state_enum is None:
-                    continue
-
-                for role_name, hex_color in colors.items():
-                    role_enum = ROLE_MAP.get(role_name)
-                    if role_enum is None:
-                        continue
-
-                    color = QColor(hex_color)
-                    palette.setColor(state_enum, role_enum, color)
-
-        return palette
-
-
-    QApplication.setStyle('Fusion')
-    dark_palette = load_palette_from_json()
-    QApplication.setPalette(dark_palette)
-    #export_palette_to_json(QApplication.palette())
-    stylesheets: List[str] = []
-    stylesheets.append(assets.load_stylesheet('ads_base.qss'))
-    stylesheets.append(assets.load_stylesheet('ads_dark.qss'))
-    stylesheet='\n'.join(stylesheets)
-    app.setStyleSheet(stylesheet)
-
-
-
-def set_qdarktheme_style(app: QApplication):
-    """
-    Applies a custom QDarkTheme dark style to the given QApplication instance.
-    This function sets up the application's theme using QDarkTheme with a custom primary color and sharp corners.
-    It loads and applies a custom palette and, if a 'dark_theme.css' stylesheet exists in the application path,
-    applies it as the application's stylesheet.
-    """
-    qdarktheme.setup_theme(theme="dark", custom_colors={"primary": "#00C267"}, corner_shape="sharp")
-    palette = qdarktheme.load_palette(theme="dark", custom_colors={"primary": "#00C267"})
-    app.setPalette(palette)
-
-    dark_theme = qdarktheme.load_stylesheet(theme="dark", custom_colors={"primary": "#00C267"})
-    #print("\n\n" + dark_theme + "\n\n")
-    stylesheet_path = app_path / 'dark_theme.css'
-    if stylesheet_path.exists():
-        with open(stylesheet_path, "r") as f:
-            stylesheet = f.read()
-            #print(f"StyleSheet: {stylesheet}")
-            app.setStyleSheet(stylesheet)
-
-
-def set_qt_material_style(app: QApplication):
-    """
-    Applies the Qt Material stylesheet with the 'dark_teal' theme to the given QApplication instance.
-    """
-    extra = {
-        # Density Scale
-        'density_scale': '-1',
-    }
-    qt_material.apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
-
-
 def set_qtass_style(app: QApplication):
     """
     Applies the QtAss stylesheet with the 'dark_teal' theme to the given QApplication instance.
@@ -273,13 +143,12 @@ def set_qtass_style(app: QApplication):
     QApplication.setStyle('Fusion')
     stylesheet = qtass.QtAdvancedStylesheet()
     app_path = Path(__file__).resolve().parent
-    stylesheet.output_dir = str(app_path / 'assets/qtass')
+    stylesheet.output_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation) + "/styles"
     stylesheet.set_styles_dir_path(app_path / 'styles')
     stylesheet.set_current_style("metro")
     stylesheet.set_current_theme("piezosystem")
     stylesheet.update_stylesheet()
     app.setStyleSheet(stylesheet.stylesheet)
-
 
 
 def resource_path(relative_path):
@@ -291,6 +160,7 @@ def resource_path(relative_path):
         base_path = Path(__file__).resolve().parent.parent
     print(f"base_path: {base_path}")
     return os.path.join(base_path, relative_path)
+
 
 def main():
     """
@@ -305,13 +175,13 @@ def main():
     QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
 
     app = QApplication(sys.argv)
+    app.setApplicationName('PySoWorks')
+    app.setApplicationDisplayName('PySoWorks')
+    app.setOrganizationName('piezosystem jena')
+    app.setOrganizationDomain('piezosystem.com')
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
-
-    #set_dark_fusion_style(app)
-    #set_qt_material_style(app)
-    #set_qdarktheme_style(app)
     set_qtass_style(app)
 
     widget = MainWindow()

@@ -44,11 +44,9 @@ qtinter = "^0.11.0"
 tomlkit = "^0.13.2"
 matplotlib = "^3.10.1"
 qt-material-icons = "^0.2.0"
-qt-material = "^2.17"
 #nv200 = { path = "../nv200_python_lib", develop = true }
 nv200 = "^1.2.0"
 pyside6-qtads = "^4.4.0"
-pyqtdarktheme2 = "^2.1.2"
 rich = "^14.0.0"
 qtawesome = "^1.4.0"
 
