@@ -4,9 +4,9 @@ from enum import Enum
 from typing import Any, cast
 import math
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QWidget, QMenu
 from PySide6.QtCore import Qt, QSize, QObject, Signal
-from PySide6.QtGui import QColor, QPalette
+from PySide6.QtGui import QColor, QPalette, QAction
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
@@ -76,24 +76,22 @@ class NV200Widget(QWidget):
         self._device: NV200Device | None = None
         self._recorder : DataRecorder | None = None
         self._waveform_generator : WaveformGenerator | None = None
+        self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
 
         self.ui = Ui_NV200Widget()
         ui = self.ui
         ui.setupUi(self)
 
-        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
-        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
-        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
-        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
-        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
         ui.moveProgressBar.set_duration(5000)
         ui.moveProgressBar.set_update_interval(20)
+        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
 
+        self.init_device_search_ui()
         self.init_easy_mode_ui()
         self.init_controller_param_ui()
         self.init_console_ui()
         self.init_waveform_ui()
-        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
+
 
     @property
     def device(self) -> NV200Device:
@@ -126,6 +124,40 @@ class NV200Widget(QWidget):
             self._waveform_generator = WaveformGenerator(self.device)
         return self._waveform_generator	
     
+
+    def init_device_search_ui(self):
+        """
+        Initializes the device search UI components, including buttons and combo boxes for device selection.
+        """
+        ui = self.ui
+        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
+        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_all_devices))
+
+        # Create the menu
+        menu = QMenu(self)
+
+        # Create actions
+        serial_action = QAction("USB Devices", ui.searchDevicesButton)
+        serial_action.setIcon(get_icon("usb"))
+        ethernet_action = QAction("Ethernet Devices", ui.searchDevicesButton)
+        ethernet_action.setIcon(get_icon("lan"))
+
+        # Connect actions to appropriate slots
+        serial_action.triggered.connect(qtinter.asyncslot(self.search_serial_devices))
+        ethernet_action.triggered.connect(qtinter.asyncslot(self.search_ethernet_devices))
+
+        # Add actions to menu
+        menu.addAction(serial_action)
+        menu.addAction(ethernet_action)
+
+        # Set the menu to the button
+        ui.searchDevicesButton.setMenu(menu)
+
+        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
+        ui.connectButton.setEnabled(False)
+        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
+        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
+
 
     def init_easy_mode_ui(self):
         """
@@ -280,6 +312,31 @@ class NV200Widget(QWidget):
             print(f"Warning: Value {value} not found in combobox.")
 
 
+    async def search_all_devices(self):
+        """
+        Asynchronously searches for all available devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.ALL
+        await self.search_devices()
+
+    async def search_serial_devices(self):
+        """
+        Asynchronously searches for serial devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.DETECT_SERIAL
+        await self.search_devices()
+
+    async def search_ethernet_devices(self):
+        """
+        Asynchronously searches for Ethernet devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.DETECT_ETHERNET
+        await self.search_devices()
+
+
     async def search_devices(self):
         """
         Asynchronously searches for available devices and updates the UI accordingly.
@@ -299,7 +356,7 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.start(5000, "search_devices")
         try:
             print("Discovering devices...")
-            devices = await discover_devices(flags=DiscoverFlags.ALL | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
+            devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
             
             if not devices:
                 print("No devices found.")

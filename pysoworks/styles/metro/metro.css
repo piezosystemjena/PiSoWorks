@@ -624,17 +624,6 @@ QToolBar > QToolButton
 }
     
 
-QToolButton[style="pushButton"]
-{
-    background-color: {{backgroundLighter}};
-    border: 1px solid {{borderColor}};
-    /*min-height: 12px;*/
-    padding: 5px;
-    font-size: 11px;
-}
-
-
-
 QStatusBar > QToolButton
 {
 	font-size: 11px;
@@ -687,11 +676,15 @@ QToolButton[popupMode="1"] { /* only for MenuButtonPopup */
 QToolButton::menu-button {
     border-left: 1px solid transparent;
     /* 15px width + 1px for border = 16px allocated above */
-    width: 15px;
+    width: 18px;
 }
 
 QToolButton::menu-button:hover {
-    border-left: 1px solid {{borderColor}};
+    border-left: 1px solid {{accentColor}};
+}
+
+QToolButton::menu-button:pressed {
+    border-left: 1px solid transparent;
 }
 
 
@@ -750,7 +743,8 @@ QToolBar#sidebar > QToolButton
 /*===========================================================================
  * QPushButton
  *===========================================================================*/
-.QPushButton
+.QPushButton,
+QToolButton[style="pushButton"]
 {
     background-color: {{backgroundLighter}};
     border: 1px solid {{accentColor}};
@@ -760,35 +754,54 @@ QToolBar#sidebar > QToolButton
     padding-bottom: 4px;
 }
 
-.QPushButton[alignedWithEdit="true"]
-{
-	padding-top: 2px;
-	padding-bottom: 1px;
-	margin-left: 2px;
+
+QToolButton[style="pushButton"][popupMode="1"] { /* only for MenuButtonPopup */
+    padding-right: 17px; /* make way for the popup button */
 }
 
-.QPushButton:!enabled
+
+.QPushButton[alignedWithEdit="true"]
+{
+	padding-top: 4px;
+	padding-bottom: 3px;
+}
+
+
+QToolButton[style="pushButton"][alignedWithEdit="true"]
+{
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+
+
+.QPushButton:!enabled,
+QToolButton[style="pushButton"]:!enabled
 {
     border: 1px solid {{accentColor|opacity(0.50)}};
 }
 
 
-.QPushButton:focus
+.QPushButton:focus,
+QToolButton[style="pushButton"]:focus
 {
     border-color: {{accentColor}};
 }
 
-.QPushButton:hover
+.QPushButton:hover,
+QToolButton[style="pushButton"]:hover
 {
     background-color: {{accentColor|opacity(0.50)}};
 }
 
-.QPushButton:hover:!focus
+.QPushButton:hover:!focus,
+QToolButton[style="pushButton"]:!focus
 {
 	border: 1px solid {{accentColor}};
 }
 
-.QPushButton:pressed
+.QPushButton:pressed,
+QToolButton[style="pushButton"]:pressed
 {
     background-color: {{backgroundColor}};
     color: {{accentColor}};
@@ -796,14 +809,16 @@ QToolBar#sidebar > QToolButton
 }
 
 
-.QPushButton:checked
+.QPushButton:checked,
+QToolButton[style="pushButton"]:checked
 {
     background-color: {{accentColor|opacity(0.50)}};
     color: {{backgroundColor}};
     border-color: {{accentColor}};
 }
 
-.QPushButton:checked:hover
+.QPushButton:checked:hover,
+QToolButton[style="pushButton"]:checked:hover
 {
     background-color: {{textColorDisabled}};
 }

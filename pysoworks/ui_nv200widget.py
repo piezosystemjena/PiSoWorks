@@ -48,13 +48,16 @@ class Ui_NV200Widget(object):
 
         self.horizontalLayout.addWidget(self.devicesComboBox)
 
-        self.searchDevicesButton = QPushButton(NV200Widget)
+        self.searchDevicesButton = QToolButton(NV200Widget)
         self.searchDevicesButton.setObjectName(u"searchDevicesButton")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.searchDevicesButton.sizePolicy().hasHeightForWidth())
         self.searchDevicesButton.setSizePolicy(sizePolicy1)
+        self.searchDevicesButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        self.searchDevicesButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.searchDevicesButton.setProperty(u"alignedWithEdit", True)
 
         self.horizontalLayout.addWidget(self.searchDevicesButton)
 
@@ -63,6 +66,7 @@ class Ui_NV200Widget(object):
         self.connectButton.setEnabled(False)
         sizePolicy1.setHeightForWidth(self.connectButton.sizePolicy().hasHeightForWidth())
         self.connectButton.setSizePolicy(sizePolicy1)
+        self.connectButton.setProperty(u"alignedWithEdit", True)
 
         self.horizontalLayout.addWidget(self.connectButton)
 
@@ -446,6 +450,7 @@ class Ui_NV200Widget(object):
     def retranslateUi(self, NV200Widget):
         NV200Widget.setWindowTitle(QCoreApplication.translate("NV200Widget", u"Form", None))
         self.searchDevicesButton.setText(QCoreApplication.translate("NV200Widget", u"Search Devices ...", None))
+        self.searchDevicesButton.setProperty(u"style", QCoreApplication.translate("NV200Widget", u"pushButton", None))
         self.connectButton.setText(QCoreApplication.translate("NV200Widget", u"Connect", None))
         self.easyModeGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
         self.closedLoopCheckBox.setText(QCoreApplication.translate("NV200Widget", u"Open Loop", None))
