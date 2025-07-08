@@ -69,7 +69,6 @@ class MainWindow(QMainWindow):
         self.dock_manager.setStyleSheet("")
         ui.actionNv200View.triggered.connect(self.add_nv200_view)
         ui.actionSpiBoxView.triggered.connect(self.add_spibox_view)
-        ui.actionTestView.triggered.connect(self.add_test_view)
         self.add_nv200_view()
 
     def add_view(self, widget_class, title):

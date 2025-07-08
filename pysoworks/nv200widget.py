@@ -24,7 +24,7 @@ from nv200.device_discovery import discover_devices
 from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from nv200.connection_utils import connect_to_detected_device
-from nv200.waveform_generator import WaveformGenerator, WaveformType
+from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 
@@ -414,11 +414,14 @@ class NV200Widget(QWidget):
         ui.targetPosSpinBox.setSuffix(f" {unit}")
         ui.targetPosSpinBox_2.setSuffix(f" {unit}")
         ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
+        
         ui.rangeLabel.setText(f"{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}")
         ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.lowLevelSpinBox.setValue(setpoint_range[0])
+        ui.lowLevelSpinBox.setSuffix(f" {unit}")
         ui.highLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.highLevelSpinBox.setValue(setpoint_range[1])
+        ui.highLevelSpinBox.setSuffix(f" {unit}")
 
 
     async def on_pid_mode_button_clicked(self):
@@ -651,7 +654,7 @@ class NV200Widget(QWidget):
         return recorder
 
 
-    async def plot_recorder_data(self):
+    async def plot_recorder_data(self, clear_plot: bool = True):
         """
         Asynchronously retrieves and plots recorded data from two channels.
 
@@ -661,14 +664,16 @@ class NV200Widget(QWidget):
         Raises:
             Any exceptions raised by recorder.wait_until_finished() or recorder.read_recorded_data_of_channel().
         """
-        ui = self.ui
+        plot = self.ui.mplCanvasWidget.canvas
         recorder = self.recorder
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
         rec_data = await recorder.read_recorded_data_of_channel(0)
-        ui.mplCanvasWidget.canvas.plot_recorder_data(rec_data, QColor(0, 255, 0))
+        if clear_plot:
+            plot.clear_plot()
+        plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))
         rec_data = await recorder.read_recorded_data_of_channel(1)
-        ui.mplCanvasWidget.canvas.add_recorder_data_line(rec_data,  QColor('orange'))
+        plot.add_recorder_data_line(rec_data,  QColor('orange'))
         self.status_message.emit("", 0)
 
 
@@ -743,10 +748,14 @@ class NV200Widget(QWidget):
             phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
             duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
         )
-        mpl_canvas = ui.mplCanvasWidget.canvas
-        mpl_canvas.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor(0, 255, 150))
-        offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
-        mpl_canvas.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
+        plot = ui.mplCanvasWidget.canvas
+        if plot.get_line_count() == 0:
+            plot.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor("#02cfff"))
+            offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
+            plot.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
+        else:
+            plot.update_line(0, waveform.sample_times_ms, waveform.values)
+
 
 
     async def upload_waveform(self):
@@ -764,7 +773,8 @@ class NV200Widget(QWidget):
                 duty_cycle=self.ui.dutyCycleSpinBox.value() / 100.0
             )
             self.setCursor(Qt.CursorShape.WaitCursor)
-            await wg.set_waveform(waveform, on_progress=self.report_progress)
+            unit = WaveformUnit.POSITION if self.ui.closedLoopCheckBox.isChecked() else WaveformUnit.VOLTAGE
+            await wg.set_waveform(waveform, unit=unit, on_progress=self.report_progress)
             self.status_message.emit("Waveform uploaded successfully.", 2000)
         except Exception as e:
             self.status_message.emit(f"Error uploading waveform: {e}", 4000)
@@ -772,6 +782,18 @@ class NV200Widget(QWidget):
             self.setCursor(Qt.CursorShape.ArrowCursor)
             self.ui.mainProgressBar.reset()
         
+    def fade_plot_line(self, line_index: int, alpha: float = 0.5):
+        """
+        Fades the specified plot line by reducing its alpha value.
+        
+        Args:
+            line_index (int): The index of the line to fade.
+            alpha (float): The alpha value to set for the line (0.0 to 1.0).
+        """
+        plot = self.ui.mplCanvasWidget.canvas
+        color = plot.get_line_color(line_index)
+        color.setAlphaF(color.alphaF() * alpha)
+        plot.set_line_color(line_index, color)
 
     async def start_waveform_generator(self):
         """
@@ -790,7 +812,12 @@ class NV200Widget(QWidget):
             await wg.start(cycles=self.ui.cyclesSpinBox.value())
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
-            await self.plot_recorder_data()
+            
+            plot = ui.mplCanvasWidget.canvas
+            for i in range(1, plot.get_line_count()):
+                self.fade_plot_line(i)
+
+            await self.plot_recorder_data(clear_plot=False)
             ui.mainProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
         except Exception as e:

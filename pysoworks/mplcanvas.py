@@ -1,6 +1,7 @@
 from typing import Sequence
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
+from matplotlib.colors import to_rgba
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from PySide6.QtGui import QPalette, QColor, QIcon
@@ -35,7 +36,7 @@ class MplCanvas(FigureCanvas):
         ax.tick_params(axis='y', colors='darkgray')
 
         palette = QApplication.palette()
-        bg_color = palette.color(QPalette.Window)
+        bg_color = palette.color(QPalette.ColorRole.Window)
         #self.axes.set_facecolor(bg_color.name())
         #self._fig.set_facecolor(bg_color.name())
         super().__init__(self._fig)
@@ -73,9 +74,16 @@ class MplCanvas(FigureCanvas):
         """
         # Plot the data and add a label for the legend
         ax = self.axes
-        ax.plot(
+        rgba = (
+            color.redF(),   # R in 0.0–1.0
+            color.greenF(),
+            color.blueF(),
+            color.alphaF()
+        )
+        print(f"Adding line with color: {rgba} and label: {label}")
+        line, = ax.plot(
             x_data, y_data, 
-            linestyle='-', color=color.name(), label=label
+            linestyle='-', color=rgba, label=label
         )
 
         ax.set_autoscale_on(True)       # Turns autoscale mode back on
@@ -98,6 +106,77 @@ class MplCanvas(FigureCanvas):
         # Redraw the canvas
         self.draw()
 
+    def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float]):
+        """
+        Updates the data of a specific line in the plot.
+        """
+        ax = self.axes
+        lines = ax.get_lines()
+        
+        if 0 <= line_index < len(lines):
+            line = lines[line_index]
+            line.set_xdata(x_data)
+            line.set_ydata(y_data)
+
+            # Rescale the axes to fit the new data
+            ax.relim()
+            ax.autoscale_view()
+
+            # Redraw the canvas to reflect the changes
+            self.draw()
+        else:
+            raise IndexError("Line index out of range.")
+
+
+    def get_line_color(self, line_index: int) -> QColor:
+        """
+        Returns the color of a specific line in the plot.
+        """
+        ax = self.axes
+        lines = ax.get_lines()
+        
+        if 0 <= line_index < len(lines):
+            line = lines[line_index]
+            mpl_color = line.get_color()
+            r, g, b, a = to_rgba(mpl_color)
+            qcolor = QColor.fromRgbF(r, g, b, a)
+            return qcolor
+        else:
+            raise IndexError("Line index out of range.")
+
+    def set_line_color(self, line_index: int, color: QColor):
+        """
+        Sets the color of a specific line in the plot.
+        """
+        ax = self.axes
+        lines = ax.get_lines()
+        
+        if 0 <= line_index < len(lines):
+            line = lines[line_index]
+            rgba = (
+                color.redF(),   # R in 0.0–1.0
+                color.greenF(),
+                color.blueF(),
+                color.alphaF()
+            )
+            print(f"Setting line color: {rgba}")
+            line.set_color(rgba)
+            self.draw()
+
+    def get_lines(self) -> Sequence:
+        """
+        Returns a sequence of all lines in the plot.
+        """
+        ax = self.axes
+        return ax.get_lines()
+    
+    def get_line_count(self) -> int:
+        """
+        Returns the number of lines in the plot.
+        """
+        ax = self.axes
+        return len(ax.get_lines())
+
     def scale_axes(self, x_min: float, x_max: float, y_min: float, y_max: float):
         """
         Scales the axes to the specified limits.
@@ -117,6 +196,12 @@ class MplCanvas(FigureCanvas):
 
         # Redraw the canvas to reflect the change
         self.draw()
+
+    def clear_plot(self):
+        """
+        Clears the plot by removing all lines and resetting the axes.
+        """
+        self.remove_all_lines()
 
 
 
