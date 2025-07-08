@@ -122,10 +122,6 @@ QWidget:disabled
     color: {{textColorDisabled}};
 }
 
-QtLabb--CStyledWidget
-{
-    background: {{backgroundColor}};
-}
 
 
 /*===========================================================================
@@ -754,8 +750,7 @@ QToolBar#sidebar > QToolButton
 /*===========================================================================
  * QPushButton
  *===========================================================================*/
-.QPushButton,
-QtLabb--CColoredStateButton
+.QPushButton
 {
     background-color: {{backgroundLighter}};
     border: 1px solid {{accentColor}};
@@ -778,26 +773,22 @@ QtLabb--CColoredStateButton
 }
 
 
-.QPushButton:focus,
-QtLabb--CColoredStateButton:focus
+.QPushButton:focus
 {
     border-color: {{accentColor}};
 }
 
-.QPushButton:hover,
-QtLabb--CColoredStateButton:hover
+.QPushButton:hover
 {
     background-color: {{accentColor|opacity(0.50)}};
 }
 
-.QPushButton:hover:!focus,
-QtLabb--CColoredStateButton:hover:!focus
+.QPushButton:hover:!focus
 {
 	border: 1px solid {{accentColor}};
 }
 
-.QPushButton:pressed,
-QtLabb--CColoredStateButton:pressed
+.QPushButton:pressed
 {
     background-color: {{backgroundColor}};
     color: {{accentColor}};
@@ -1933,15 +1924,13 @@ QCheckBox[branch="true"]::indicator::checked
 /*===========================================================================
  * QCheckBox - Windows 10 Toggle Switch style
  *===========================================================================*/
-QCheckBox[toggleSwitch="true"],
-QtLabb--CToggleSwitch
+QCheckBox[toggleSwitch="true"]
 {
     min-height: 24px;
 }
 
 
-QCheckBox[toggleSwitch="true"]::indicator,
-QtLabb--CToggleSwitch::indicator
+QCheckBox[toggleSwitch="true"]::indicator
 {
    image: url(icon:/normal/toggle_switch_off.svg);
    image-position: center left;
@@ -1952,16 +1941,14 @@ QtLabb--CToggleSwitch::indicator
    padding: 2px;
 }
 
-QCheckBox[toggleSwitch="true"]::indicator::hover,
-QtLabb--CToggleSwitch::indicator::hover
+QCheckBox[toggleSwitch="true"]::indicator::hover
 {
    image: url(icon:/normal/toggle_switch_off_hover.svg);
    background: {{textColorDarker|opacity(0.1)}};
 }
 
 
-QCheckBox[toggleSwitch="true"]::indicator::checked,
-QtLabb--CToggleSwitch::indicator::checked
+QCheckBox[toggleSwitch="true"]::indicator::checked
 {
    image: url(icon:/normal/toggle_switch_on.svg);
    border: 1px solid {{accentColor}};
@@ -1969,8 +1956,7 @@ QtLabb--CToggleSwitch::indicator::checked
    image-position: center right;
 }
 
-QCheckBox[toggleSwitch="true"]::indicator::checked:disabled,
-QtLabb--CToggleSwitch::indicator::checked
+QCheckBox[toggleSwitch="true"]::indicator::checked:disabled
 {
    image: url(icon:/normal/toggle_switch_on.svg);
    border: 1px solid {{borderColor}};
@@ -1978,17 +1964,11 @@ QtLabb--CToggleSwitch::indicator::checked
    image-position: center right;
 }
 
-QCheckBox[toggleSwitch="true"]::indicator::checked:hover,
-QtLabb--CToggleSwitch::indicator::checked:hover
+QCheckBox[toggleSwitch="true"]::indicator::checked:hover
 {
    image: url(icon:/normal/toggle_switch_on_hover.svg);
    image-position: center right;
    background: {{accentColor|opacity(0.9)}};
-}
-
-QtLabb--CToggleSwitch[noText="true"]
-{
-	max-width: 40px;
 }
 
 
@@ -2283,10 +2263,6 @@ QStatusBar
     background: {{backgroundColor}};
 }
 
-/*QtLabb--Core--CStatusBarProgressIndicator
-{
-	background: yellow;
-}*/
 
 
 /*===========================================================================
@@ -2351,91 +2327,6 @@ QWidget#qt_calendar_navigationbar QToolButton:!hover:!pressed
     color: {{backgroundColor}};
 }
 
-
-/*===========================================================================
- * External libraries
- *===========================================================================*/
-
- /*===========================================================================
- * QtLabb Library
- *===========================================================================*/
-QtLabb--Core--CWorkbenchManager > QWidget#qt_scrollarea_viewport > QtLabb--CStyledWidget
-{
-    border: 1px solid {{borderColor}};
-}
-
-QtLabb--Core--CWorkbenchManager > QWidget#qt_scrollarea_viewport > QFrame
-{
-    border: 1px solid {{borderColor}};
-}
-
-
-Qvi--CLiveImageDisplay[dark_theme="true"]
-{
-    border: none;
-    background: black;	
-}
-
-Qvi--CLiveImageDisplay[dark_theme="false"]
-{
-	border: none;
-	background: {{borderColor}};
-}
-
-
-
-/*===========================================================================
- * CRulerWidget
- *===========================================================================*/
-QtLabb--CRulerWidget
-{
-    color: {{textColorDarker}}; /*textcolor*/
-    border: none;
-    font-size: 8px;
-}
-
-
-QtLabb--CImageViewer
-{
-    background-color: {{backgroundColor}};
-}
-
-
-ImageAnalysis--CImageAnalysisWidget[dark_theme="true"] QtLabb--CImageViewer
-{
-	qproperty-backgroundBrush: black;	
-}
-
-
-ImageAnalysis--CImageAnalysisWidget[dark_theme="false"] QtLabb--CImageViewer
-{
-	qproperty-backgroundBrush: {{borderColor}};	
-}
-
-
-
-QtLabb--CAbstractPositioningMap[dark_theme="true"]
-{
-	background-color: {{backgroundColor}};
-	qproperty-backgroundBrush: black;	
-}
-
-
-QtLabb--CAbstractPositioningMap[dark_theme="false"]
-{
-	background-color: {{backgroundColor}};
-	qproperty-backgroundBrush: {{borderColor}};	
-}
-
-
-
-/*===========================================================================
- * CDialEx
- *===========================================================================*/
-QtLabb--CDialEx
-{
-    background-color: {{backgroundLighter}};
-}
 
 
 /*===========================================================================
@@ -2521,272 +2412,6 @@ QProgressIndicator
 }
 
 
-/*===========================================================================
- * QtLabb--CPopupSlider
- *===========================================================================*/
-QtLabb--CPopupSlider
-{
-    border: 1px solid {{borderColor}};
-    padding: 1px;
-}
-
-
-/*===========================================================================
- * QtLabb--CHeaderWidget
- *===========================================================================*/
-QtLabb--CHeaderWidget
-{
-    background-color: {{backgroundColor}};
-    border: none;
-    padding: 0px;
-    padding-left: 9px;
-}
-
-QtLabb--CHeaderWidget QLabel#captionLabel
-{
-	font-size: 16px;
-	color: {{accentColor}};
-}
-
-QtLabb--CHeaderWidget[style="filled"]
-{
-    background: {{backgroundLighter}};
-    border: 1px solid {{borderColor}};
-}
-
-
-
-/*===========================================================================
- * QtLabb--CAboutDialog
- *===========================================================================*/
-QtLabb--CAboutDialog QFrame#contentFrame
-{
-    background: {{backgroundDarker}};
-}
-
-QtLabb--CAboutDialog QLabel#applicationLabel
-{
-    font-size: 17px;
-    font-weight: normal;
-    color: {{accentColor}};
-}
-
-QtLabb--CAboutDialog QLabel#urlLabel
-{
-    color: {{accentColor}};
-    text-decoration: underline;
-}
-
-/*===========================================================================
- * QtLabb--Core--CActivationDialog
- *===========================================================================*/
- QtLabb--Core--CProductActivationDialog QLabel#titleLabel
-{
-	font: 16px;
-    color: {{accentColor}};
-}
-
- QtLabb--Core--CProductActivationDialog QFrame#titleFrame
-{
-	border-top: 1px solid transparent;
-	border-left: 1px solid transparent;
-	border-right: 1px solid transparent;
-	border-bottom: 1px solid #7f7f7f;
-}
-
-QtLabb--Script--CScriptDoubleSpinBox
-{
-    border-image: url(icon:/normal/var_indicator_background.svg) 4 4 4 70;
-    border-width: 1px 1px 1px 17px;
-}
-
-QtLabb--Script--CScriptDoubleSpinBox:disabled
-{
-    border-image: url(icon:/normal/var_indicator_disabled.svg) 4 4 4 70;
-}
-
-
-QtLabb--Script--CScriptLineEdit,
-QtLabb--Script--CScriptPathEdit > QLineEdit
-{
-    border-image: url(icon:/normal/var_indicator_background.svg) 4 4 4 70;
-    border-width: 1px 1px 1px 17px;
-}
-
-QtLabb--Script--CScriptLineEdit:disabled,
-QtLabb--Script--CScriptPathEdit > QLineEdit:disabled
-{
-    border-image: url(icon:/normal/var_indicator_disabled.svg) 4 4 4 70;
-}
-
-QtLabb--Script--CScriptDateTimeEdit
-{
-    border-image: url(icon:/normal/var_indicator_background.svg) 4 4 4 70;
-    border-width: 1px 1px 1px 17px;
-}
-
-QtLabb--Script--CScriptDateTimeEdit:disabled
-{
-    border-image: url(icon:/normal/var_indicator_disabled.svg) 4 4 4 70;
-}
-
-QtLabb--Script--CScriptLineEdit#_itemEditor
-{
-    border-image: none;
-    border: none;
-}
-
-
-QtLabb--Script--CScriptComboBox[iconHeight="24"]
-{
-    border-image: url(icon:/normal/var_indicator_background.svg) 4 4 4 70;
-    border-width: 1px 1px 1px 24px;
-}
-
-
-QtLabb--Script--CScriptComboBox[iconHeight="16"]
-{
-    border-image: url(icon:/normal/var_indicator_background.svg) 4 4 4 70;
-    border-width: 1px 1px 1px 18px;
-}
-
-
-QtLabb--Script--CScriptComboBox:disabled
-{
-    border-image: url(icon:/normal/var_indicator_disabled.svg) 4 4 4 70;
-}
-
-
-/*===========================================================================
- * QtLabb--Core--CSettingsDialog
- *===========================================================================*/
-QtLabb--Core--CSettingsDialog > QtLabb--CHeaderWidget
-{
-	border-bottom: 1px solid {{borderColor}};
-	padding-bottom: 6px;
-}
-
-/*===========================================================================
- * QtLabb--Core--CSettingsDialog
- *===========================================================================*/
-QtLabb--CRbacManagementDialog > QtLabb--CHeaderWidget
-{
-	border-bottom: 1px solid {{borderColor}};
-	padding-bottom: 6px;
-}
-
-
-/*===========================================================================
- * QtLabb--CHintWidget
- *===========================================================================*/
-QtLabb--CHintWidget
-{
-    border: 1px solid {{borderColor}};
-    border-left: 1px solid {{accentColor}};
-    background: {{backgroundLighter}};
-}
-
-QtLabb--CHintWidget[style="information"]
-{
-    border: 1px solid rgba(2, 153, 227, 96);
-    background: rgba(2, 153, 227, 20);
-}
-
-QtLabb--CHintWidget[style="warning"]
-{
-    border: 1px solid rgba(251, 215, 52, 96);
-    background: rgba(251, 215, 52, 20);
-}
-
-
-QtLabb--CHintWidget > QLabel
-{
-   background: none;
-}
-
-
-/*===========================================================================
- * QtLabb--Core--CMainWindow
- *===========================================================================*/
-QtLabb--Core--CMainWindow
-{
-	qproperty-drawDockTabBarBase: false;
-}
-
-QtLabb--Core--CFutureProgressV2
-{
-	background: {{backgroundLighter}};
-    margin-bottom: 6px;
-}
-
-QtLabb--Core--CProgressView
-{
-	padding: 6px;
-}
-
-
-/*===========================================================================
- * QtLabb--CValueTracePopup
- *===========================================================================*/
-QtLabb--CValueTracePopup
-{
-	padding: 6px;
-	background: {{backgroundDark}};
-	border: 1px solid {{borderColor}};
-}
-
-
-/*===========================================================================
- * QtLabb--CScriptTreeView
- *===========================================================================*/
-QtLabb--CScriptTreeView
-{
-	qproperty-currentFunctionBrush: rgba(0, 147, 217, 178);
-	qproperty-functionActiveBrush: rgba(0, 147, 216, 51);
-
-    qproperty-captionColor: {{textColor}};
-    qproperty-parametersColor: {{textColor|opacity(0.7)}};
-    qproperty-statusColor: {{accentColor}};
-    
-    qproperty-readOnlyCaptionColor: {{textColor|opacity(0.5)}};
-    qproperty-readOnlyParametersColor: {{textColor|opacity(0.5)}};
-    qproperty-readOnlyStatusColor: {{accentColor}};
-
-    qproperty-mouseOverCaptionColor: {{backgroundDarker}};
-    qproperty-mouseOverParametersColor: {{backgroundColor}};
-    qproperty-mouseOverStatusColor: {{accentColor}};
-
-    qproperty-selectedCaptionColor: {{backgroundColor}};
-    qproperty-selectedParametersColor: {{backgroundColor|opacity(0.7)}};
-    qproperty-selectedStatusColor: {{backgroundColor}};
-
-    qproperty-currentFunctionCaptionColor: {{textColor}};
-    qproperty-currentFunctionParametersColor: {{textColor|opacity(0.7)}};
-    qproperty-currentFunctionStatusColor: {{accentColor}};
-
-    qproperty-functionActiveCaptionColor: {{textColor}};
-    qproperty-functionActiveParametersColor: {{textColor|opacity(0.7)}};
-    qproperty-functionActiveStatusColor: {{accentColor}};
-}
-
-
-
-/*===========================================================================
- * QtLabb qwt library
- *===========================================================================*/
-QtLabb--CStylablePlot
-{
-    qproperty-majorGridColor: {{backgroundLighter}};
-    qproperty-majorGridPenStyle: SolidLine;
-    qproperty-minorGridColor: {{backgroundLighter}};
-    qproperty-minorGridPenStyle: SolidLine;
-    /* font family, pointSizeF, pixelSize, QFont::StyleHint, QFont::Weight,
-       QFont::Style, underline, strikeOut, fixedPitch, rawMode*/
-    qproperty-yAxisTitleFont: "none,10,-1,5,0,0,0,0,0,0";
-    qproperty-xAxisTitleFont: "none,10,-1,5,0,0,0,0,0,0";
-    qproperty-xAxisTitleColor: {{accentColor}};
-    qproperty-yAxisTitleColor: {{accentColor}};
-}
 
 QwtPlotCanvas
 {
@@ -2828,202 +2453,6 @@ QwtThermo
 }
 
 
-/*===========================================================================
- * QCustomPlot
- *===========================================================================*/
-QtLabb--CStyleableCustomPlot
-{
-	/* axes */
-    qproperty-axesColor: {{textColorDarker}};
-    qproperty-axesTitleColor: {{accentColor}};
-    /* font family, pointSizeF, pixelSize, QFont::StyleHint, QFont::Weight,
-       QFont::Style, underline, strikeOut, fixedPitch, rawMode*/
-    qproperty-axesTitleFont: "none,10,-1,5,0,0,0,0,0,0"; /* axesTitleFont */
-    qproperty-majorTickColor: {{textColorDarker}};
-    qproperty-subTickColor: {{textColorDarker}};
-    qproperty-tickLabelColor: {{textColorDarker}};
-    qproperty-tickLabelFont: "none,7,-1,5,0,0,0,0,0,0";/* tickLabelFont */
-
-    /* Major Grid */
-    qproperty-majorGridColor: {{backgroundLighter}};
-    qproperty-majorGridPenStyle: SolidLine;
-    qproperty-majorGridPenWidth: 1;
-    qproperty-zeroLinePenColor: {{borderColor}};
-    qproperty-zeroLinePenStyle: SolidLine;
-
-    /* Sub Grid */
-    qproperty-subGridColor: {{backgroundLighter}};
-    qproperty-subGridPenStyle: DotLine;
-    qproperty-subGridPenWidth: 1;
-
-    qproperty-backgroundColor: {{backgroundDarker}};
-
-    /* Legend */
-    qproperty-legendBackgroundBrush: {{backgroundColor}};
-    qproperty-legendTextColor: {{textColor}};
-    qproperty-legendIconSize: 24px 16px;
-    qproperty-legendBorderPenStyle: NoPen;
-}
-
-
-
-/*===========================================================================
- * JSEdit JavaScipt edit component
- *===========================================================================*/
-JSEdit
-{
-    qproperty-colors: "Sidebar=#3d3d3d LineNumber=#929292 Cursor=#3d3d3d FoldIndicator=#b4b4b4 Background=#474747 BracketMatch=#1d545c BracketError=#ff6aad";
-    qproperty-colorSchemeColors: "Normal=#d6cf9a Comment=#66a334 Number=#8a602c String=#d69545 Operator=#d6bb9a Identifier=#000020 Keyword=#45c6d6 BuiltIn=#d69aa7 Marker=#1d545c";
-	font-family: "Courier New"
-}
-
-
-QtLabb--Core--CExportProjectDialog QTableView
-{
-	qproperty-iconSize: 32px 32px;
-	border: none;
-    qproperty-alternatingRowColors: false;
-    qproperty-showGrid: false;
-    padding-top: 20px;
-}
-
-QtLabb--Core--CExportProjectDialog QAbstractItemView::item
-{
-	border: none;
-	border-top: 1px solid {{borderColor}};
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-bottom: 10px;
-	padding-top: 10px;
-}
-
-
-/*===========================================================================
- * Z-Axis widget
- *===========================================================================*/
-QtLabb--CZAxisWidget > QtLabb--CProgressSlider
-{
-	qproperty-targetMarkerPen: "Width=1 Style=SolidLine Color=#ffffff";
-	qproperty-mouseMarkerPen: "Width=1 Style=DashLine Color=#ffffff";
-	qproperty-marker2Pen: "Width=2 Style=SolidLine Color=#0299e3";
-	qproperty-marker3Pen: "Width=2 Style=SolidLine Color=#0299e3";
-	qproperty-marker4Pen: "Width=2 Style=SolidLine Color=#00ff00";
-}
-
-QtLabb--CProgressSlider
-{
-	qproperty-targetMarkerPen: "Width=1 Style=SolidLine Color=#ffffff";
-	qproperty-mouseMarkerPen: "Width=1 Style=DashLine Color=#ffffff";
-}
-
-
-/*===========================================================================
- * CDosingScriptConfigWidget
- *===========================================================================*/
-QtLabb--CDosingScriptConfigWidget
-{
-    border: none;
-}
-
-/*===========================================================================
- * CSwitchValveConfigWidget
- *===========================================================================*/
-Qtlabb--CSwitchValveScriptConfigWidget
-{
-    border: none;
-}
-
-/*===========================================================================
- * CStopDosageConfigWidget
- *===========================================================================*/
-Qtlabb--CStopDosageConfigWidget
-{
-    border: none;
-}
-
-/*===========================================================================
- * CContinuousFlowScriptConfigWidget
- *===========================================================================*/
-Qtlabb--CContinuousFlowScriptConfigWidget
-{
-    border: none;
-}
-
-/*===========================================================================
- * CContinuousFlowWizard
- *===========================================================================*/
-Qtlabb--CContinuousFlowWizard QLabel#wizardWatermarkPixmapLabel
-{
-    background: {{backgroundDark}};
-}
-
-/*===========================================================================
- * QRoundProgressBar
- *===========================================================================*/
-QRoundProgressBar
-{
-    qproperty-DonutWidth: 0.2;
-    qproperty-NullAngle: 270;
-    qproperty-AngleDegree: 360;
-    qproperty-Style: StyleDonut;
-    qproperty-ProgressBarFlags: 3;
-    qproperty-BaseBrush: {{borderColor}};
-}
-
-
-QtLabb--Core--CMainWindow[dark_theme="false"] QRoundProgressBar
-{
-	qproperty-ProgressBarFlags: 1;
-}
-
-QRoundProgressBar#pressureDisplay
-{
-    qproperty-DonutWidth: 0.1;
-    qproperty-ProgressBarFlags: 0;
-}
-
-
-/*===========================================================================
- * CFlowProfileWizardPage
- *===========================================================================*/
-QAbstractButton#pressureFlowButton:checked:!pressed,
-QAbstractButton#crossFlowButton:checked:!pressed,
-QAbstractButton#overlapFlowButton:checked:!pressed
-{
-    color: {{backgroundColor}};
-    border: 1px solid {{accentColor}};
-    background-color: {{accentColor}};
-}
-
-
-/*===========================================================================
- * CPressurizingWizardPageV2
- *===========================================================================*/
-QtLabb--CPressurizingWizardPageV2 QAbstractButton#startButton,
-QtLabb--CPressurizingWizardPageV2 QAbstractButton#testButton,
-QtLabb--CPressurizingWizardPageV2 QAbstractButton#logButton
-{
-	qproperty-iconSize: 16px 16px;
-}
-
-QtLabb--CPressurizingWizardPageV2 QtLabb--CInputStatusWidget
-{
-	qproperty-iconSize: 32px 32px;
-}
-
-QtLabb--CWaveformGraph#dataPlot
-{
-    qproperty-legendPosition: NoLegend;
-    border: 1px solid {{borderColor}};
-}
-
-/*===========================================================================
- * CParametersFoundWizardPage
- *===========================================================================*/
-QtLabb--CParametersFoundWizardPage QtLabb--CInputStatusWidget#statusLabel
-{
-	qproperty-iconSize: 64px;
-}
 
 
 /*===========================================================================
@@ -3231,13 +2660,6 @@ ads--CDockWidget[ItemViewContainer="true"]
 }
 
 
-ads--CDockWidget[ItemViewContainer="true"] QtLabb--CHeaderWidget
-{
-    border-left: 1px solid {{borderColor}};
-    border-right: 1px solid {{borderColor}};
-}
-
-
 ads--CDockWidget[ItemViewContainer="true"] QTableView
 {
 	gridline-color: {{borderColor}};
@@ -3436,18 +2858,6 @@ ads--CResizeHandle:hover {
 /*===========================================================================
  * CJavascriptEditorWidget JavaScript code editor component
  *===========================================================================*/
-QtLabb--CScintillaWidget[dark_theme="true"] 
-{
-	qproperty-styleFileName: url(:/codeeditor/res/Material-Dark.xml);	
-} 
-
-
-QtLabb--CScintillaWidget[dark_theme="false"] 
-{
-	qproperty-styleFileName: url(:/codeeditor/res/notepad_light.xml);  
-}
-
-
 QsciScintilla
 {
     border: 1px solid {{borderColor}};
@@ -3456,16 +2866,6 @@ QsciScintilla
 QsciScintilla:focus
 {
     border-color: {{accentColor}};
-}
-
-
-QtLabb--CScintillaWidget
-{
-	qproperty-backgroundColor: {{backgroundDarker}};
-	qproperty-selectionBackgroundColor: {{accentColor|opacity(0.5)}};
-	qproperty-selectionForegroundColor: {{textColor}};
-	qproperty-caretLineBackgroundColor: {{backgroundLighter}};
-	qproperty-foldMarkerColor: {{textColorDisabled}};
 }
 
 
@@ -3478,35 +2878,6 @@ QtLabb--CScintillaWidget
 .no_vert_borders QsciScintilla:focus
 {
 	border-color: {{borderColor}};
-}
-
-QtLabb--Script--CJavaScriptConsole
-{
-	font-size: 13px;
-	font-family: consolas;
-}
-
-
-QtLabb--Script--CJavaScriptConsole[dark_theme="true"]
-{
-	qproperty-darkTheme: true;
-}
-
-
-QtLabb--Script--CJavaScriptConsole[dark_theme="false"]
-{
-	qproperty-darkTheme: false;
-}
-
-
-QtLabb--CQObjectBrowser > QLineEdit
-{
-	padding: 6px;
-}
-
-QtLabb--CQObjectBrowser > QTreeView
-{
-	border-top: none;
 }
 
 
