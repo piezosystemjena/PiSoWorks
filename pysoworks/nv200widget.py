@@ -5,7 +5,7 @@ from typing import Any, cast
 import math
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu
-from PySide6.QtCore import Qt, QSize, QObject, Signal
+from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
 from PySide6.QtGui import QColor, QPalette, QAction
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
@@ -77,6 +77,7 @@ class NV200Widget(QWidget):
         self._recorder : DataRecorder | None = None
         self._waveform_generator : WaveformGenerator | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
+        self._initialized = False
 
         self.ui = Ui_NV200Widget()
         ui = self.ui
@@ -853,3 +854,13 @@ class NV200Widget(QWidget):
         ui.moveProgressBar.setMaximum(total)
         ui.moveProgressBar.setValue(current_index)
         self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)
+
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._initialized:
+            return
+
+        print("Initializing NV200Widget...")
+        self._initialized = True
+        QTimer.singleShot(0, qtinter.asyncslot(self.search_serial_devices))
