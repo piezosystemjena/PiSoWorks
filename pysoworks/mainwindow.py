@@ -297,12 +297,12 @@ def main():
     Initializes and runs the main application window.
     """
     setup_logging()
-    QGuiApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QGuiApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    QGuiApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
+    QGuiApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     QApplication.setDesktopSettingsAware(True)
 
-    QApplication.setEffectEnabled(Qt.UI_AnimateMenu, False)
-    QApplication.setEffectEnabled(Qt.UI_AnimateCombo, False)
+    QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateMenu, False)
+    QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
 
     app = QApplication(sys.argv)
     app_path = Path(__file__).resolve().parent
