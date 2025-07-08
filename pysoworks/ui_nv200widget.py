@@ -109,7 +109,7 @@ class Ui_NV200Widget(object):
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 30, 0)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.tabWidget = QTabWidget(self.scrollAreaWidgetContents)
         self.tabWidget.setObjectName(u"tabWidget")
         sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
@@ -428,14 +428,14 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_3.addWidget(self.splitter)
 
-        self.moveProgressBar = TimedProgressBar(NV200Widget)
-        self.moveProgressBar.setObjectName(u"moveProgressBar")
-        self.moveProgressBar.setMaximumSize(QSize(16777215, 3))
-        self.moveProgressBar.setStyleSheet(u"QProgressBar { background: transparent;}")
-        self.moveProgressBar.setValue(0)
-        self.moveProgressBar.setTextVisible(False)
+        self.mainProgressBar = TimedProgressBar(NV200Widget)
+        self.mainProgressBar.setObjectName(u"mainProgressBar")
+        self.mainProgressBar.setMaximumSize(QSize(16777215, 3))
+        self.mainProgressBar.setStyleSheet(u"QProgressBar { background: transparent;}")
+        self.mainProgressBar.setValue(0)
+        self.mainProgressBar.setTextVisible(False)
 
-        self.verticalLayout_3.addWidget(self.moveProgressBar)
+        self.verticalLayout_3.addWidget(self.mainProgressBar)
 
 
         self.retranslateUi(NV200Widget)

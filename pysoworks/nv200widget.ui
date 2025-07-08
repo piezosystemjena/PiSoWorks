@@ -151,7 +151,7 @@
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>30</number>
+              <number>0</number>
              </property>
              <property name="bottomMargin">
               <number>0</number>
@@ -750,7 +750,7 @@
     </widget>
    </item>
    <item>
-    <widget class="TimedProgressBar" name="moveProgressBar">
+    <widget class="TimedProgressBar" name="mainProgressBar">
      <property name="maximumSize">
       <size>
        <width>16777215</width>

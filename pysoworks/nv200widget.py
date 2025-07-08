@@ -83,8 +83,8 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.setupUi(self)
 
-        ui.moveProgressBar.set_duration(5000)
-        ui.moveProgressBar.set_update_interval(20)
+        ui.mainProgressBar.set_duration(5000)
+        ui.mainProgressBar.set_update_interval(20)
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
 
         self.init_device_search_ui()
@@ -354,7 +354,7 @@ class NV200Widget(QWidget):
             self._device = None
         
         print("Searching...")
-        ui.moveProgressBar.start(5000, "search_devices")
+        ui.mainProgressBar.start(5000, "search_devices")
         try:
             print("Discovering devices...")
             devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
@@ -365,9 +365,9 @@ class NV200Widget(QWidget):
                 print(f"Found {len(devices)} device(s):")
                 for device in devices:
                     print(device)
-            ui.moveProgressBar.stop(success=True, context="search_devices")
+            ui.mainProgressBar.stop(success=True, context="search_devices")
         except Exception as e:
-            ui.moveProgressBar.reset()
+            ui.mainProgressBar.reset()
             print(f"Error: {e}")
         finally:
             QApplication.restoreOverrideCursor()
@@ -403,10 +403,13 @@ class NV200Widget(QWidget):
         Asynchronously updates the minimum and maximum values for the target position spin boxes
         in the UI based on the setpoint range retrieved from the device.
         """
+        print("Updating target position spin boxes...")
         ui = self.ui
         setpoint_range = await self._device.get_setpoint_range()
         ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
+        ui.targetPosSpinBox.setValue(setpoint_range[1]) # Default to high end
         ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
+        ui.targetPosSpinBox_2.setValue(setpoint_range[0])  # Default to low end
         unit = await self._device.get_setpoint_unit()
         ui.targetPosSpinBox.setSuffix(f" {unit}")
         ui.targetPosSpinBox_2.setSuffix(f" {unit}")
@@ -473,7 +476,6 @@ class NV200Widget(QWidget):
         pid_mode = await dev.get_pid_mode()
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
-        ui.targetPosSpinBox.setValue(await dev.get_setpoint())
         await self.update_controller_ui_from_device()
         
 
@@ -680,7 +682,7 @@ class NV200Widget(QWidget):
             spinbox : QDoubleSpinBox = sender.property("value_edit")
             ui = self.ui
             ui.easyModeGroupBox.setEnabled(False)
-            ui.moveProgressBar.start(5000, "start_move")
+            ui.mainProgressBar.start(5000, "start_move")
 
             recorder = await self.setup_data_recorder()
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_SET_COMMAND)
@@ -693,10 +695,10 @@ class NV200Widget(QWidget):
             await dev.move(spinbox.value())
             self.status_message.emit("Move operation started.", 0)
             await self.plot_recorder_data()
-            ui.moveProgressBar.stop(success=True, context="start_move")
+            ui.mainProgressBar.stop(success=True, context="start_move")
         except Exception as e:
             self.status_message.emit(f"Error during move operation: {e}", 4000)
-            ui.moveProgressBar.reset()
+            ui.mainProgressBar.reset()
             print(f"Error during move operation: {e}")
             return
         finally:
@@ -768,7 +770,7 @@ class NV200Widget(QWidget):
             self.status_message.emit(f"Error uploading waveform: {e}", 4000)
         finally:#
             self.setCursor(Qt.CursorShape.ArrowCursor)
-            self.ui.moveProgressBar.reset()
+            self.ui.mainProgressBar.reset()
         
 
     async def start_waveform_generator(self):
@@ -778,7 +780,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         try:
             wg = self.waveform_generator
-            ui.moveProgressBar.start(5000, "start_waveform")
+            ui.mainProgressBar.start(5000, "start_waveform")
 
             recorder = await self.setup_data_recorder()
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
@@ -789,12 +791,12 @@ class NV200Widget(QWidget):
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
             await self.plot_recorder_data()
-            ui.moveProgressBar.stop(success=True, context="start_waveform")
+            ui.mainProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
         except Exception as e:
             print(f"Error starting waveform generator: {e}")
             self.status_message.emit(f"Error starting waveform generator: {e}", 4000)
-            ui.moveProgressBar.reset()
+            ui.mainProgressBar.reset()
         finally:
             ui.startWaveformButton.setEnabled(True)
 
@@ -851,16 +853,25 @@ class NV200Widget(QWidget):
         """
         percent = 100 * current_index / total
         ui = self.ui
-        ui.moveProgressBar.setMaximum(total)
-        ui.moveProgressBar.setValue(current_index)
+        ui.mainProgressBar.setMaximum(total)
+        ui.mainProgressBar.setValue(current_index)
         self.status_message.emit(f" Uploading waveform - sample {current_index} of {total} [{percent:.1f}%]", 0)
 
 
     def showEvent(self, event):
+        """
+        Handles the widget's show event. Ensures initialization logic is executed only once
+        when the widget is shown for the first time. Schedules an asynchronous search for
+        serial devices unsing QTimer after the widget is displayed.
+
+        Args:
+            event (QShowEvent): The event object associated with the widget being shown.
+        """
         super().showEvent(event)
         if self._initialized:
             return
 
-        print("Initializing NV200Widget...")
         self._initialized = True
         QTimer.singleShot(0, qtinter.asyncslot(self.search_serial_devices))
+        ui = self.ui
+        ui.scrollArea.setFixedWidth(ui.scrollArea.widget().sizeHint().width() + 40)  # +40 for scroll bar width
