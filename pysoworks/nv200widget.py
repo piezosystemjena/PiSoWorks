@@ -69,6 +69,7 @@ class NV200Widget(QWidget):
     """
 
     status_message = Signal(str, int)  # message text, timeout in ms
+    DEFAULT_RECORDING_DURATION_MS : int = 120  # Default recording duration in milliseconds
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -92,6 +93,7 @@ class NV200Widget(QWidget):
         self.init_controller_param_ui()
         self.init_console_ui()
         self.init_waveform_ui()
+        self.init_recorder_ui()
 
 
     @property
@@ -243,6 +245,20 @@ class NV200Widget(QWidget):
         ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
         ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
+
+
+    def init_recorder_ui(self):
+        """
+        Initializes the data recorder UI components for recording and plotting data.
+        """
+        ui = self.ui
+        ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
+        ui.historyCheckBox.setChecked(True)
+        ui.clearPlotButton.setIcon(get_icon("delete", size=24, fill=True))
+        ui.clearPlotButton.clicked.connect(self.clear_waveform_plot)
+        ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
+        ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
+        ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
 
     
     def init_spimonitor_combobox(self):
@@ -628,7 +644,7 @@ class NV200Widget(QWidget):
         asyncio.create_task(self.start_move_async(self.sender()))
 
 
-    async def setup_data_recorder(self) -> DataRecorder:
+    async def setup_data_recorder(self, duration_ms : int = DEFAULT_RECORDING_DURATION_MS) -> DataRecorder:
         """
         Asynchronously configures the data recorder with appropriate data sources and recording duration.
 
@@ -650,7 +666,7 @@ class NV200Widget(QWidget):
         else:
             await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
         await recorder.set_data_source(1, DataRecorderSource.PIEZO_VOLTAGE)
-        await recorder.set_recording_duration_ms(120)
+        await recorder.set_recording_duration_ms(duration_ms)
         return recorder
 
 
@@ -749,12 +765,16 @@ class NV200Widget(QWidget):
             duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
         )
         plot = ui.mplCanvasWidget.canvas
-        if plot.get_line_count() == 0:
+        line_count = plot.get_line_count()
+        if line_count == 0:
             plot.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor("#02cfff"))
-            offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
-            plot.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
         else:
             plot.update_line(0, waveform.sample_times_ms, waveform.values)
+
+        # Adjust the plot axes based on the waveform data if it does not contain any history lines
+        if line_count <= 1:
+            offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
+            plot.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
 
 
 
@@ -795,6 +815,25 @@ class NV200Widget(QWidget):
         color.setAlphaF(color.alphaF() * alpha)
         plot.set_line_color(line_index, color)
 
+
+    async def plot_waveform_recorder_data(self):
+        """
+        Plots waveform recorder data on the UI's matplotlib canvas.
+
+        If the 'history' checkbox is checked, previous plot lines (except the first) are faded.
+        Otherwise, the waveform plot is cleared before plotting new data.
+        Finally, recorder data is plotted.
+        """
+        ui = self.ui
+        plot = ui.mplCanvasWidget.canvas
+        if ui.historyCheckBox.isChecked():
+            for i in range(1, plot.get_line_count()):
+                self.fade_plot_line(i)
+        else:
+            self.clear_waveform_plot()
+        await self.plot_recorder_data(clear_plot=False)
+
+
     async def start_waveform_generator(self):
         """
         Asynchronously starts the waveform generator.
@@ -804,7 +843,7 @@ class NV200Widget(QWidget):
             wg = self.waveform_generator
             ui.mainProgressBar.start(5000, "start_waveform")
 
-            recorder = await self.setup_data_recorder()
+            recorder = await self.setup_data_recorder(ui.recDurationSpinBox.value())
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
             await recorder.start_recording()
 
@@ -813,11 +852,8 @@ class NV200Widget(QWidget):
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
             
-            plot = ui.mplCanvasWidget.canvas
-            for i in range(1, plot.get_line_count()):
-                self.fade_plot_line(i)
+            await self.plot_waveform_recorder_data()
 
-            await self.plot_recorder_data(clear_plot=False)
             ui.mainProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
         except Exception as e:
@@ -902,3 +938,38 @@ class NV200Widget(QWidget):
         QTimer.singleShot(0, qtinter.asyncslot(self.search_serial_devices))
         ui = self.ui
         ui.scrollArea.setFixedWidth(ui.scrollArea.widget().sizeHint().width() + 40)  # +40 for scroll bar width
+
+    
+    def clear_waveform_plot(self):
+        """
+        Clears the waveform plot in the UI.
+        """
+        plot = self.ui.mplCanvasWidget.canvas
+        plot.clear_plot()
+        self.update_waveform_plot()
+
+
+    def update_sampling_period(self):
+        """
+        Updates the sampling period in the waveform generator based on the given value.
+
+        Args:
+            value (int): The new sampling period in milliseconds.
+        """
+        pass
+
+
+        
+    def update_waveform_running_duration(self,):
+        """
+        Updates the waveform running duration in the waveform generator based on the given value.
+
+        Args:
+            value (int): The new running duration in milliseconds.
+        """
+        ui = self.ui
+        freq_hz = ui.freqSpinBox.value()
+        cycles = ui.cyclesSpinBox.value()
+        duration_ms = 1000 * cycles / freq_hz if freq_hz > 0 else 0.0
+        ui.waveformDurationSpinBox.setValue(int(duration_ms))
+
