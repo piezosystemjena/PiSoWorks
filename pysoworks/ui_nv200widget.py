@@ -470,12 +470,15 @@ class Ui_NV200Widget(object):
         sizePolicy6.setVerticalStretch(0)
         sizePolicy6.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
         self.stackedWidget.setSizePolicy(sizePolicy6)
-        self.mplCanvasWidget = MplWidget()
-        self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
-        self.stackedWidget.addWidget(self.mplCanvasWidget)
+        self.easyModePlot = MplWidget()
+        self.easyModePlot.setObjectName(u"easyModePlot")
+        self.stackedWidget.addWidget(self.easyModePlot)
         self.controllerStructureWidget = Nv200ControllerWidget()
         self.controllerStructureWidget.setObjectName(u"controllerStructureWidget")
         self.stackedWidget.addWidget(self.controllerStructureWidget)
+        self.waveformPlot = MplWidget()
+        self.waveformPlot.setObjectName(u"waveformPlot")
+        self.stackedWidget.addWidget(self.waveformPlot)
 
         self.horizontalLayout_2.addWidget(self.stackedWidget)
 

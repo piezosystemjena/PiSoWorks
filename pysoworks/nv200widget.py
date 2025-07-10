@@ -450,7 +450,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         pid_mode = PidLoopMode.CLOSED_LOOP if ui.closedLoopCheckBox.isChecked() else PidLoopMode.OPEN_LOOP
         try:
-            await self._device.set_pid_mode(pid_mode)
+            await self._device.pid.set_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
             await self.update_target_pos_edits()
         except Exception as e:
@@ -492,7 +492,7 @@ class NV200Widget(QWidget):
         print("Initializing UI from device...")
         dev = self.device
         ui = self.ui
-        pid_mode = await dev.get_pid_mode()
+        pid_mode = await dev.pid.get_mode()
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
@@ -544,48 +544,49 @@ class NV200Widget(QWidget):
         cui.notchbSpinBox.setValue(await notch_filter.get_bandwidth())
         cui.notchbSpinBox.applyfunc = notch_filter.set_bandwidth
 
-        pidgains = await dev.get_pid_gains()
+        pid_controller = dev.pid
+        pidgains = await pid_controller.get_pid_gains()
         print(f"PID Gains: {pidgains}")
         cui.kpSpinBox.setMinimum(0.0)
         cui.kpSpinBox.setMaximum(10000.0)
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
-        cui.kpSpinBox.applyfunc = lambda value: dev.set_pid_gains(kp=value)
+        cui.kpSpinBox.applyfunc = lambda value: pid_controller.set_pid_gains(kp=value)
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
         cui.kiSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kiSpinBox.setValue(pidgains.ki)
-        cui.kiSpinBox.applyfunc = lambda value: dev.set_pid_gains(ki=value)
+        cui.kiSpinBox.applyfunc = lambda value: pid_controller.set_pid_gains(ki=value)
 
         cui.kdSpinBox.setMinimum(0.0)
         cui.kdSpinBox.setMaximum(10000.0)
         cui.kdSpinBox.setSpecialValueText(cui.kdSpinBox.prefix() + "0.0 (disabled)")
         cui.kdSpinBox.setValue(pidgains.kd)
-        cui.kdSpinBox.applyfunc = lambda value: dev.set_pid_gains(kd=value)
+        cui.kdSpinBox.applyfunc = lambda value: pid_controller.set_pid_gains(kd=value)
         
-        pcfgains = await dev.get_pcf_gains()
+        pcfgains = await pid_controller.get_pcf_gains()
         cui.pcfaSpinBox.setMinimum(0.0)
         cui.pcfaSpinBox.setMaximum(10000.0)
         cui.pcfaSpinBox.setSpecialValueText(cui.pcfaSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfaSpinBox.setValue(pcfgains.acceleration)
-        cui.pcfaSpinBox.applyfunc = lambda value: dev.set_pcf_gains(acceleration=value)
+        cui.pcfaSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(acceleration=value)
 
         cui.pcfvSpinBox.setMinimum(0.0)
         cui.pcfvSpinBox.setMaximum(10000.0)
         cui.pcfvSpinBox.setSpecialValueText(cui.pcfvSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfvSpinBox.setValue(pcfgains.velocity)
-        cui.pcfvSpinBox.applyfunc = lambda value: dev.set_pcf_gains(velocity=value)
+        cui.pcfvSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(velocity=value)
 
         cui.pcfxSpinBox.setMinimum(0.0)
         cui.pcfxSpinBox.setMaximum(10000.0)
         cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfxSpinBox.setValue(pcfgains.position)
-        cui.pcfxSpinBox.applyfunc = lambda value: dev.set_pcf_gains(position=value)
+        cui.pcfxSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(position=value)
 
-        pidmode = await dev.get_pid_mode()
+        pidmode = await pid_controller.get_mode()
         cui.clToggleWidget.setCurrentIndex(pidmode.value)
-        cui.clToggleWidget.applyfunc = lambda value: dev.set_pid_mode(PidLoopMode(value))
+        cui.clToggleWidget.applyfunc = lambda value: pid_controller.set_mode(PidLoopMode(value))
 
         modsrc = await dev.get_modulation_source()
         cui.modsrcToggleWidget.setCurrentIndex(modsrc.value)
@@ -680,7 +681,7 @@ class NV200Widget(QWidget):
         Raises:
             Any exceptions raised by recorder.wait_until_finished() or recorder.read_recorded_data_of_channel().
         """
-        plot = self.ui.mplCanvasWidget.canvas
+        plot = self.ui.easyModePlot.canvas
         recorder = self.recorder
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
@@ -730,7 +731,7 @@ class NV200Widget(QWidget):
         """
         Handles the event when the current tab in the tab widget is changed.
         """
-        self.ui.stackedWidget.setCurrentIndex(1 if index == TabWidgetTabs.SETTINGS.value else 0)
+        self.ui.stackedWidget.setCurrentIndex(index)
         if index == TabWidgetTabs.SETTINGS.value:
             print("Settings tab activated")
             await self.update_controller_ui_from_device()
@@ -764,7 +765,7 @@ class NV200Widget(QWidget):
             phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
             duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
         )
-        plot = ui.mplCanvasWidget.canvas
+        plot = ui.waveformPlot.canvas
         line_count = plot.get_line_count()
         if line_count == 0:
             plot.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor("#02cfff"))
@@ -810,7 +811,7 @@ class NV200Widget(QWidget):
             line_index (int): The index of the line to fade.
             alpha (float): The alpha value to set for the line (0.0 to 1.0).
         """
-        plot = self.ui.mplCanvasWidget.canvas
+        plot = self.ui.waveformPlot.canvas
         color = plot.get_line_color(line_index)
         color.setAlphaF(color.alphaF() * alpha)
         plot.set_line_color(line_index, color)
@@ -825,7 +826,7 @@ class NV200Widget(QWidget):
         Finally, recorder data is plotted.
         """
         ui = self.ui
-        plot = ui.mplCanvasWidget.canvas
+        plot = ui.waveformPlot.canvas
         if ui.historyCheckBox.isChecked():
             for i in range(1, plot.get_line_count()):
                 self.fade_plot_line(i)
@@ -944,7 +945,7 @@ class NV200Widget(QWidget):
         """
         Clears the waveform plot in the UI.
         """
-        plot = self.ui.mplCanvasWidget.canvas
+        plot = self.ui.waveformPlot.canvas
         plot.clear_plot()
         self.update_waveform_plot()
 

@@ -854,8 +854,9 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="MplWidget" name="mplCanvasWidget"/>
+         <widget class="MplWidget" name="easyModePlot"/>
          <widget class="Nv200ControllerWidget" name="controllerStructureWidget"/>
+         <widget class="MplWidget" name="waveformPlot"/>
         </widget>
        </item>
       </layout>
