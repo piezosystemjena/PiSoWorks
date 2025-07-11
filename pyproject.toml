@@ -10,22 +10,23 @@ name = "pysoworks"
 version = "0.1.0"
 description = "PySide6-based application for controlling NV200 devices."
 authors = ["piezosystem jena GmbH"]
-license = "MIT"
 readme = "README_PYPI.md"
 packages = [{ include = "pysoworks" }]
 classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers"
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop" 
 ]
 
 
 [tool.poetry.urls]
-Homepage = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
-Source = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
-"Bug Tracker" = "https://gitlab.com/gitlabuser0xFFFF/pysoworks/-/issues"
-Documentation = "https://gitlab.com/gitlabuser0xFFFF/pysoworks"
+Homepage = "https://github.com/piezosystemjena/PySoWorks"
+Source = "https://github.com/piezosystemjena/PySoWorks"
+"Bug Tracker" = "https://github.com/piezosystemjena/PySoWorks/issues"
+Documentation = "https://github.com/piezosystemjena/PySoWorks/issues"
 
 
 [tool.poetry.scripts]
