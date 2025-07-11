@@ -22,11 +22,11 @@ class Console(QTextEdit):
         super().__init__(parent)
         self.setAcceptRichText(False)
         self.setUndoRedoEnabled(False)
-        self.setWordWrapMode(QTextOption.WrapAnywhere)
+        self.setWordWrapMode(QTextOption.WrapMode.WrapAnywhere)
 
         # Set fixed-width font
         font = QFont("Consolas")  # or use "Monospace" / "Courier" depending on platform
-        font.setStyleHint(QFont.Monospace)
+        font.setStyleHint(QFont.StyleHint.Monospace)
         font.setFixedPitch(True)
         font.setPointSize(10)  # Set to desired size
         self.setFont(font)
@@ -52,7 +52,7 @@ class Console(QTextEdit):
         Inserts a new command prompt at the end of the console.
         """
         cursor = self.textCursor()
-        cursor.movePosition(QTextCursor.End)
+        cursor.movePosition(QTextCursor.MoveOperation.End)
         if not self.document().isEmpty():
             cursor.insertText("\n") 
         cursor.insertText(self.prompt)

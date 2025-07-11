@@ -4,7 +4,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib.colors import to_rgba
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from PySide6.QtGui import QPalette, QColor, QIcon
+from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from nv200.data_recorder import DataRecorder
 from qt_material_icons import MaterialIcon
@@ -235,7 +235,6 @@ class LightIconToolbar(NavigationToolbar2QT):
                 icon = MaterialIcon(icon_path, size=24)
                 icon.set_color(self.palette().color(QPalette.ColorRole.WindowText))
                 action.setIcon(icon)
-
 
 
 

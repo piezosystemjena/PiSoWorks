@@ -27,6 +27,7 @@ from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
+from .mplcanvas import MplWidget, LightIconToolbar
 
 
 # Important:
@@ -197,7 +198,7 @@ class NV200Widget(QWidget):
         ui.consoleButton.clicked.connect(self.toggle_console_visibility)
         ui.consoleWidget.setVisible(False)
         ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
-        ui.console.register_commands(NV200Device.help_dict)
+        ui.console.register_commands(NV200Device.help_dict())
 
 
     def init_controller_param_ui(self):
@@ -259,6 +260,7 @@ class NV200Widget(QWidget):
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
+        self.update_sampling_period()
 
     
     def init_spimonitor_combobox(self):
@@ -671,7 +673,7 @@ class NV200Widget(QWidget):
         return recorder
 
 
-    async def plot_recorder_data(self, clear_plot: bool = True):
+    async def plot_recorder_data(self, plot_widget: MplWidget, clear_plot: bool = True):
         """
         Asynchronously retrieves and plots recorded data from two channels.
 
@@ -681,7 +683,7 @@ class NV200Widget(QWidget):
         Raises:
             Any exceptions raised by recorder.wait_until_finished() or recorder.read_recorded_data_of_channel().
         """
-        plot = self.ui.easyModePlot.canvas
+        plot = plot_widget.canvas
         recorder = self.recorder
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
@@ -716,7 +718,7 @@ class NV200Widget(QWidget):
             print("Starting move operation...")
             await dev.move(spinbox.value())
             self.status_message.emit("Move operation started.", 0)
-            await self.plot_recorder_data()
+            await self.plot_recorder_data(ui.easyModePlot)
             ui.mainProgressBar.stop(success=True, context="start_move")
         except Exception as e:
             self.status_message.emit(f"Error during move operation: {e}", 4000)
@@ -832,7 +834,7 @@ class NV200Widget(QWidget):
                 self.fade_plot_line(i)
         else:
             self.clear_waveform_plot()
-        await self.plot_recorder_data(clear_plot=False)
+        await self.plot_recorder_data(plot_widget=ui.waveformPlot, clear_plot=False)
 
 
     async def start_waveform_generator(self):
@@ -957,10 +959,12 @@ class NV200Widget(QWidget):
         Args:
             value (int): The new sampling period in milliseconds.
         """
-        pass
+        ui = self.ui
+        sample_period = DataRecorder.get_sample_period_ms_for_duration(ui.recDurationSpinBox.value())
+        ui.samplePeriodSpinBox.setValue(sample_period)
 
 
-        
+
     def update_waveform_running_duration(self,):
         """
         Updates the waveform running duration in the waveform generator based on the given value.

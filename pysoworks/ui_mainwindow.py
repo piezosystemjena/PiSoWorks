@@ -53,7 +53,6 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menuView.addAction(self.actionNv200View)
         self.menuView.addAction(self.actionSpiBoxView)
-        self.menuView.addAction(self.actionTestView)
 
         self.retranslateUi(MainWindow)
 

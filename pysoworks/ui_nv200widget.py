@@ -99,7 +99,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 241, 582))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 582))
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
@@ -430,12 +430,13 @@ class Ui_NV200Widget(object):
 
         self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.samplingPeriodLabel)
 
-        self.samplePeriodSpniBox = QDoubleSpinBox(self.dataRecorderGroupBox)
-        self.samplePeriodSpniBox.setObjectName(u"samplePeriodSpniBox")
-        self.samplePeriodSpniBox.setReadOnly(True)
-        self.samplePeriodSpniBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.samplePeriodSpinBox = QDoubleSpinBox(self.dataRecorderGroupBox)
+        self.samplePeriodSpinBox.setObjectName(u"samplePeriodSpinBox")
+        self.samplePeriodSpinBox.setReadOnly(True)
+        self.samplePeriodSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.samplePeriodSpinBox.setMaximum(16777215.000000000000000)
 
-        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.samplePeriodSpniBox)
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.samplePeriodSpinBox)
 
 
         self.verticalLayout_4.addWidget(self.dataRecorderGroupBox)
@@ -584,7 +585,7 @@ class Ui_NV200Widget(object):
         self.historyCheckBox.setText(QCoreApplication.translate("NV200Widget", u"ON", None))
         self.clearPlotButton.setText(QCoreApplication.translate("NV200Widget", u"Clear Plot", None))
         self.samplingPeriodLabel.setText(QCoreApplication.translate("NV200Widget", u"Sampling Period", None))
-        self.samplePeriodSpniBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
+        self.samplePeriodSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.consoleButton.setText(QCoreApplication.translate("NV200Widget", u"Console", None))
         self.consoleLabel.setText(QCoreApplication.translate("NV200Widget", u"Command Line Interface", None))

@@ -127,7 +127,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>241</width>
+              <width>248</width>
               <height>582</height>
              </rect>
             </property>
@@ -789,7 +789,7 @@
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QDoubleSpinBox" name="samplePeriodSpniBox">
+                     <widget class="QDoubleSpinBox" name="samplePeriodSpinBox">
                       <property name="readOnly">
                        <bool>true</bool>
                       </property>
@@ -798,6 +798,9 @@
                       </property>
                       <property name="suffix">
                        <string> ms</string>
+                      </property>
+                      <property name="maximum">
+                       <double>16777215.000000000000000</double>
                       </property>
                      </widget>
                     </item>

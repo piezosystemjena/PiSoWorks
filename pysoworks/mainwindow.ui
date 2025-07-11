@@ -47,7 +47,6 @@
     </property>
     <addaction name="actionNv200View"/>
     <addaction name="actionSpiBoxView"/>
-    <addaction name="actionTestView"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

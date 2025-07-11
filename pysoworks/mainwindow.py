@@ -96,14 +96,6 @@ class MainWindow(QMainWindow):
         """
         self.add_view(SpiBoxWidget, "SpiBox")
 
-    def add_test_view(self):
-        """
-        Adds a test view to the main window.
-        This is a placeholder for future widget implementations.
-        """
-        # Example of adding a test widget
-        # self.add_view(TestWidget, "Test View")
-        self.add_view(Nv200ControllerWidget, "Test View")
 
     def show_status_message(self, message: str, timeout: int | None = 4000):
         """
