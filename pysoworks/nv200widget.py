@@ -1,8 +1,9 @@
 # This Python file uses the following encoding: utf-8
 import asyncio
 from enum import Enum
-from typing import Any, cast
+from typing import Any, cast, Dict
 import math
+import numpy as np
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu
 from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
@@ -27,7 +28,9 @@ from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
-from .mplcanvas import MplWidget, LightIconToolbar
+from pysoworks.mplcanvas import MplWidget, MplCanvas
+from scipy.fft import fft, fftfreq
+from scipy.signal import detrend, find_peaks
 
 
 # Important:
@@ -80,6 +83,7 @@ class NV200Widget(QWidget):
         self._waveform_generator : WaveformGenerator | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self._initialized = False
+        self._backup: Dict[str, str] = {}
 
         self.ui = Ui_NV200Widget()
         ui = self.ui
@@ -95,6 +99,7 @@ class NV200Widget(QWidget):
         self.init_console_ui()
         self.init_waveform_ui()
         self.init_recorder_ui()
+        self.init_resonance_ui()
 
 
     @property
@@ -261,6 +266,14 @@ class NV200Widget(QWidget):
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
         self.update_sampling_period()
+
+    def init_resonance_ui(self):
+        """
+        Initializes the resonance test UI components.
+        """
+        ui = self.ui
+        ui.resonanceButton.setIcon(get_icon("tune", size=24, fill=True))
+        ui.resonanceButton.clicked.connect(qtinter.asyncslot(self.get_resonance_spectrum))
 
     
     def init_spimonitor_combobox(self):
@@ -767,6 +780,7 @@ class NV200Widget(QWidget):
             phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
             duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
         )
+        ui.waveSamplingPeriodSpinBox.setValue(waveform.sample_time_ms)
         plot = ui.waveformPlot.canvas
         line_count = plot.get_line_count()
         if line_count == 0:
@@ -961,6 +975,7 @@ class NV200Widget(QWidget):
         """
         ui = self.ui
         sample_period = DataRecorder.get_sample_period_ms_for_duration(ui.recDurationSpinBox.value())
+        print(f"Setting sample period to {sample_period} ms")
         ui.samplePeriodSpinBox.setValue(sample_period)
 
 
@@ -977,4 +992,126 @@ class NV200Widget(QWidget):
         cycles = ui.cyclesSpinBox.value()
         duration_ms = 1000 * cycles / freq_hz if freq_hz > 0 else 0.0
         ui.waveformDurationSpinBox.setValue(int(duration_ms))
+
+
+
+    async def backup_current_settings(self):
+        """
+        Backs up the current settings of the connected device to a file.
+        """
+        backup_list = [
+            "modsrc", "notchon", "sr", "poslpon", "setlpon", "cl", "reclen", "recstr"]
+        
+        for cmd in backup_list:
+            response = await self.device.read_response_parameters_string(cmd)
+            print(f"Response for '{cmd}': {response}")
+            self._backup[cmd] = response
+
+
+    async def restore_parameters(self):
+        """
+        Restores all backed up parameters to the connected device.
+        """
+        for cmd, value in self._backup.items():
+            print(f"Restoring '{cmd}' with value: {self._backup[cmd]}")
+            await self.device.write(f"{cmd},{value}")
+
+
+    async def init_resonance_test(self):
+        """
+        Initializes the device for a resonance test by configuring various hardware settings.
+
+        Raises:
+            Any exceptions raised by the underlying device methods.
+        """
+        dev = self.device
+        await dev.pid.set_mode(PidLoopMode.OPEN_LOOP)
+        await dev.notch_filter.enable(False)
+        await dev.set_slew_rate(2000)
+        await dev.position_lpf.enable(False)
+        await dev.setpoint_lpf.enable(False)
+
+
+    async def get_resonance_spectrum(self):
+        """
+        Asynchronously retrieves the resonance spectrum from the device and updates the UI plot.
+        """
+        print("Retrieving resonance spectrum...")
+        ui = self.ui
+        try:
+            ui.mainProgressBar.start(2000, "get_resonance_spectrum")
+            self.status_message.emit("Retrieving resonance spectrum...", 0)
+
+            await self.backup_current_settings()
+            await self.init_resonance_test()
+
+            dev = self.device
+            max_voltage = (await dev.get_voltage_range())[1]
+            waveform_generator = self.waveform_generator
+            waveform = WaveformGenerator.generate_constant_wave(freq_hz=2000, constant_level=0)
+            waveform.set_value_at_index(1, max_voltage)  # Set a specific index to a different value to generate impule
+            print("Transferring waveform data to device...")
+            await waveform_generator.set_waveform(waveform, unit=WaveformUnit.VOLTAGE)
+            await waveform_generator.start(cycles=1, start_index=0)
+            await waveform_generator.wait_until_finished()
+
+            recorder = self.recorder
+            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
+            await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
+            rec_param = await recorder.set_recording_duration_ms(100)
+            await recorder.start_recording()  
+
+            print("Starting waveform generator...")
+            await waveform_generator.start(cycles=1, start_index=0)
+            await recorder.wait_until_finished()
+            print(f"Is running: {await waveform_generator.is_running()}")
+            rec_data = await recorder.read_recorded_data_of_channel(0)   
+
+            await self.restore_parameters()
+
+            plot = ui.impulsePlot.canvas
+            plot.clear_plot()   
+            plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))    
+
+            # === Vorverarbeitung ===
+            signal = detrend(np.array(rec_data.values))  # DC-Offset entfernen
+
+            # === FFT ===
+            N = len(signal)
+            yf = fft(signal)
+            xf = fftfreq(N, 1 / rec_param.sample_freq)
+
+            # Nur positive Frequenzen betrachten
+            idx = xf > 0
+            xf = xf[idx]
+            yf = np.abs(yf[idx])  # Betrag der FFT
+
+            # === Resonanzfrequenz finden ===
+            peak_idx, _ = find_peaks(yf, height=np.max(yf)*0.5)  # Schwelle = 50%
+            res_freq = xf[peak_idx[np.argmax(yf[peak_idx])]]
+
+            plot = ui.resonancePlot.canvas
+            plot.clear_plot()
+            ax = plot.axes
+            ax.plot(xf, yf, color='r', label='Frequency Spectrum')
+            ax.set_xlim(0, 4000)
+            ax.axvline(float(res_freq), color='orange', linestyle='--', label=f'Resonance: {float(res_freq):.1f} Hz')
+
+            ax.legend(
+                facecolor='darkgray', 
+                edgecolor='darkgray', 
+                frameon=True, 
+                loc='best', 
+                fontsize=10
+            )
+
+            plot.draw()
+ 
+
+            self.status_message.emit("Resonance spectrum retrieved successfully.", 2000)
+            ui.mainProgressBar.stop(success=True, context="get_resonance_spectrum")
+        except Exception as e:
+            print(f"Error retrieving resonance spectrum: {e}")
+            self.status_message.emit(f"Error retrieving resonance spectrum: {e}", 4000)
+            ui.mainProgressBar.reset()
 

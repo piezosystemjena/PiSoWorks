@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1376</width>
-    <height>994</height>
+    <width>1462</width>
+    <height>1147</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -128,7 +128,7 @@
               <x>0</x>
               <y>0</y>
               <width>248</width>
-              <height>582</height>
+              <height>683</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -484,14 +484,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
+                    <item row="4" column="0">
                      <widget class="QLabel" name="phaseLabel">
                       <property name="text">
                        <string>Phase Shift</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="1">
+                    <item row="4" column="1">
                      <widget class="QDoubleSpinBox" name="phaseShiftSpinBox">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -516,14 +516,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="4" column="0">
+                    <item row="5" column="0">
                      <widget class="QLabel" name="dutyCycleLabel">
                       <property name="text">
                        <string>Duty Cycle</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="4" column="1">
+                    <item row="5" column="1">
                      <widget class="QDoubleSpinBox" name="dutyCycleSpinBox">
                       <property name="suffix">
                        <string> %</string>
@@ -539,7 +539,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="1">
+                    <item row="6" column="1">
                      <spacer name="verticalSpacer_5">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
@@ -555,14 +555,14 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="6" column="0">
+                    <item row="7" column="0">
                      <widget class="QLabel" name="highLabel">
                       <property name="text">
                        <string>High Level</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="6" column="1">
+                    <item row="7" column="1">
                      <widget class="QDoubleSpinBox" name="highLevelSpinBox">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -578,14 +578,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="7" column="0">
+                    <item row="8" column="0">
                      <widget class="QLabel" name="lowLabel">
                       <property name="text">
                        <string>Low Level</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="7" column="1">
+                    <item row="8" column="1">
                      <widget class="QDoubleSpinBox" name="lowLevelSpinBox">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -601,7 +601,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="9" column="1">
+                    <item row="10" column="1">
                      <spacer name="verticalSpacer_4">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
@@ -617,7 +617,7 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="10" column="1">
+                    <item row="11" column="1">
                      <widget class="QSpinBox" name="cyclesSpinBox">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -633,14 +633,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="10" column="0">
+                    <item row="11" column="0">
                      <widget class="QLabel" name="cyclesLabel">
                       <property name="text">
                        <string>Cycles</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="12" column="0" colspan="2">
+                    <item row="13" column="0" colspan="2">
                      <layout class="QHBoxLayout" name="horizontalLayout_6">
                       <item>
                        <widget class="QPushButton" name="startWaveformButton">
@@ -670,7 +670,7 @@
                       </item>
                      </layout>
                     </item>
-                    <item row="8" column="0" colspan="2">
+                    <item row="9" column="0" colspan="2">
                      <widget class="QPushButton" name="uploadButton">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -683,14 +683,14 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="11" column="0">
+                    <item row="12" column="0">
                      <widget class="QLabel" name="totalDurationLabel">
                       <property name="text">
                        <string>Total Duration</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="11" column="1">
+                    <item row="12" column="1">
                      <widget class="QSpinBox" name="waveformDurationSpinBox">
                       <property name="readOnly">
                        <bool>true</bool>
@@ -706,6 +706,29 @@
                       </property>
                       <property name="maximum">
                        <number>16777215</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="waveSamplingPeriof">
+                      <property name="text">
+                       <string>Sampling Period</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QDoubleSpinBox" name="waveSamplingPeriodSpinBox">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+                      </property>
+                      <property name="suffix">
+                       <string> ms</string>
+                      </property>
+                      <property name="maximum">
+                       <double>16777215.000000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -822,6 +845,33 @@
                  </item>
                 </layout>
                </widget>
+               <widget class="QWidget" name="resonanceTab">
+                <attribute name="title">
+                 <string>Impulse Response</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <item>
+                  <widget class="QPushButton" name="resonanceButton">
+                   <property name="text">
+                    <string>Get Resonance Spectrum</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Orientation::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>10</width>
+                     <height>626</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
               </widget>
              </item>
             </layout>
@@ -855,11 +905,33 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="MplWidget" name="easyModePlot"/>
          <widget class="Nv200ControllerWidget" name="controllerStructureWidget"/>
          <widget class="MplWidget" name="waveformPlot"/>
+         <widget class="QWidget" name="resonancePlots">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="MplWidget" name="impulsePlot" native="true"/>
+           </item>
+           <item>
+            <widget class="MplWidget" name="resonancePlot" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
