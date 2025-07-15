@@ -11,6 +11,7 @@ from PySide6.QtGui import QColor, QPalette, QAction
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
+from matplotlib.widgets import Cursor
 from qt_material_icons import MaterialIcon
 
 from nv200.shared_types import (
@@ -26,6 +27,7 @@ from nv200.nv200_device import NV200Device
 from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoStartMode
 from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
+from nv200.analysis import ResonanceAnalyzer
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
@@ -994,42 +996,13 @@ class NV200Widget(QWidget):
 
 
 
-    async def backup_settings(self, backup_list: list[str]) -> Dict[str, str]:    
-        """
-        Asynchronously backs up device settings by reading response parameters for each command in the provided list.
-
-        Args:
-            backup_list (list[str]): A list of command strings for which to back up settings.
-
-        Returns:
-            Dict[str, str]: A dictionary mapping each command to its corresponding response string from the device.
-        """
-        backup : Dict[str, str] = {}
-        for cmd in backup_list:
-            response = await self.device.read_response_parameters_string(cmd)
-            print(f"Response for '{cmd}': {response}")
-            backup[cmd] = response
-        return backup
-
-
-    async def restore_parameters(self, backup: Dict[str, str]):
-        """
-        Asynchronously restores device parameters from a backup.
-
-        Iterates over the provided backup dictionary, writing each parameter value to the device.
-        """
-        for cmd, value in backup.items():
-            print(f"Restoring '{cmd}' with value: {backup[cmd]}")
-            await self.device.write_value(cmd, value)
-
-
     async def backup_resonance_test_settings(self) -> Dict[str, str]:
         """
         Backs up a predefined list of resonance test settings.
         """
         backup_list = [
             "modsrc", "notchon", "sr", "poslpon", "setlpon", "cl", "reclen", "recstr"]
-        return await self.backup_settings(backup_list)
+        return await self.device.backup_parameters(backup_list)
         
 
 
@@ -1058,54 +1031,27 @@ class NV200Widget(QWidget):
             ui.mainProgressBar.start(2000, "get_resonance_spectrum")
             self.status_message.emit("Retrieving resonance spectrum...", 0)
 
-            backup = await self.backup_resonance_test_settings()
-            await self.init_resonance_test()
-
-            dev = self.device
-            max_voltage = (await dev.get_voltage_range())[1]
-            waveform_generator = self.waveform_generator
-            waveform = WaveformGenerator.generate_constant_wave(freq_hz=2000, constant_level=0)
-            waveform.set_value_at_index(1, max_voltage)  # Set a specific index to a different value to generate impule
-            print("Transferring waveform data to device...")
-            await waveform_generator.set_waveform(waveform, unit=WaveformUnit.VOLTAGE)
-            await waveform_generator.start(cycles=1, start_index=0)
-            await waveform_generator.wait_until_finished()
-
-
-            recorder = self.recorder
-            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
-            await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
-            rec_param = await recorder.set_recording_duration_ms(100)
-            await recorder.start_recording()  
-
-            print("Starting waveform generator...")
-            await waveform_generator.start(cycles=1, start_index=0)
-            await recorder.wait_until_finished()
-            print(f"Is running: {await waveform_generator.is_running()}")
-            rec_data = await recorder.read_recorded_data_of_channel(0)   
-
-            await self.restore_parameters(backup)
+            analyzer = ResonanceAnalyzer(self.device)
+            signal, sample_freq = await analyzer.measure_impulse_response(0)
 
             plot = ui.impulsePlot.canvas
             plot.clear_plot()   
-            plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))    
+            #plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))  
+            ax = plot.axes
+            t = np.arange(len(signal)) / sample_freq  # time in seconds
 
-            # === Vorverarbeitung ===
-            signal = detrend(np.array(rec_data.values))  # DC-Offset entfernen
+            unit = await self.device.get_position_unit()
+            ax.plot(t, signal, QColor(0, 255, 0).name(), label=f'Piezo Position ({unit})')
+            ax.legend(
+                facecolor='darkgray', 
+                edgecolor='darkgray', 
+                frameon=True, 
+                loc='best', 
+                fontsize=10
+            )
+            plot.draw()
 
-            # === FFT ===
-            N = len(signal)
-            yf = fft(signal)
-            xf = fftfreq(N, 1 / rec_param.sample_freq)
-
-            # Nur positive Frequenzen betrachten
-            idx = xf > 0
-            xf = xf[idx]
-            yf = np.abs(yf[idx])  # Betrag der FFT
-
-            # === Resonanzfrequenz finden ===
-            peak_idx, _ = find_peaks(yf, height=np.max(yf)*0.5)  # Schwelle = 50%
-            res_freq = xf[peak_idx[np.argmax(yf[peak_idx])]]
+            xf, yf, res_freq = ResonanceAnalyzer.compute_resonance_spectrum(signal, sample_freq)
 
             plot = ui.resonancePlot.canvas
             plot.clear_plot()
