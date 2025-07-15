@@ -83,7 +83,6 @@ class NV200Widget(QWidget):
         self._waveform_generator : WaveformGenerator | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self._initialized = False
-        self._backup: Dict[str, str] = {}
 
         self.ui = Ui_NV200Widget()
         ui = self.ui
@@ -995,26 +994,43 @@ class NV200Widget(QWidget):
 
 
 
-    async def backup_current_settings(self):
+    async def backup_settings(self, backup_list: list[str]) -> Dict[str, str]:    
         """
-        Backs up the current settings of the connected device to a file.
+        Asynchronously backs up device settings by reading response parameters for each command in the provided list.
+
+        Args:
+            backup_list (list[str]): A list of command strings for which to back up settings.
+
+        Returns:
+            Dict[str, str]: A dictionary mapping each command to its corresponding response string from the device.
         """
-        backup_list = [
-            "modsrc", "notchon", "sr", "poslpon", "setlpon", "cl", "reclen", "recstr"]
-        
+        backup : Dict[str, str] = {}
         for cmd in backup_list:
             response = await self.device.read_response_parameters_string(cmd)
             print(f"Response for '{cmd}': {response}")
-            self._backup[cmd] = response
+            backup[cmd] = response
+        return backup
 
 
-    async def restore_parameters(self):
+    async def restore_parameters(self, backup: Dict[str, str]):
         """
-        Restores all backed up parameters to the connected device.
+        Asynchronously restores device parameters from a backup.
+
+        Iterates over the provided backup dictionary, writing each parameter value to the device.
         """
-        for cmd, value in self._backup.items():
-            print(f"Restoring '{cmd}' with value: {self._backup[cmd]}")
-            await self.device.write(f"{cmd},{value}")
+        for cmd, value in backup.items():
+            print(f"Restoring '{cmd}' with value: {backup[cmd]}")
+            await self.device.write_value(cmd, value)
+
+
+    async def backup_resonance_test_settings(self) -> Dict[str, str]:
+        """
+        Backs up a predefined list of resonance test settings.
+        """
+        backup_list = [
+            "modsrc", "notchon", "sr", "poslpon", "setlpon", "cl", "reclen", "recstr"]
+        return await self.backup_settings(backup_list)
+        
 
 
     async def init_resonance_test(self):
@@ -1042,7 +1058,7 @@ class NV200Widget(QWidget):
             ui.mainProgressBar.start(2000, "get_resonance_spectrum")
             self.status_message.emit("Retrieving resonance spectrum...", 0)
 
-            await self.backup_current_settings()
+            backup = await self.backup_resonance_test_settings()
             await self.init_resonance_test()
 
             dev = self.device
@@ -1054,6 +1070,7 @@ class NV200Widget(QWidget):
             await waveform_generator.set_waveform(waveform, unit=WaveformUnit.VOLTAGE)
             await waveform_generator.start(cycles=1, start_index=0)
             await waveform_generator.wait_until_finished()
+
 
             recorder = self.recorder
             await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
@@ -1067,7 +1084,7 @@ class NV200Widget(QWidget):
             print(f"Is running: {await waveform_generator.is_running()}")
             rec_data = await recorder.read_recorded_data_of_channel(0)   
 
-            await self.restore_parameters()
+            await self.restore_parameters(backup)
 
             plot = ui.impulsePlot.canvas
             plot.clear_plot()   
