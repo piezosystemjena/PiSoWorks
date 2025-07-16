@@ -1,4 +1,5 @@
-from typing import Sequence
+from typing import Sequence, Union
+import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib.colors import to_rgba
@@ -61,7 +62,7 @@ class MplCanvas(FigureCanvas):
         """
         self.add_line(rec_data.sample_times_ms, rec_data.values, str(rec_data.source), color)  # Add the new line to the plot
 
-    def plot_data(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange')):
+    def plot_data(self, x_data: Union[Sequence[float], np.ndarray], y_data: Union[Sequence[float], np.ndarray], label: str, color : QColor = QColor('orange')):
         """
         Plots the data and stores the line object for later removal.
         """

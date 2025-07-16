@@ -1041,15 +1041,7 @@ class NV200Widget(QWidget):
             t = np.arange(len(signal)) / sample_freq  # time in seconds
 
             unit = await self.device.get_position_unit()
-            ax.plot(t, signal, QColor(0, 255, 0).name(), label=f'Piezo Position ({unit})')
-            ax.legend(
-                facecolor='darkgray', 
-                edgecolor='darkgray', 
-                frameon=True, 
-                loc='best', 
-                fontsize=10
-            )
-            plot.draw()
+            plot.plot_data(t, signal, f'Piezo Position ({unit}', QColor(0, 255, 0))
 
             xf, yf, res_freq = ResonanceAnalyzer.compute_resonance_spectrum(signal, sample_freq)
 
