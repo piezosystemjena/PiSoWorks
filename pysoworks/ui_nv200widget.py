@@ -99,7 +99,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 683))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 649))
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
@@ -480,6 +480,14 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_10.addWidget(self.scrollArea)
 
+        self.piezoIconLabel = QLabel(self.layoutWidget)
+        self.piezoIconLabel.setObjectName(u"piezoIconLabel")
+        sizePolicy5.setHeightForWidth(self.piezoIconLabel.sizePolicy().hasHeightForWidth())
+        self.piezoIconLabel.setSizePolicy(sizePolicy5)
+        self.piezoIconLabel.setStyleSheet(u"QLabel {margin-top: 12px; margin-left: 4px;}")
+
+        self.verticalLayout_10.addWidget(self.piezoIconLabel)
+
         self.consoleButton = QToolButton(self.layoutWidget)
         self.consoleButton.setObjectName(u"consoleButton")
         sizePolicy1.setHeightForWidth(self.consoleButton.sizePolicy().hasHeightForWidth())
@@ -634,6 +642,7 @@ class Ui_NV200Widget(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.resonanceButton.setText(QCoreApplication.translate("NV200Widget", u"Get Resonance Spectrum", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.resonanceTab), QCoreApplication.translate("NV200Widget", u"Impulse Response", None))
+        self.piezoIconLabel.setText(QCoreApplication.translate("NV200Widget", u"piezosystemjena Icon", None))
         self.consoleButton.setText(QCoreApplication.translate("NV200Widget", u"Console", None))
         self.consoleLabel.setText(QCoreApplication.translate("NV200Widget", u"Command Line Interface", None))
     # retranslateUi

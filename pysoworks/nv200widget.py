@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from pathlib import Path
 import asyncio
 from enum import Enum
 from typing import Any, cast, Dict
@@ -7,11 +8,13 @@ import numpy as np
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu
 from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
-from PySide6.QtGui import QColor, QPalette, QAction
+from PySide6.QtGui import QColor, QPalette, QAction, QPixmap
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.widgets import Cursor
+from matplotlib.font_manager import FontProperties
+import matplotlib as mpl
 from qt_material_icons import MaterialIcon
 
 from nv200.shared_types import (
@@ -64,6 +67,7 @@ class TabWidgetTabs(Enum):
     EASY_MODE = 0
     SETTINGS = 1
     WAVEFORM = 2
+    RESONANCE = 3
 
 
 class NV200Widget(QWidget):
@@ -87,11 +91,20 @@ class NV200Widget(QWidget):
         self._initialized = False
 
         self.ui = Ui_NV200Widget()
+
+        qt_font = self.font()
+        font_family = qt_font.family()
+        font_size = qt_font.pointSize()
+        mpl.rcParams['font.family'] = font_family
+        mpl.rcParams['font.size'] = font_size
+
         ui = self.ui
         ui.setupUi(self)
 
         ui.mainProgressBar.set_duration(5000)
         ui.mainProgressBar.set_update_interval(20)
+        ui.tabWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
+        ui.stackedWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
 
         self.init_device_search_ui()
@@ -101,6 +114,12 @@ class NV200Widget(QWidget):
         self.init_waveform_ui()
         self.init_recorder_ui()
         self.init_resonance_ui()
+
+        base_dir = Path(__file__).parent
+        image_path = base_dir / "assets" / "images" / "piezosystem_logo_white@2x.png"
+        ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
+
+
 
 
     @property
@@ -275,6 +294,14 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.resonanceButton.setIcon(get_icon("tune", size=24, fill=True))
         ui.resonanceButton.clicked.connect(qtinter.asyncslot(self.get_resonance_spectrum))
+        ax = ui.resonancePlot.canvas.axes
+        ax.set_title("Resonance Spectrum")
+        ax.set_xlabel('Frequency (Hz)')
+        ax.set_ylabel('Amplitude') 
+        ax.set_xlim(10, 4000)
+
+        ax = ui.impulsePlot.canvas.axes
+        ax.set_title("Impulse Response")
 
     
     def init_spimonitor_combobox(self):
@@ -512,6 +539,30 @@ class NV200Widget(QWidget):
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
+        await self.update_resonance_ui_from_device()
+
+
+    async def update_resonance_ui_from_device(self):
+        """
+        Asynchronously updates the y-axis labels of the impulse and resonance plots in the UI
+        based on the device's position sensor and unit.
+
+        If the device has a position sensor, retrieves the position unit from the device and
+        updates the y-axis labels accordingly. Otherwise, defaults to "A" as the unit.
+
+        The impulse plot's y-axis label is set to "Value (<unit>)".
+        The resonance plot's y-axis label is set to "Amplitude (<unit>)".
+        """
+        dev = self.device
+        impulse_resp_unit = "A"
+        y_label = "Piezo Current (A)"
+        if await dev.has_position_sensor():
+            impulse_resp_unit = await dev.get_position_unit()
+            y_label = f"Piezo Position ({impulse_resp_unit})"
+        ax = self.ui.impulsePlot.canvas.axes
+        ax.set_ylabel(y_label)
+        ax = self.ui.resonancePlot.canvas.axes
+        ax.set_ylabel(f"Amplitude ({impulse_resp_unit})")
         
 
 
@@ -1032,16 +1083,15 @@ class NV200Widget(QWidget):
             self.status_message.emit("Retrieving resonance spectrum...", 0)
 
             analyzer = ResonanceAnalyzer(self.device)
-            signal, sample_freq = await analyzer.measure_impulse_response(0)
+            signal, sample_freq, rec_src = await analyzer.measure_impulse_response(0)
 
             plot = ui.impulsePlot.canvas
             plot.clear_plot()   
-            #plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))  
             ax = plot.axes
             t = np.arange(len(signal)) / sample_freq  # time in seconds
 
             unit = await self.device.get_position_unit()
-            plot.plot_data(t, signal, f'Piezo Position ({unit}', QColor(0, 255, 0))
+            plot.plot_data(t, signal, ax.yaxis.get_label().get_text(), QColor(0, 255, 0))
 
             xf, yf, res_freq = ResonanceAnalyzer.compute_resonance_spectrum(signal, sample_freq)
 
@@ -1049,7 +1099,8 @@ class NV200Widget(QWidget):
             plot.clear_plot()
             ax = plot.axes
             ax.plot(xf, yf, color='r', label='Frequency Spectrum')
-            ax.set_xlim(0, 4000)
+            # Set axis labels with units
+            ax.set_xlim(10, 4000)
             ax.axvline(float(res_freq), color='orange', linestyle='--', label=f'Resonance: {float(res_freq):.1f} Hz')
 
             ax.legend(

@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
         ui.actionNv200View.triggered.connect(self.add_nv200_view)
         ui.actionSpiBoxView.triggered.connect(self.add_spibox_view)
         self.add_nv200_view()
+        self.resize(1600, 900)  # Set initial size to 800x600
 
     def add_view(self, widget_class, title):
         """
