@@ -611,7 +611,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(2)
 
 
@@ -620,15 +620,33 @@ class Ui_NV200Widget(object):
 
     def retranslateUi(self, NV200Widget):
         NV200Widget.setWindowTitle(QCoreApplication.translate("NV200Widget", u"Form", None))
+#if QT_CONFIG(tooltip)
+        self.devicesComboBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Device List</span></p><p>List of detected NV200 devices.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.searchDevicesButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Search Devices</span></p><p>Search for all NV200 devices connected via USB or Ethernet. Click the menu button to search only USB or only Ethernet devices.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.searchDevicesButton.setText(QCoreApplication.translate("NV200Widget", u"Search Devices ...", None))
         self.searchDevicesButton.setProperty(u"style", QCoreApplication.translate("NV200Widget", u"pushButton", None))
+#if QT_CONFIG(tooltip)
+        self.connectButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Connect</span></p><p>Connect to the device you selected from the list.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.connectButton.setText(QCoreApplication.translate("NV200Widget", u"Connect", None))
         self.easyModeGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Easy Mode", None))
+#if QT_CONFIG(tooltip)
+        self.closedLoopCheckBox.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Open Loop</span></p><p>Toggles between open loop (OL) and closed loop (CL) mode. In open loop mode the PID-controller is bridged and the command input directly controls the amplifier. The resulting piezo stroke then depends on the characteristic of the piezo actuator and is affected by piezo-typical creeping and hysteresis behavior.</p><p>In closed loop mode (CL), these effects will be compensated by the digital loop controller.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.closedLoopCheckBox.setText(QCoreApplication.translate("NV200Widget", u"Open Loop", None))
-        self.targetPositionsLabel.setText(QCoreApplication.translate("NV200Widget", u"Target Positions:", None))
+        self.targetPositionsLabel.setText(QCoreApplication.translate("NV200Widget", u"Setpoints", None))
+#if QT_CONFIG(tooltip)
+        self.moveButton_2.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Move To Setpoint 2</span></p><p>Starts the move to 2nd setpoint.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.moveButton_2.setText("")
         self.targetPosSpinBox.setPrefix("")
         self.targetPosSpinBox.setSuffix("")
+#if QT_CONFIG(tooltip)
+        self.moveButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Move To Setpoint 1 </span></p><p>Starts the move to first setpoint.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.moveButton.setText("")
         self.rangeLabel.setText("")
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.easyModeTab), QCoreApplication.translate("NV200Widget", u"Easy Mode", None))

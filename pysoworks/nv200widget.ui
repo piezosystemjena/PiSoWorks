@@ -30,6 +30,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Device List&lt;/span&gt;&lt;/p&gt;&lt;p&gt;List of detected NV200 devices.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -39,6 +42,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Search Devices&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Search for all NV200 devices connected via USB or Ethernet. Click the menu button to search only USB or only Ethernet devices.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Search Devices ...</string>
@@ -67,6 +73,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Connect&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Connect to the device you selected from the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Connect</string>
@@ -171,7 +180,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -201,6 +210,9 @@
                    <layout class="QVBoxLayout" name="verticalLayout">
                     <item>
                      <widget class="QCheckBox" name="closedLoopCheckBox">
+                      <property name="toolTip">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Open Loop&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Toggles between open loop (OL) and closed loop (CL) mode. In open loop mode the PID-controller is bridged and the command input directly controls the amplifier. The resulting piezo stroke then depends on the characteristic of the piezo actuator and is affected by piezo-typical creeping and hysteresis behavior.&lt;/p&gt;&lt;p&gt;In closed loop mode (CL), these effects will be compensated by the digital loop controller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
                       <property name="text">
                        <string>Open Loop</string>
                       </property>
@@ -228,7 +240,7 @@
                     <item>
                      <widget class="QLabel" name="targetPositionsLabel">
                       <property name="text">
-                       <string>Target Positions:</string>
+                       <string>Setpoints</string>
                       </property>
                      </widget>
                     </item>
@@ -263,6 +275,9 @@
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Move To Setpoint 2&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Starts the move to 2nd setpoint.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="text">
                          <string/>
@@ -301,6 +316,9 @@
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Move To Setpoint 1 &lt;/span&gt;&lt;/p&gt;&lt;p&gt;Starts the move to first setpoint.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="text">
                          <string/>
