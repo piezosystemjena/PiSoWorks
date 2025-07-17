@@ -128,7 +128,7 @@
               <x>0</x>
               <y>0</y>
               <width>248</width>
-              <height>649</height>
+              <height>668</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -171,7 +171,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -855,6 +855,73 @@
                    <property name="text">
                     <string>Get Resonance Spectrum</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="impulseVoltagesGroupBox">
+                   <property name="title">
+                    <string>Impulse Voltages</string>
+                   </property>
+                   <layout class="QFormLayout" name="formLayout_3">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="impulsePeakVoltageLabel">
+                      <property name="text">
+                       <string>Peak Voltage:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QDoubleSpinBox" name="impulsePeakVoltageSpinBox">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+                      </property>
+                      <property name="suffix">
+                       <string> V</string>
+                      </property>
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-10000.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>10000.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="impulseBaseVoltageLabel">
+                      <property name="text">
+                       <string>Base Voltage:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QDoubleSpinBox" name="impulseBaseVoltageSpinBox">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+                      </property>
+                      <property name="suffix">
+                       <string> V</string>
+                      </property>
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-10000.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>10000.000000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>

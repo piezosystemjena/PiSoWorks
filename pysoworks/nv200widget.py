@@ -87,6 +87,7 @@ class NV200Widget(QWidget):
         self._device: NV200Device | None = None
         self._recorder : DataRecorder | None = None
         self._waveform_generator : WaveformGenerator | None = None
+        self._analyzer : ResonanceAnalyzer | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self._initialized = False
 
@@ -94,8 +95,9 @@ class NV200Widget(QWidget):
 
         qt_font = self.font()
         font_family = qt_font.family()
-        font_size = qt_font.pointSize()
-        mpl.rcParams['font.family'] = font_family
+        print(f"Font Family: {font_family}")
+        font_size = qt_font.pointSizeF()
+        #mpl.rcParams['font.family'] = font_family
         mpl.rcParams['font.size'] = font_size
 
         ui = self.ui
@@ -152,6 +154,17 @@ class NV200Widget(QWidget):
         if self._waveform_generator is None:
             self._waveform_generator = WaveformGenerator(self.device)
         return self._waveform_generator	
+    
+
+    @property
+    def analyzer(self) -> ResonanceAnalyzer:
+        """
+        Returns the ResonanceAnalyzer instance associated with the device.
+        If it does not exist, it creates a new one.
+        """
+        if self._analyzer is None:
+            self._analyzer = ResonanceAnalyzer(self.device)
+        return self._analyzer
     
 
     def init_device_search_ui(self):
@@ -292,7 +305,8 @@ class NV200Widget(QWidget):
         Initializes the resonance test UI components.
         """
         ui = self.ui
-        ui.resonanceButton.setIcon(get_icon("tune", size=24, fill=True))
+        ui.resonanceButton.setIcon(get_icon("equalizer", size=24, fill=True))
+        ui.resonanceButton.setIconSize(QSize(24, 24))
         ui.resonanceButton.clicked.connect(qtinter.asyncslot(self.get_resonance_spectrum))
         ax = ui.resonancePlot.canvas.axes
         ax.set_title("Resonance Spectrum")
@@ -563,6 +577,22 @@ class NV200Widget(QWidget):
         ax.set_ylabel(y_label)
         ax = self.ui.resonancePlot.canvas.axes
         ax.set_ylabel(f"Amplitude ({impulse_resp_unit})")
+
+
+    async def update_resonance_voltages_ui(self):
+        """
+        Asynchronously updates the resonance voltages in the UI based on the device's current settings.
+        """
+        analyzer = self.analyzer
+        ui = self.ui
+        
+        try:
+            baseline_v, impulse_v = await analyzer.get_impulse_voltages()
+            ui.impulseBaseVoltageSpinBox.setValue(baseline_v)
+            ui.impulsePeakVoltageSpinBox.setValue(impulse_v)
+        except Exception as e:
+            print(f"Error updating resonance voltages: {e}")
+            self.status_message.emit(f"Error updating resonance voltages: {e}", 2000)
         
 
 
@@ -805,6 +835,9 @@ class NV200Widget(QWidget):
         elif index == TabWidgetTabs.WAVEFORM.value:
             print("Waveform tab activated")
             self.update_waveform_plot()
+        elif index == TabWidgetTabs.RESONANCE.value:
+            print("Resonance tab activated")
+            await self.update_resonance_voltages_ui()
 
 
     def current_waveform_type(self) -> WaveformType:
@@ -1046,32 +1079,6 @@ class NV200Widget(QWidget):
         ui.waveformDurationSpinBox.setValue(int(duration_ms))
 
 
-
-    async def backup_resonance_test_settings(self) -> Dict[str, str]:
-        """
-        Backs up a predefined list of resonance test settings.
-        """
-        backup_list = [
-            "modsrc", "notchon", "sr", "poslpon", "setlpon", "cl", "reclen", "recstr"]
-        return await self.device.backup_parameters(backup_list)
-        
-
-
-    async def init_resonance_test(self):
-        """
-        Initializes the device for a resonance test by configuring various hardware settings.
-
-        Raises:
-            Any exceptions raised by the underlying device methods.
-        """
-        dev = self.device
-        await dev.pid.set_mode(PidLoopMode.OPEN_LOOP)
-        await dev.notch_filter.enable(False)
-        await dev.set_slew_rate(2000)
-        await dev.position_lpf.enable(False)
-        await dev.setpoint_lpf.enable(False)
-
-
     async def get_resonance_spectrum(self):
         """
         Asynchronously retrieves the resonance spectrum from the device and updates the UI plot.
@@ -1082,8 +1089,8 @@ class NV200Widget(QWidget):
             ui.mainProgressBar.start(2000, "get_resonance_spectrum")
             self.status_message.emit("Retrieving resonance spectrum...", 0)
 
-            analyzer = ResonanceAnalyzer(self.device)
-            signal, sample_freq, rec_src = await analyzer.measure_impulse_response(0)
+            analyzer = self.analyzer
+            signal, sample_freq, rec_src = await analyzer.measure_impulse_response()
 
             plot = ui.impulsePlot.canvas
             plot.clear_plot()   

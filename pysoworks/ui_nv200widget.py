@@ -99,7 +99,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 649))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 668))
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
@@ -468,6 +468,43 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_6.addWidget(self.resonanceButton)
 
+        self.impulseVoltagesGroupBox = QGroupBox(self.resonanceTab)
+        self.impulseVoltagesGroupBox.setObjectName(u"impulseVoltagesGroupBox")
+        self.formLayout_3 = QFormLayout(self.impulseVoltagesGroupBox)
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.impulsePeakVoltageLabel = QLabel(self.impulseVoltagesGroupBox)
+        self.impulsePeakVoltageLabel.setObjectName(u"impulsePeakVoltageLabel")
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.LabelRole, self.impulsePeakVoltageLabel)
+
+        self.impulsePeakVoltageSpinBox = QDoubleSpinBox(self.impulseVoltagesGroupBox)
+        self.impulsePeakVoltageSpinBox.setObjectName(u"impulsePeakVoltageSpinBox")
+        self.impulsePeakVoltageSpinBox.setReadOnly(True)
+        self.impulsePeakVoltageSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.impulsePeakVoltageSpinBox.setDecimals(1)
+        self.impulsePeakVoltageSpinBox.setMinimum(-10000.000000000000000)
+        self.impulsePeakVoltageSpinBox.setMaximum(10000.000000000000000)
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.FieldRole, self.impulsePeakVoltageSpinBox)
+
+        self.impulseBaseVoltageLabel = QLabel(self.impulseVoltagesGroupBox)
+        self.impulseBaseVoltageLabel.setObjectName(u"impulseBaseVoltageLabel")
+
+        self.formLayout_3.setWidget(1, QFormLayout.ItemRole.LabelRole, self.impulseBaseVoltageLabel)
+
+        self.impulseBaseVoltageSpinBox = QDoubleSpinBox(self.impulseVoltagesGroupBox)
+        self.impulseBaseVoltageSpinBox.setObjectName(u"impulseBaseVoltageSpinBox")
+        self.impulseBaseVoltageSpinBox.setReadOnly(True)
+        self.impulseBaseVoltageSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.impulseBaseVoltageSpinBox.setDecimals(1)
+        self.impulseBaseVoltageSpinBox.setMinimum(-10000.000000000000000)
+        self.impulseBaseVoltageSpinBox.setMaximum(10000.000000000000000)
+
+        self.formLayout_3.setWidget(1, QFormLayout.ItemRole.FieldRole, self.impulseBaseVoltageSpinBox)
+
+
+        self.verticalLayout_6.addWidget(self.impulseVoltagesGroupBox)
+
         self.verticalSpacer_9 = QSpacerItem(10, 626, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_9)
@@ -574,7 +611,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
         self.stackedWidget.setCurrentIndex(2)
 
 
@@ -641,6 +678,11 @@ class Ui_NV200Widget(object):
         self.samplePeriodSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.resonanceButton.setText(QCoreApplication.translate("NV200Widget", u"Get Resonance Spectrum", None))
+        self.impulseVoltagesGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Impulse Voltages", None))
+        self.impulsePeakVoltageLabel.setText(QCoreApplication.translate("NV200Widget", u"Peak Voltage:", None))
+        self.impulsePeakVoltageSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" V", None))
+        self.impulseBaseVoltageLabel.setText(QCoreApplication.translate("NV200Widget", u"Base Voltage:", None))
+        self.impulseBaseVoltageSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" V", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.resonanceTab), QCoreApplication.translate("NV200Widget", u"Impulse Response", None))
         self.piezoIconLabel.setText(QCoreApplication.translate("NV200Widget", u"piezosystemjena Icon", None))
         self.consoleButton.setText(QCoreApplication.translate("NV200Widget", u"Console", None))
