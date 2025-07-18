@@ -1,5 +1,8 @@
+from typing import Any
+
 from qt_material_icons import MaterialIcon
 from PySide6.QtGui import QPalette
+from PySide6.QtWidgets import QComboBox
 
 
 def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
@@ -16,3 +19,17 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
     icon.set_color(QPalette().color(color))
     return icon
 
+
+def set_combobox_value(combo: QComboBox, value: Any) -> None:
+    """
+    Sets the current index of the QComboBox to the item with the given userData value.
+
+    Args:
+        combo: The QComboBox instance.
+        value: The value to match in userData of combo items.
+    """
+    index: int = combo.findData(value)
+    if index != -1:
+        combo.setCurrentIndex(index)
+    else:
+        raise ValueError(f"Value {value!r} not found in QComboBox.")

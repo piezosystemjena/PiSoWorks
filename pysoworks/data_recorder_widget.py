@@ -6,7 +6,7 @@ from pysoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
 from pysoworks.mplcanvas import MplCanvas
 from pysoworks.mplcanvas import NavigationToolbar2QT
 from pysoworks.mplcanvas import MplWidget
-from pysoworks.ui_helpers import get_icon
+from pysoworks.ui_helpers import get_icon, set_combobox_value
 
 
 class DataRecorderWidget(QFrame):
@@ -18,6 +18,7 @@ class DataRecorderWidget(QFrame):
         self.ui = Ui_DataRecorderWidget()
         ui = self.ui
         ui.setupUi(self)
+        self.recsrc_combo_boxes = [self.ui.recsrc1ComboBox, self.ui.recsrc2ComboBox]
         ui.mplWidget.setStyleSheet("") # clear designer stylesheet
         self.canvas = ui.mplWidget.canvas # forward the canvas object
 
@@ -25,8 +26,8 @@ class DataRecorderWidget(QFrame):
         ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
         ui.clearPlotButton.setIcon(get_icon("delete", size=24, fill=True))
         ui.historyCheckBox.setChecked(True)
-        self.init_recording_source_combobox(ui.channel1ComboBox)
-        self.init_recording_source_combobox(ui.channel2ComboBox)
+        self.init_recording_source_combobox(ui.recsrc1ComboBox)
+        self.init_recording_source_combobox(ui.recsrc2ComboBox)
         self.update_sampling_period()
 
     
@@ -39,7 +40,7 @@ class DataRecorderWidget(QFrame):
         """
         cb.clear()
         for source in DataRecorderSource:
-            cb.addItem(str(source), source.value)
+            cb.addItem(str(source), source)
 
         
     def update_sampling_period(self):
@@ -54,7 +55,7 @@ class DataRecorderWidget(QFrame):
         ui.samplePeriodSpinBox.setValue(sample_period)
 
 
-    def set_recording_duration_ms(self, duration_ms: float):
+    def set_recording_duration_ms(self, duration_ms: int):
         """
         Sets the recording duration in the data recorder.
 
@@ -63,3 +64,25 @@ class DataRecorderWidget(QFrame):
         """
         ui = self.ui
         ui.recDurationSpinBox.setValue(duration_ms)
+
+
+    def get_recording_source(self, channel : int) -> DataRecorderSource:
+        """
+        Returns the currently selected recording source from the combobox.
+
+        Returns:
+            DataRecorderSource: The selected recording source.
+        """
+        return self.recsrc_combo_boxes[channel].currentData()
+        
+
+    def set_recording_source(self, channel: int, source: DataRecorderSource):
+        """
+        Sets the recording source in the combobox for the specified channel.
+
+        Args:
+            channel (int): The channel number (1 or 2).
+            source (DataRecorderSource): The recording source to set.
+        """
+        set_combobox_value(self.recsrc_combo_boxes[channel], source.value)
+

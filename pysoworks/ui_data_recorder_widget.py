@@ -44,10 +44,10 @@ class Ui_DataRecorderWidget(object):
 
         self.horizontalLayout.addWidget(self.channel1Label)
 
-        self.channel1ComboBox = QComboBox(self.dataRecSettingsGroupBox)
-        self.channel1ComboBox.setObjectName(u"channel1ComboBox")
+        self.recsrc1ComboBox = QComboBox(self.dataRecSettingsGroupBox)
+        self.recsrc1ComboBox.setObjectName(u"recsrc1ComboBox")
 
-        self.horizontalLayout.addWidget(self.channel1ComboBox)
+        self.horizontalLayout.addWidget(self.recsrc1ComboBox)
 
         self.channekl2Label = QLabel(self.dataRecSettingsGroupBox)
         self.channekl2Label.setObjectName(u"channekl2Label")
@@ -57,10 +57,10 @@ class Ui_DataRecorderWidget(object):
 
         self.horizontalLayout.addWidget(self.channekl2Label)
 
-        self.channel2ComboBox = QComboBox(self.dataRecSettingsGroupBox)
-        self.channel2ComboBox.setObjectName(u"channel2ComboBox")
+        self.recsrc2ComboBox = QComboBox(self.dataRecSettingsGroupBox)
+        self.recsrc2ComboBox.setObjectName(u"recsrc2ComboBox")
 
-        self.horizontalLayout.addWidget(self.channel2ComboBox)
+        self.horizontalLayout.addWidget(self.recsrc2ComboBox)
 
         self.recDurationLabel = QLabel(self.dataRecSettingsGroupBox)
         self.recDurationLabel.setObjectName(u"recDurationLabel")

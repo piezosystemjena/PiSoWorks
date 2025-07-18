@@ -46,7 +46,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="channel1ComboBox"/>
+       <widget class="QComboBox" name="recsrc1ComboBox"/>
       </item>
       <item>
        <widget class="QLabel" name="channekl2Label">
@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="channel2ComboBox"/>
+       <widget class="QComboBox" name="recsrc2ComboBox"/>
       </item>
       <item>
        <widget class="QLabel" name="recDurationLabel">

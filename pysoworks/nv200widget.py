@@ -11,10 +11,12 @@ from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
 import qtinter
+
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.widgets import Cursor
 from matplotlib.font_manager import FontProperties
 import matplotlib as mpl
+
 from qt_material_icons import MaterialIcon
 
 from nv200.shared_types import (
@@ -23,7 +25,8 @@ from nv200.shared_types import (
     DiscoverFlags,
     ModulationSource,
     SPIMonitorSource,
-    AnalogMonitorSource
+    AnalogMonitorSource,
+    PostionSensorType
 )
 from nv200.device_discovery import discover_devices
 from nv200.nv200_device import NV200Device
@@ -757,8 +760,12 @@ class NV200Widget(QWidget):
         """
         asyncio.create_task(self.start_move_async(self.sender()))
 
-
-    async def setup_data_recorder(self, duration_ms : int = DEFAULT_RECORDING_DURATION_MS) -> DataRecorder:
+    async def setup_data_recorder(
+        self,
+        duration_ms: int = DEFAULT_RECORDING_DURATION_MS,
+        recsrc0: DataRecorderSource | None = None,
+        recsrc1: DataRecorderSource | None = None,
+    ) -> DataRecorder:
         """
         Asynchronously configures the data recorder with appropriate data sources and recording duration.
 
@@ -774,12 +781,17 @@ class NV200Widget(QWidget):
         """
         dev = self.device
         recorder = self.recorder
-        pos_sensor_type = await dev.get_actuator_sensor_type()
-        if pos_sensor_type is None:
-            await recorder.set_data_source(0, DataRecorderSource.SETPOINT)
-        else:
-            await recorder.set_data_source(0, DataRecorderSource.PIEZO_POSITION)
-        await recorder.set_data_source(1, DataRecorderSource.PIEZO_VOLTAGE)
+        if recsrc0 is None:
+            pos_sensor_type = await dev.get_actuator_sensor_type()
+            if pos_sensor_type is PostionSensorType.NONE:
+                recsrc0 = DataRecorderSource.SETPOINT
+            else:
+                recsrc0 = DataRecorderSource.PIEZO_POSITION
+        if recsrc1 is None:
+            recsrc1 = DataRecorderSource.PIEZO_VOLTAGE
+
+        await recorder.set_data_source(0, recsrc0)
+        await recorder.set_data_source(1, recsrc1)
         await recorder.set_recording_duration_ms(duration_ms)
         return recorder
 
@@ -1016,7 +1028,10 @@ class NV200Widget(QWidget):
             wg = self.waveform_generator
             ui.mainProgressBar.start(5000, "start_waveform")
 
-            recorder = await self.setup_data_recorder(rec_ui.recDurationSpinBox.value())
+            recorder = await self.setup_data_recorder(
+                rec_ui.recDurationSpinBox.value(), 
+                ui.waveformPlot.get_recording_source(0), 
+                ui.waveformPlot.get_recording_source(1))
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
             await recorder.start_recording()
 
