@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplicati
     QToolButton, QVBoxLayout, QWidget)
 
 from pysoworks.consolewidget import Console
+from pysoworks.data_recorder_widget import DataRecorderWidget
 from pysoworks.mplcanvas import MplWidget
 from pysoworks.nv200_controller_widget import Nv200ControllerWidget
 from pysoworks.timed_progress_bar import TimedProgressBar
@@ -267,6 +268,19 @@ class Ui_NV200Widget(object):
 
         self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.freqSpinBox)
 
+        self.waveSamplingPeriof = QLabel(self.waveformGroupBox)
+        self.waveSamplingPeriof.setObjectName(u"waveSamplingPeriof")
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, self.waveSamplingPeriof)
+
+        self.waveSamplingPeriodSpinBox = QDoubleSpinBox(self.waveformGroupBox)
+        self.waveSamplingPeriodSpinBox.setObjectName(u"waveSamplingPeriodSpinBox")
+        self.waveSamplingPeriodSpinBox.setReadOnly(True)
+        self.waveSamplingPeriodSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.waveSamplingPeriodSpinBox.setMaximum(16777215.000000000000000)
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.waveSamplingPeriodSpinBox)
+
         self.phaseLabel = QLabel(self.waveformGroupBox)
         self.phaseLabel.setObjectName(u"phaseLabel")
 
@@ -328,34 +342,61 @@ class Ui_NV200Widget(object):
 
         self.formLayout.setWidget(8, QFormLayout.ItemRole.FieldRole, self.lowLevelSpinBox)
 
-        self.verticalSpacer_4 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.uploadButton = QPushButton(self.waveformGroupBox)
+        self.uploadButton.setObjectName(u"uploadButton")
+        sizePolicy5.setHeightForWidth(self.uploadButton.sizePolicy().hasHeightForWidth())
+        self.uploadButton.setSizePolicy(sizePolicy5)
 
-        self.formLayout.setItem(10, QFormLayout.ItemRole.FieldRole, self.verticalSpacer_4)
+        self.formLayout.setWidget(10, QFormLayout.ItemRole.SpanningRole, self.uploadButton)
 
-        self.cyclesSpinBox = QSpinBox(self.waveformGroupBox)
+        self.verticalSpacer_4 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.formLayout.setItem(9, QFormLayout.ItemRole.LabelRole, self.verticalSpacer_4)
+
+
+        self.verticalLayout_4.addWidget(self.waveformGroupBox)
+
+        self.generatorGroupBox = QGroupBox(self.waveformTab)
+        self.generatorGroupBox.setObjectName(u"generatorGroupBox")
+        self.formLayout_2 = QFormLayout(self.generatorGroupBox)
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.cyclesSpinBox = QSpinBox(self.generatorGroupBox)
         self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
         sizePolicy5.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
         self.cyclesSpinBox.setSizePolicy(sizePolicy5)
         self.cyclesSpinBox.setMaximum(65535)
         self.cyclesSpinBox.setValue(1)
 
-        self.formLayout.setWidget(11, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
 
-        self.cyclesLabel = QLabel(self.waveformGroupBox)
+        self.cyclesLabel = QLabel(self.generatorGroupBox)
         self.cyclesLabel.setObjectName(u"cyclesLabel")
 
-        self.formLayout.setWidget(11, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
+
+        self.totalDurationLabel = QLabel(self.generatorGroupBox)
+        self.totalDurationLabel.setObjectName(u"totalDurationLabel")
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.totalDurationLabel)
+
+        self.waveformDurationSpinBox = QSpinBox(self.generatorGroupBox)
+        self.waveformDurationSpinBox.setObjectName(u"waveformDurationSpinBox")
+        self.waveformDurationSpinBox.setReadOnly(True)
+        self.waveformDurationSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.waveformDurationSpinBox.setMaximum(16777215)
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.waveformDurationSpinBox)
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.startWaveformButton = QPushButton(self.waveformGroupBox)
+        self.startWaveformButton = QPushButton(self.generatorGroupBox)
         self.startWaveformButton.setObjectName(u"startWaveformButton")
         sizePolicy5.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
         self.startWaveformButton.setSizePolicy(sizePolicy5)
 
         self.horizontalLayout_6.addWidget(self.startWaveformButton)
 
-        self.stopWaveformButton = QPushButton(self.waveformGroupBox)
+        self.stopWaveformButton = QPushButton(self.generatorGroupBox)
         self.stopWaveformButton.setObjectName(u"stopWaveformButton")
         sizePolicy5.setHeightForWidth(self.stopWaveformButton.sizePolicy().hasHeightForWidth())
         self.stopWaveformButton.setSizePolicy(sizePolicy5)
@@ -363,96 +404,31 @@ class Ui_NV200Widget(object):
         self.horizontalLayout_6.addWidget(self.stopWaveformButton)
 
 
-        self.formLayout.setLayout(13, QFormLayout.ItemRole.SpanningRole, self.horizontalLayout_6)
+        self.formLayout_2.setLayout(4, QFormLayout.ItemRole.SpanningRole, self.horizontalLayout_6)
 
-        self.uploadButton = QPushButton(self.waveformGroupBox)
-        self.uploadButton.setObjectName(u"uploadButton")
-        sizePolicy5.setHeightForWidth(self.uploadButton.sizePolicy().hasHeightForWidth())
-        self.uploadButton.setSizePolicy(sizePolicy5)
+        self.recSyncCheckBox = QCheckBox(self.generatorGroupBox)
+        self.recSyncCheckBox.setObjectName(u"recSyncCheckBox")
+        self.recSyncCheckBox.setChecked(True)
+        self.recSyncCheckBox.setProperty(u"toggleSwitch", True)
 
-        self.formLayout.setWidget(9, QFormLayout.ItemRole.SpanningRole, self.uploadButton)
+        self.formLayout_2.setWidget(2, QFormLayout.ItemRole.FieldRole, self.recSyncCheckBox)
 
-        self.totalDurationLabel = QLabel(self.waveformGroupBox)
-        self.totalDurationLabel.setObjectName(u"totalDurationLabel")
+        self.recSyncLabel = QLabel(self.generatorGroupBox)
+        self.recSyncLabel.setObjectName(u"recSyncLabel")
 
-        self.formLayout.setWidget(12, QFormLayout.ItemRole.LabelRole, self.totalDurationLabel)
+        self.formLayout_2.setWidget(2, QFormLayout.ItemRole.LabelRole, self.recSyncLabel)
 
-        self.waveformDurationSpinBox = QSpinBox(self.waveformGroupBox)
-        self.waveformDurationSpinBox.setObjectName(u"waveformDurationSpinBox")
-        self.waveformDurationSpinBox.setReadOnly(True)
-        self.waveformDurationSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
-        self.waveformDurationSpinBox.setMaximum(16777215)
+        self.verticalSpacer_8 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-        self.formLayout.setWidget(12, QFormLayout.ItemRole.FieldRole, self.waveformDurationSpinBox)
-
-        self.waveSamplingPeriof = QLabel(self.waveformGroupBox)
-        self.waveSamplingPeriof.setObjectName(u"waveSamplingPeriof")
-
-        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, self.waveSamplingPeriof)
-
-        self.waveSamplingPeriodSpinBox = QDoubleSpinBox(self.waveformGroupBox)
-        self.waveSamplingPeriodSpinBox.setObjectName(u"waveSamplingPeriodSpinBox")
-        self.waveSamplingPeriodSpinBox.setReadOnly(True)
-        self.waveSamplingPeriodSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
-        self.waveSamplingPeriodSpinBox.setMaximum(16777215.000000000000000)
-
-        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.waveSamplingPeriodSpinBox)
+        self.formLayout_2.setItem(3, QFormLayout.ItemRole.LabelRole, self.verticalSpacer_8)
 
 
-        self.verticalLayout_4.addWidget(self.waveformGroupBox)
+        self.verticalLayout_4.addWidget(self.generatorGroupBox)
 
-        self.dataRecorderGroupBox = QGroupBox(self.waveformTab)
-        self.dataRecorderGroupBox.setObjectName(u"dataRecorderGroupBox")
-        self.formLayout_2 = QFormLayout(self.dataRecorderGroupBox)
-        self.formLayout_2.setObjectName(u"formLayout_2")
-        self.recDurationLabel = QLabel(self.dataRecorderGroupBox)
-        self.recDurationLabel.setObjectName(u"recDurationLabel")
+        self.hysteresisButton = QPushButton(self.waveformTab)
+        self.hysteresisButton.setObjectName(u"hysteresisButton")
 
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.recDurationLabel)
-
-        self.recDurationSpinBox = QSpinBox(self.dataRecorderGroupBox)
-        self.recDurationSpinBox.setObjectName(u"recDurationSpinBox")
-        self.recDurationSpinBox.setMinimum(1)
-        self.recDurationSpinBox.setMaximum(5000)
-
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.recDurationSpinBox)
-
-        self.historyLabel = QLabel(self.dataRecorderGroupBox)
-        self.historyLabel.setObjectName(u"historyLabel")
-
-        self.formLayout_2.setWidget(2, QFormLayout.ItemRole.LabelRole, self.historyLabel)
-
-        self.historyCheckBox = QCheckBox(self.dataRecorderGroupBox)
-        self.historyCheckBox.setObjectName(u"historyCheckBox")
-        self.historyCheckBox.setChecked(True)
-        self.historyCheckBox.setProperty(u"toggleSwitch", True)
-
-        self.formLayout_2.setWidget(2, QFormLayout.ItemRole.FieldRole, self.historyCheckBox)
-
-        self.clearPlotButton = QPushButton(self.dataRecorderGroupBox)
-        self.clearPlotButton.setObjectName(u"clearPlotButton")
-
-        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.SpanningRole, self.clearPlotButton)
-
-        self.verticalSpacer_8 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-
-        self.formLayout_2.setItem(3, QFormLayout.ItemRole.FieldRole, self.verticalSpacer_8)
-
-        self.samplingPeriodLabel = QLabel(self.dataRecorderGroupBox)
-        self.samplingPeriodLabel.setObjectName(u"samplingPeriodLabel")
-
-        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.samplingPeriodLabel)
-
-        self.samplePeriodSpinBox = QDoubleSpinBox(self.dataRecorderGroupBox)
-        self.samplePeriodSpinBox.setObjectName(u"samplePeriodSpinBox")
-        self.samplePeriodSpinBox.setReadOnly(True)
-        self.samplePeriodSpinBox.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
-        self.samplePeriodSpinBox.setMaximum(16777215.000000000000000)
-
-        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.samplePeriodSpinBox)
-
-
-        self.verticalLayout_4.addWidget(self.dataRecorderGroupBox)
+        self.verticalLayout_4.addWidget(self.hysteresisButton)
 
         self.verticalSpacer_7 = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -549,7 +525,7 @@ class Ui_NV200Widget(object):
         self.controllerStructureWidget = Nv200ControllerWidget()
         self.controllerStructureWidget.setObjectName(u"controllerStructureWidget")
         self.stackedWidget.addWidget(self.controllerStructureWidget)
-        self.waveformPlot = MplWidget()
+        self.waveformPlot = DataRecorderWidget()
         self.waveformPlot.setObjectName(u"waveformPlot")
         self.stackedWidget.addWidget(self.waveformPlot)
         self.resonancePlots = QWidget()
@@ -611,7 +587,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         self.stackedWidget.setCurrentIndex(2)
 
 
@@ -663,7 +639,7 @@ class Ui_NV200Widget(object):
 #endif // QT_CONFIG(tooltip)
         self.restoreButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Default Parameters", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
-        self.waveformGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Waveform Generator", None))
+        self.waveformGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Waveform Settings", None))
         self.wavefomLabel.setText(QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.waveFormComboBox.setItemText(0, QCoreApplication.translate("NV200Widget", u"Sine", None))
         self.waveFormComboBox.setItemText(1, QCoreApplication.translate("NV200Widget", u"Triangle", None))
@@ -671,29 +647,25 @@ class Ui_NV200Widget(object):
 
         self.freqLabel.setText(QCoreApplication.translate("NV200Widget", u"Freq.", None))
         self.freqSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" Hz", None))
+        self.waveSamplingPeriof.setText(QCoreApplication.translate("NV200Widget", u"Sampling Period", None))
+        self.waveSamplingPeriodSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
         self.phaseLabel.setText(QCoreApplication.translate("NV200Widget", u"Phase Shift", None))
         self.phaseShiftSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" \u00b0", None))
         self.dutyCycleLabel.setText(QCoreApplication.translate("NV200Widget", u"Duty Cycle", None))
         self.dutyCycleSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" %", None))
         self.highLabel.setText(QCoreApplication.translate("NV200Widget", u"High Level", None))
         self.lowLabel.setText(QCoreApplication.translate("NV200Widget", u"Low Level", None))
-        self.cyclesLabel.setText(QCoreApplication.translate("NV200Widget", u"Cycles", None))
-        self.startWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Start", None))
-        self.stopWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
         self.uploadButton.setText(QCoreApplication.translate("NV200Widget", u"Upload", None))
+        self.generatorGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Generator Control", None))
+        self.cyclesLabel.setText(QCoreApplication.translate("NV200Widget", u"Cycles", None))
         self.totalDurationLabel.setText(QCoreApplication.translate("NV200Widget", u"Total Duration", None))
         self.waveformDurationSpinBox.setSpecialValueText(QCoreApplication.translate("NV200Widget", u"infinite", None))
         self.waveformDurationSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
-        self.waveSamplingPeriof.setText(QCoreApplication.translate("NV200Widget", u"Sampling Period", None))
-        self.waveSamplingPeriodSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
-        self.dataRecorderGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Data Recorder", None))
-        self.recDurationLabel.setText(QCoreApplication.translate("NV200Widget", u"Duration", None))
-        self.recDurationSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
-        self.historyLabel.setText(QCoreApplication.translate("NV200Widget", u"Keep History", None))
-        self.historyCheckBox.setText(QCoreApplication.translate("NV200Widget", u"ON", None))
-        self.clearPlotButton.setText(QCoreApplication.translate("NV200Widget", u"Clear Plot", None))
-        self.samplingPeriodLabel.setText(QCoreApplication.translate("NV200Widget", u"Sampling Period", None))
-        self.samplePeriodSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" ms", None))
+        self.startWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Start", None))
+        self.stopWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
+        self.recSyncCheckBox.setText("")
+        self.recSyncLabel.setText(QCoreApplication.translate("NV200Widget", u"Sync Rec. Duration", None))
+        self.hysteresisButton.setText(QCoreApplication.translate("NV200Widget", u"Plot Hysteresis", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.resonanceButton.setText(QCoreApplication.translate("NV200Widget", u"Get Resonance Spectrum", None))
         self.impulseVoltagesGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Impulse Voltages", None))

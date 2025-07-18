@@ -2,7 +2,7 @@
 from pathlib import Path
 import asyncio
 from enum import Enum
-from typing import Any, cast, Dict
+from typing import Any, cast, Dict, Tuple
 import math
 import numpy as np
 
@@ -34,8 +34,7 @@ from nv200.analysis import ResonanceAnalyzer
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
-from scipy.fft import fft, fftfreq
-from scipy.signal import detrend, find_peaks
+from pysoworks.ui_helpers import get_icon
 
 
 # Important:
@@ -45,19 +44,6 @@ from scipy.signal import detrend, find_peaks
 from pysoworks.ui_nv200widget import Ui_NV200Widget
 
 
-def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
-    """
-    Creates and returns a MaterialIcon object with the specified icon name, size, fill style, and color.
-
-    Args:
-        icon_name (str): The name of the icon to retrieve.
-        size (int, optional): The size of the icon in pixels. Defaults to 24.
-        fill (bool, optional): Whether the icon should be filled or outlined. Defaults to True.
-        color (QPalette.ColorRole, optional): The color role to use for the icon. Defaults to QPalette.ColorRole.Highlight.
-    """
-    icon = MaterialIcon(icon_name, size=size, fill=fill)
-    icon.set_color(QPalette().color(color))
-    return icon
 
 
 class TabWidgetTabs(Enum):
@@ -90,6 +76,8 @@ class NV200Widget(QWidget):
         self._analyzer : ResonanceAnalyzer | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self._initialized = False
+        self._rec_positions : DataRecorder.ChannelRecordingData
+        self._rec_voltages : DataRecorder.ChannelRecordingData
 
         self.ui = Ui_NV200Widget()
 
@@ -121,6 +109,8 @@ class NV200Widget(QWidget):
         image_path = base_dir / "assets" / "images" / "piezosystem_logo_white@2x.png"
         ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
 
+        self.set_ui_connected(False)
+
 
 
 
@@ -135,6 +125,16 @@ class NV200Widget(QWidget):
         if not self._device:
             raise RuntimeError("Device not connected.")
         return self._device
+    
+    @property
+    def is_device_connected(self) -> bool:
+        """
+        Checks if a device is currently connected.
+
+        Returns:
+            bool: True if a device is connected, False otherwise.
+        """
+        return self._device is not None
     
     @property
     def recorder(self) -> DataRecorder:
@@ -165,6 +165,17 @@ class NV200Widget(QWidget):
         if self._analyzer is None:
             self._analyzer = ResonanceAnalyzer(self.device)
         return self._analyzer
+    
+
+    def set_ui_connected(self, connected: bool):
+        """
+        Enables or disables the tab widget in the UI based on the connection status.
+
+        Args:
+            connected (bool): If True, enables the tab widget; if False, disables it.
+        """
+        ui = self.ui
+        ui.tabWidget.setEnabled(connected)
     
 
     def init_device_search_ui(self):
@@ -284,21 +295,22 @@ class NV200Widget(QWidget):
         ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
         ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
+        ui.hysteresisButton.clicked.connect(qtinter.asyncslot(self.plot_hysteresis))
+        ui.hysteresisButton.setVisible(False)  # Hide for now, can be enabled later
+        ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
+        ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
+        ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
+        self.update_waveform_running_duration()
+        self.sync_waveform_recording_duration()
 
 
     def init_recorder_ui(self):
         """
         Initializes the data recorder UI components for recording and plotting data.
         """
-        ui = self.ui
-        ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
-        ui.historyCheckBox.setChecked(True)
-        ui.clearPlotButton.setIcon(get_icon("delete", size=24, fill=True))
+        ui = self.ui.waveformPlot.ui
         ui.clearPlotButton.clicked.connect(self.clear_waveform_plot)
-        ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
-        ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
-        ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
-        self.update_sampling_period()
+
 
     def init_resonance_ui(self):
         """
@@ -418,14 +430,9 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.searchDevicesButton.setEnabled(False)
         ui.connectButton.setEnabled(False)
-        ui.easyModeGroupBox.setEnabled(False)
         self.status_message.emit("Searching for devices...", 0)
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-
-        if self._device is not None:
-            await self._device.close()
-            self._device = None
-        
+       
         print("Searching...")
         ui.mainProgressBar.start(5000, "search_devices")
         try:
@@ -471,6 +478,7 @@ class NV200Widget(QWidget):
         print(f"Selected device: {device}")
         self.ui.connectButton.setEnabled(True)
 
+
     async def update_target_pos_edits(self):
         """
         Asynchronously updates the minimum and maximum values for the target position spin boxes
@@ -478,12 +486,14 @@ class NV200Widget(QWidget):
         """
         print("Updating target position spin boxes...")
         ui = self.ui
-        setpoint_range = await self._device.get_setpoint_range()
+        dev = self.device
+
+        setpoint_range = await dev.get_setpoint_range()
         ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox.setValue(setpoint_range[1]) # Default to high end
         ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox_2.setValue(setpoint_range[0])  # Default to low end
-        unit = await self._device.get_setpoint_unit()
+        unit = await dev.get_setpoint_unit()
         ui.targetPosSpinBox.setSuffix(f" {unit}")
         ui.targetPosSpinBox_2.setSuffix(f" {unit}")
         ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
@@ -507,7 +517,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         pid_mode = PidLoopMode.CLOSED_LOOP if ui.closedLoopCheckBox.isChecked() else PidLoopMode.OPEN_LOOP
         try:
-            await self._device.pid.set_mode(pid_mode)
+            await self.device.pid.set_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
             await self.update_target_pos_edits()
         except Exception as e:
@@ -522,7 +532,7 @@ class NV200Widget(QWidget):
         """
         try:
             print("Applying scontroller parameters...")
-            dev = self._device
+            dev = self.device
             dirty_widgets = self.input_change_tracker.get_dirty_widgets()
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
@@ -554,6 +564,7 @@ class NV200Widget(QWidget):
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
         await self.update_resonance_ui_from_device()
+        await self.update_resonance_voltages_ui()
 
 
     async def update_resonance_ui_from_device(self):
@@ -600,11 +611,7 @@ class NV200Widget(QWidget):
         """
         Asynchronously initializes the controller settings UI elements based on the device's current settings.
         """
-        dev = self._device
-        if dev is None:
-            print("No device connected.")
-            return
-        
+        dev = self.device
         print("Initializing controller settings from device...")
         ui = self.ui
         cui = ui.controllerStructureWidget.ui
@@ -709,6 +716,9 @@ class NV200Widget(QWidget):
         await self._device.close()
         self._device = None       
         self._recorder = None
+        self._waveform_generator = None
+        self._analyzer = None  
+        self.set_ui_connected(False)
             
 
 
@@ -724,6 +734,12 @@ class NV200Widget(QWidget):
             await self.disconnect_from_device()
             self._device = cast(NV200Device, await connect_to_detected_device(detected_device))
             self.ui.easyModeGroupBox.setEnabled(True)
+
+            self._recorder = DataRecorder(self._device)
+            self._waveform_generator = WaveformGenerator(self._device)
+            self._analyzer = ResonanceAnalyzer(self._device)
+
+            self.set_ui_connected(True)
             await self.update_ui_from_device()
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
             print(f"Connected to {detected_device.identifier}.")
@@ -768,7 +784,7 @@ class NV200Widget(QWidget):
         return recorder
 
 
-    async def plot_recorder_data(self, plot_widget: MplWidget, clear_plot: bool = True):
+    async def plot_recorder_data(self, plot_widget: MplWidget, clear_plot: bool = True) -> Tuple[DataRecorder.ChannelRecordingData, DataRecorder.ChannelRecordingData]:
         """
         Asynchronously retrieves and plots recorded data from two channels.
 
@@ -782,12 +798,65 @@ class NV200Widget(QWidget):
         recorder = self.recorder
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
-        rec_data = await recorder.read_recorded_data_of_channel(0)
+        rec_data0 = await recorder.read_recorded_data_of_channel(0)
         if clear_plot:
             plot.clear_plot()
-        plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))
-        rec_data = await recorder.read_recorded_data_of_channel(1)
-        plot.add_recorder_data_line(rec_data,  QColor('orange'))
+        plot.add_recorder_data_line(rec_data0, QColor(0, 255, 0))
+        rec_data1 = await recorder.read_recorded_data_of_channel(1)
+        plot.add_recorder_data_line(rec_data1,  QColor('orange'))
+        self.status_message.emit("", 0)
+        return rec_data0, rec_data1
+
+
+    async def plot_hysteresis(self):
+        """
+        Asynchronously plots hysteresis data by reading position and voltage data from two channels.
+        This method waits for the recorder to finish recording, reads the data, and plots it as a hysteresis curve.
+        The plot is labeled "Hysteresis" and uses a purple color for the data line.
+
+        Emits:
+            status_message (str, int): Status updates for the UI.
+        """
+        ui = self.ui
+        await self.plot_hysteresis_data(ui.waveformPlot, clear_plot=True)    
+
+
+    async def plot_hysteresis_data(self, plot_widget: MplWidget, clear_plot: bool = True):
+        """
+        Asynchronously plots hysteresis data on the provided MplWidget.
+        This method waits for the recorder to finish recording, reads position and voltage data from two channels,
+        and plots the voltage versus position as a hysteresis curve on the given plot widget. The plot is labeled
+        "Hysteresis" and uses a purple color for the data line. Status messages are emitted before and after data
+        processing.
+
+        Args:
+            plot_widget (MplWidget): The widget containing the matplotlib canvas to plot on.
+            clear_plot (bool, optional): Whether to clear the existing plot before plotting new data. Defaults to True.
+
+        Emits:
+            status_message (str, int): Status updates for the UI.
+        """
+        plot = plot_widget.canvas
+        recorder = self.recorder
+        await recorder.wait_until_finished()
+        self.status_message.emit("Reading recorded data from device...", 0)
+        #position = await recorder.read_recorded_data_of_channel(0)
+        #plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))
+        #voltage = await recorder.read_recorded_data_of_channel(1)
+        #plot.add_recorder_data_line(rec_data,  QColor('orange'))
+        if clear_plot:
+            plot.clear_plot()
+        plot.plot_data(self._rec_voltages.values, self._rec_positions.values, "Hysteresis", QColor(255, 0, 255))  # Purple color for hysteresis
+
+        ax = plot.axes
+        ax.set_autoscale_on(True)       # Turns autoscale mode back on
+        ax.set_xlim(auto=True)          # Reset x-axis limits
+        ax.set_ylim(auto=True)          # Reset y-axis limits
+
+        # Autoscale the axes after plotting the data
+        ax.relim()
+        ax.autoscale_view()
+
         self.status_message.emit("", 0)
 
 
@@ -918,7 +987,7 @@ class NV200Widget(QWidget):
         plot.set_line_color(line_index, color)
 
 
-    async def plot_waveform_recorder_data(self):
+    async def plot_waveform_recorder_data(self) -> Tuple[DataRecorder.ChannelRecordingData, DataRecorder.ChannelRecordingData]:
         """
         Plots waveform recorder data on the UI's matplotlib canvas.
 
@@ -927,13 +996,14 @@ class NV200Widget(QWidget):
         Finally, recorder data is plotted.
         """
         ui = self.ui
+        rec_ui = ui.waveformPlot.ui
         plot = ui.waveformPlot.canvas
-        if ui.historyCheckBox.isChecked():
+        if rec_ui.historyCheckBox.isChecked():
             for i in range(1, plot.get_line_count()):
                 self.fade_plot_line(i)
         else:
             self.clear_waveform_plot()
-        await self.plot_recorder_data(plot_widget=ui.waveformPlot, clear_plot=False)
+        return await self.plot_recorder_data(plot_widget=ui.waveformPlot, clear_plot=False)
 
 
     async def start_waveform_generator(self):
@@ -941,11 +1011,12 @@ class NV200Widget(QWidget):
         Asynchronously starts the waveform generator.
         """       
         ui = self.ui
+        rec_ui = ui.waveformPlot.ui
         try:
             wg = self.waveform_generator
             ui.mainProgressBar.start(5000, "start_waveform")
 
-            recorder = await self.setup_data_recorder(ui.recDurationSpinBox.value())
+            recorder = await self.setup_data_recorder(rec_ui.recDurationSpinBox.value())
             await recorder.set_autostart_mode(RecorderAutoStartMode.START_ON_WAVEFORM_GEN_RUN)
             await recorder.start_recording()
 
@@ -954,7 +1025,7 @@ class NV200Widget(QWidget):
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
             
-            await self.plot_waveform_recorder_data()
+            self._rec_positions , self._rec_voltages = await self.plot_waveform_recorder_data()
 
             ui.mainProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
@@ -989,12 +1060,9 @@ class NV200Widget(QWidget):
         #     self.ui.console.print_output("response")
         # return
 
-        if self._device is None:
-            print("No device connected.")
-            return
-        
+        dev = self.device       
         self.ui.console.prompt_count += 1
-        response = await self._device.read_stripped_response_string(command, 10)
+        response = await dev.read_stripped_response_string(command, 10)
         print(f"Command response: {response}")
         self.ui.console.print_output(response)
 
@@ -1051,20 +1119,6 @@ class NV200Widget(QWidget):
         self.update_waveform_plot()
 
 
-    def update_sampling_period(self):
-        """
-        Updates the sampling period in the waveform generator based on the given value.
-
-        Args:
-            value (int): The new sampling period in milliseconds.
-        """
-        ui = self.ui
-        sample_period = DataRecorder.get_sample_period_ms_for_duration(ui.recDurationSpinBox.value())
-        print(f"Setting sample period to {sample_period} ms")
-        ui.samplePeriodSpinBox.setValue(sample_period)
-
-
-
     def update_waveform_running_duration(self,):
         """
         Updates the waveform running duration in the waveform generator based on the given value.
@@ -1077,6 +1131,20 @@ class NV200Widget(QWidget):
         cycles = ui.cyclesSpinBox.value()
         duration_ms = 1000 * cycles / freq_hz if freq_hz > 0 else 0.0
         ui.waveformDurationSpinBox.setValue(int(duration_ms))
+        self.sync_waveform_recording_duration()
+
+
+    def sync_waveform_recording_duration(self):
+        """
+        Synchronizes the waveform recording duration with the waveform generator's running duration.
+        This method updates the recording duration spin box to match the waveform generator's calculated duration.
+        """
+        ui = self.ui
+        if not ui.recSyncCheckBox.isChecked():
+            return
+
+        rec_ui = ui.waveformPlot.ui
+        rec_ui.recDurationSpinBox.setValue(ui.waveformDurationSpinBox.value())
 
 
     async def get_resonance_spectrum(self):
