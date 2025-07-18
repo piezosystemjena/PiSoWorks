@@ -426,10 +426,22 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_4.addWidget(self.generatorGroupBox)
 
-        self.hysteresisButton = QPushButton(self.waveformTab)
-        self.hysteresisButton.setObjectName(u"hysteresisButton")
+        self.hysteresisGroupBox = QGroupBox(self.waveformTab)
+        self.hysteresisGroupBox.setObjectName(u"hysteresisGroupBox")
+        self.horizontalLayout_3 = QHBoxLayout(self.hysteresisGroupBox)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.measureHysteresisButton = QPushButton(self.hysteresisGroupBox)
+        self.measureHysteresisButton.setObjectName(u"measureHysteresisButton")
 
-        self.verticalLayout_4.addWidget(self.hysteresisButton)
+        self.horizontalLayout_3.addWidget(self.measureHysteresisButton)
+
+        self.plotHysteresisButton = QPushButton(self.hysteresisGroupBox)
+        self.plotHysteresisButton.setObjectName(u"plotHysteresisButton")
+
+        self.horizontalLayout_3.addWidget(self.plotHysteresisButton)
+
+
+        self.verticalLayout_4.addWidget(self.hysteresisGroupBox)
 
         self.verticalSpacer_7 = QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -666,7 +678,9 @@ class Ui_NV200Widget(object):
         self.stopWaveformButton.setText(QCoreApplication.translate("NV200Widget", u"Stop", None))
         self.recSyncCheckBox.setText("")
         self.recSyncLabel.setText(QCoreApplication.translate("NV200Widget", u"Sync Rec. Duration", None))
-        self.hysteresisButton.setText(QCoreApplication.translate("NV200Widget", u"Plot Hysteresis", None))
+        self.hysteresisGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Hysteresis Measurement", None))
+        self.measureHysteresisButton.setText(QCoreApplication.translate("NV200Widget", u"Measure", None))
+        self.plotHysteresisButton.setText(QCoreApplication.translate("NV200Widget", u"Plot", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.waveformTab), QCoreApplication.translate("NV200Widget", u"Waveform", None))
         self.resonanceButton.setText(QCoreApplication.translate("NV200Widget", u"Get Resonance Spectrum", None))
         self.impulseVoltagesGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Impulse Voltages", None))

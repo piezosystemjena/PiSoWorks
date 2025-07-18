@@ -84,5 +84,5 @@ class DataRecorderWidget(QFrame):
             channel (int): The channel number (1 or 2).
             source (DataRecorderSource): The recording source to set.
         """
-        set_combobox_value(self.recsrc_combo_boxes[channel], source.value)
+        set_combobox_value(self.recsrc_combo_boxes[channel], source)
 

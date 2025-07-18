@@ -802,10 +802,26 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="hysteresisButton">
-                   <property name="text">
-                    <string>Plot Hysteresis</string>
+                  <widget class="QGroupBox" name="hysteresisGroupBox">
+                   <property name="title">
+                    <string>Hysteresis Measurement</string>
                    </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QPushButton" name="measureHysteresisButton">
+                      <property name="text">
+                       <string>Measure</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="plotHysteresisButton">
+                      <property name="text">
+                       <string>Plot</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>

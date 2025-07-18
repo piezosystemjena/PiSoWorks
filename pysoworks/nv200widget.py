@@ -298,8 +298,8 @@ class NV200Widget(QWidget):
         ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
         ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
-        ui.hysteresisButton.clicked.connect(qtinter.asyncslot(self.plot_hysteresis))
-        ui.hysteresisButton.setVisible(False)  # Hide for now, can be enabled later
+        ui.plotHysteresisButton.clicked.connect(qtinter.asyncslot(self.plot_hysteresis))
+        ui.measureHysteresisButton.clicked.connect(qtinter.asyncslot(self.measure_hysteresis))
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
@@ -323,13 +323,13 @@ class NV200Widget(QWidget):
         ui.resonanceButton.setIcon(get_icon("equalizer", size=24, fill=True))
         ui.resonanceButton.setIconSize(QSize(24, 24))
         ui.resonanceButton.clicked.connect(qtinter.asyncslot(self.get_resonance_spectrum))
-        ax = ui.resonancePlot.canvas.axes
+        ax = ui.resonancePlot.canvas.ax1
         ax.set_title("Resonance Spectrum")
         ax.set_xlabel('Frequency (Hz)')
         ax.set_ylabel('Amplitude') 
         ax.set_xlim(10, 4000)
 
-        ax = ui.impulsePlot.canvas.axes
+        ax = ui.impulsePlot.canvas.ax1
         ax.set_title("Impulse Response")
 
     
@@ -587,9 +587,9 @@ class NV200Widget(QWidget):
         if await dev.has_position_sensor():
             impulse_resp_unit = await dev.get_position_unit()
             y_label = f"Piezo Position ({impulse_resp_unit})"
-        ax = self.ui.impulsePlot.canvas.axes
+        ax = self.ui.impulsePlot.canvas.ax1
         ax.set_ylabel(y_label)
-        ax = self.ui.resonancePlot.canvas.axes
+        ax = self.ui.resonancePlot.canvas.ax1
         ax.set_ylabel(f"Amplitude ({impulse_resp_unit})")
 
 
@@ -796,7 +796,7 @@ class NV200Widget(QWidget):
         return recorder
 
 
-    async def plot_recorder_data(self, plot_widget: MplWidget, clear_plot: bool = True) -> Tuple[DataRecorder.ChannelRecordingData, DataRecorder.ChannelRecordingData]:
+    async def plot_recorder_data(self, plot_widget: MplWidget, clear_plot: bool = True, second_axes_index = 0) -> Tuple[DataRecorder.ChannelRecordingData, DataRecorder.ChannelRecordingData]:
         """
         Asynchronously retrieves and plots recorded data from two channels.
 
@@ -813,9 +813,9 @@ class NV200Widget(QWidget):
         rec_data0 = await recorder.read_recorded_data_of_channel(0)
         if clear_plot:
             plot.clear_plot()
-        plot.add_recorder_data_line(rec_data0, QColor(0, 255, 0))
+        plot.add_recorder_data_line(rec_data0, QColor(0, 255, 0), 0)
         rec_data1 = await recorder.read_recorded_data_of_channel(1)
-        plot.add_recorder_data_line(rec_data1,  QColor('orange'))
+        plot.add_recorder_data_line(rec_data1,  QColor('orange'), second_axes_index)
         self.status_message.emit("", 0)
         return rec_data0, rec_data1
 
@@ -830,7 +830,20 @@ class NV200Widget(QWidget):
             status_message (str, int): Status updates for the UI.
         """
         ui = self.ui
-        await self.plot_hysteresis_data(ui.waveformPlot, clear_plot=True)    
+        await self.plot_hysteresis_data(ui.waveformPlot, clear_plot=True)  
+
+
+    async def measure_hysteresis(self): 
+        ui = self.ui
+        ui.cyclesSpinBox.setValue(3)  # Set cycles to 1 for hysteresis measurement
+        if ui.closedLoopCheckBox.isChecked():
+            ui.waveformPlot.set_recording_source(0, DataRecorderSource.SETPOINT)
+            ui.waveformPlot.set_recording_source(1, DataRecorderSource.PIEZO_POSITION)
+        else:  
+            ui.waveformPlot.set_recording_source(0, DataRecorderSource.PIEZO_VOLTAGE)
+            ui.waveformPlot.set_recording_source(1, DataRecorderSource.PIEZO_POSITION)
+        await self.start_waveform_generator()
+
 
 
     async def plot_hysteresis_data(self, plot_widget: MplWidget, clear_plot: bool = True):
@@ -860,7 +873,7 @@ class NV200Widget(QWidget):
             plot.clear_plot()
         plot.plot_data(self._rec_voltages.values, self._rec_positions.values, "Hysteresis", QColor(255, 0, 255))  # Purple color for hysteresis
 
-        ax = plot.axes
+        ax = plot.ax1
         ax.set_autoscale_on(True)       # Turns autoscale mode back on
         ax.set_xlim(auto=True)          # Reset x-axis limits
         ax.set_ylim(auto=True)          # Reset y-axis limits
@@ -984,6 +997,7 @@ class NV200Widget(QWidget):
         finally:#
             self.setCursor(Qt.CursorShape.ArrowCursor)
             self.ui.mainProgressBar.reset()
+            self.ui.uploadButton.setChecked(False)
 
 
     def on_upload_waveform_button_clicked(self, checked : bool):
@@ -1027,13 +1041,13 @@ class NV200Widget(QWidget):
         """
         ui = self.ui
         rec_ui = ui.waveformPlot.ui
-        plot = ui.waveformPlot.canvas
+        plot = ui.waveformPlot.ui.mplWidget.canvas
         if rec_ui.historyCheckBox.isChecked():
             for i in range(1, plot.get_line_count()):
                 self.fade_plot_line(i)
         else:
             self.clear_waveform_plot()
-        return await self.plot_recorder_data(plot_widget=ui.waveformPlot, clear_plot=False)
+        return await self.plot_recorder_data(plot_widget=ui.waveformPlot.ui.mplWidget , clear_plot=False, second_axes_index=0)
 
 
     async def start_waveform_generator(self):
@@ -1195,7 +1209,7 @@ class NV200Widget(QWidget):
 
             plot = ui.impulsePlot.canvas
             plot.clear_plot()   
-            ax = plot.axes
+            ax = plot.ax1
             t = np.arange(len(signal)) / sample_freq  # time in seconds
 
             unit = await self.device.get_position_unit()
@@ -1205,7 +1219,7 @@ class NV200Widget(QWidget):
 
             plot = ui.resonancePlot.canvas
             plot.clear_plot()
-            ax = plot.axes
+            ax = plot.ax1
             ax.plot(xf, yf, color='r', label='Frequency Spectrum')
             # Set axis labels with units
             ax.set_xlim(10, 4000)
@@ -1228,4 +1242,5 @@ class NV200Widget(QWidget):
             print(f"Error retrieving resonance spectrum: {e}")
             self.status_message.emit(f"Error retrieving resonance spectrum: {e}", 4000)
             ui.mainProgressBar.reset()
+
 
