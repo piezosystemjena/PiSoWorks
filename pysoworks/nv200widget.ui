@@ -653,6 +653,9 @@
                       <property name="text">
                        <string>Upload</string>
                       </property>
+                      <property name="checkable">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item row="9" column="0">

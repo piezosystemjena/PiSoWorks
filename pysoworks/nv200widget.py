@@ -292,7 +292,7 @@ class NV200Widget(QWidget):
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_plot)
         ui.phaseShiftSpinBox.valueChanged.connect(self.update_waveform_plot)
         ui.dutyCycleSpinBox.valueChanged.connect(self.update_waveform_plot)
-        ui.uploadButton.clicked.connect(qtinter.asyncslot(self.upload_waveform))
+        ui.uploadButton.clicked.connect(self.on_upload_waveform_button_clicked)
         ui.uploadButton.setIcon(get_icon("upload", size=24, fill=True))
         ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
         ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
@@ -984,6 +984,24 @@ class NV200Widget(QWidget):
         finally:#
             self.setCursor(Qt.CursorShape.ArrowCursor)
             self.ui.mainProgressBar.reset()
+
+
+    def on_upload_waveform_button_clicked(self, checked : bool):
+        """
+        Handles the event when the upload waveform button is clicked.
+        This method is called when the user clicks the button to upload a waveform to the device.
+        It retrieves the waveform data from the UI, uploads it to the device, and updates the status message accordingly.
+        """
+        print(f"Upload waveform button clicked: {checked}")
+        if checked:
+            self._waveform_task = asyncio.create_task(self.upload_waveform())
+        else:
+            if self._waveform_task is not None:
+                self._waveform_task.cancel()
+                self._waveform_task = None
+            print("Waveform upload cancelled.")
+            self.status_message.emit("Waveform upload cancelled.", 2000)
+
         
     def fade_plot_line(self, line_index: int, alpha: float = 0.5):
         """

@@ -346,6 +346,7 @@ class Ui_NV200Widget(object):
         self.uploadButton.setObjectName(u"uploadButton")
         sizePolicy5.setHeightForWidth(self.uploadButton.sizePolicy().hasHeightForWidth())
         self.uploadButton.setSizePolicy(sizePolicy5)
+        self.uploadButton.setCheckable(True)
 
         self.formLayout.setWidget(10, QFormLayout.ItemRole.SpanningRole, self.uploadButton)
 
