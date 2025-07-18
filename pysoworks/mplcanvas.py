@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib.colors import to_rgba
+from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from PySide6.QtGui import QPalette, QColor, QAction
@@ -21,12 +22,28 @@ class MplCanvas(FigureCanvas):
         plt.style.use('dark_background')
         self._fig = Figure(figsize=(width, height), dpi=dpi)
         self._fig.tight_layout()
-        self.axes = self._fig.add_subplot(111)
+        self.ax1 = self._fig.add_subplot(111)
+        self.axes_list : list[Axes] = [self.ax1]
         self._fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
-        self.axes.set_xlabel('Time (ms)')
-        self.axes.set_ylabel('Value')
-        self.axes.grid(True, color='darkgray', linestyle='--', linewidth=0.5)
-        ax = self.axes
+
+        ax = self.ax1
+        ax.set_xlabel('Time (ms)')
+        ax.set_ylabel('Value')
+        self.init_axes_object(ax)
+
+        self.ax2 : Axes | None = None  # Secondary axis for two-line plots
+        super().__init__(self._fig)
+
+
+    def init_axes_object(self, ax : Axes):
+        """
+        Initializes the appearance of the given Matplotlib Axes object.
+        This method configures the grid, spine colors, and tick parameters
+        to use a dark gray color scheme for improved visual consistency.
+        Args:
+            ax (Axes): The Matplotlib Axes object to be styled.
+        """
+        ax.grid(True, color='darkgray', linestyle='--', linewidth=0.5)
         ax.spines['top'].set_color('darkgray')
         ax.spines['right'].set_color('darkgray')
         ax.spines['bottom'].set_color('darkgray')
@@ -36,11 +53,33 @@ class MplCanvas(FigureCanvas):
         ax.tick_params(axis='x', colors='darkgray')
         ax.tick_params(axis='y', colors='darkgray')
 
-        palette = QApplication.palette()
-        bg_color = palette.color(QPalette.ColorRole.Window)
-        #self.axes.set_facecolor(bg_color.name())
-        #self._fig.set_facecolor(bg_color.name())
-        super().__init__(self._fig)
+
+    def get_axes(self, index : int) -> Axes:
+        """
+        Retrieve the matplotlib Axes object at the specified index.
+
+        Args:
+            index (int): The index of the axes to retrieve. 
+                - 0: Returns the primary axes.
+                - 1: Returns the secondary axes if it exists, or creates it if it does not.
+
+        Returns:
+            Axes: The requested matplotlib Axes object.
+
+        Raises:
+            IndexError: If the index is not 0 or 1.
+        """
+        if index < len(self.axes_list):
+            return self.axes_list[index]
+        
+        if index == 1:
+            self.ax2 = self.ax1.twinx()
+            self.init_axes_object(self.ax2)
+            self.axes_list.append(self.ax2)
+            return self.ax2
+
+        raise IndexError(f"Index {index} out of range for axes list.")
+
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -48,39 +87,43 @@ class MplCanvas(FigureCanvas):
         self.draw()
 
 
-    def plot_recorder_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
+    def plot_recorder_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange'), axis : int = 0):
         """
         Plots the data and stores the line object for later removal.
         """
-        self.remove_all_lines()  # Remove all previous lines before plotting new data
-        self.add_recorder_data_line(rec_data, color)  # Add the new line to the plot
+        self.remove_all_axes_lines(axis)  # Remove all previous lines before plotting new data
+        self.add_recorder_data_line(rec_data, color, axis)  # Add the new line to the plot
 
 
-    def add_recorder_data_line(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange')):
+    def add_recorder_data_line(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange'), axis : int = 0):
         """
         Adds a new line plot to the canvas using the provided channel recording data.
         """
-        self.add_line(rec_data.sample_times_ms, rec_data.values, str(rec_data.source), color)  # Add the new line to the plot
+        self.add_line(rec_data.sample_times_ms, rec_data.values, str(rec_data.source), color, axis)  # Add the new line to the plot
 
-    def plot_data(self, x_data: Union[Sequence[float], np.ndarray], y_data: Union[Sequence[float], np.ndarray], label: str, color : QColor = QColor('orange')):
+
+    def plot_data(self, x_data: Union[Sequence[float], np.ndarray], y_data: Union[Sequence[float], np.ndarray], label: str, color : QColor = QColor('orange'), axis : int = 0):
         """
         Plots the data and stores the line object for later removal.
         """
-        self.remove_all_lines()  # Remove all previous lines before plotting new data
-        self.add_line(x_data, y_data, label, color)  # Add the new line to the plot
+        self.remove_all_axes_lines(axis)  # Remove all previous lines before plotting new data
+        self.add_line(x_data, y_data, label, color, axis)  # Add the new line to the plot
 
-    def add_line(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange')):
+
+    def add_line(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange'), axis : int = 0):
         """
         Adds a new line plot to the canvas 
         """
         # Plot the data and add a label for the legend
-        ax = self.axes
+        ax = self.get_axes(axis)
+
         rgba = (
             color.redF(),   # R in 0.0–1.0
             color.greenF(),
             color.blueF(),
             color.alphaF()
         )
+        
         print(f"Adding line with color: {rgba} and label: {label}")
         line, = ax.plot(
             x_data, y_data, 
@@ -95,7 +138,7 @@ class MplCanvas(FigureCanvas):
         ax.relim()
         ax.autoscale_view()
         
-        # Show the legend with custom styling
+        #Show the legend with custom styling
         ax.legend(
             facecolor='darkgray', 
             edgecolor='darkgray', 
@@ -107,11 +150,12 @@ class MplCanvas(FigureCanvas):
         # Redraw the canvas
         self.draw()
 
-    def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float]):
+   
+    def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float], axis : int = 0):
         """
         Updates the data of a specific line in the plot.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         lines = ax.get_lines()
         
         if 0 <= line_index < len(lines):
@@ -129,11 +173,11 @@ class MplCanvas(FigureCanvas):
             raise IndexError("Line index out of range.")
 
 
-    def get_line_color(self, line_index: int) -> QColor:
+    def get_line_color(self, line_index: int, axis : int = 0) -> QColor:
         """
         Returns the color of a specific line in the plot.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         lines = ax.get_lines()
         
         if 0 <= line_index < len(lines):
@@ -145,11 +189,12 @@ class MplCanvas(FigureCanvas):
         else:
             raise IndexError("Line index out of range.")
 
-    def set_line_color(self, line_index: int, color: QColor):
+
+    def set_line_color(self, line_index: int, color: QColor, axis : int = 0):
         """
         Sets the color of a specific line in the plot.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         lines = ax.get_lines()
         
         if 0 <= line_index < len(lines):
@@ -164,45 +209,54 @@ class MplCanvas(FigureCanvas):
             line.set_color(rgba)
             self.draw()
 
-    def get_lines(self) -> Sequence:
+
+    def get_lines(self, axis: int = 0) -> Sequence:
         """
         Returns a sequence of all lines in the plot.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         return ax.get_lines()
     
-    def get_line_count(self) -> int:
+
+    def get_line_count(self, axis: int = 0) -> int:
         """
         Returns the number of lines in the plot.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         return len(ax.get_lines())
 
-    def scale_axes(self, x_min: float, x_max: float, y_min: float, y_max: float):
+
+    def scale_axes(self, x_min: float, x_max: float, y_min: float, y_max: float, axis: int = 0):
         """
         Scales the axes to the specified limits.
         """
-        ax = self.axes
+        ax = self.get_axes(axis)
         ax.set_xlim(x_min, x_max)
         ax.set_ylim(y_min, y_max)
 
         # Redraw the canvas to reflect the changes
         self.draw()    
 
-    def remove_all_lines(self):
+    def remove_all_axes_lines(self, axis: int = 0):
         """Removes all lines from the axes."""
+        if axis >= len(self.axes_list):
+            return
+
+        ax = self.axes_list[axis]
         # Iterate over all lines in the axes and remove them
-        for line in self.axes.get_lines():
+        for line in ax.get_lines():
             line.remove()
 
         # Redraw the canvas to reflect the change
         self.draw()
 
+
     def clear_plot(self):
         """
         Clears the plot by removing all lines and resetting the axes.
         """
-        self.remove_all_lines()
+        self.remove_all_axes_lines(0)
+        self.remove_all_axes_lines(1)
 
 
 
