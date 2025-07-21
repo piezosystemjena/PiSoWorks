@@ -10,7 +10,7 @@ from PySide6.QtCore import QObject
 
 from typing import Callable, Any, Dict, List, Type, Tuple
 from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QCheckBox, QComboBox
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 
 
@@ -27,6 +27,9 @@ class InputWidgetChangeTracker(QObject):
     - QCheckBox
     - QComboBox
     """
+
+    dirtyStateChanged: Signal = Signal(bool)
+    """Signal emitted when the dirty state changes."""
 
     widget_handlers: Dict[Type[QWidget], Tuple[str, Callable[[QWidget], Any]]] = {
         QDoubleSpinBox: ("valueChanged", lambda w: w.value()),
@@ -66,6 +69,7 @@ class InputWidgetChangeTracker(QObject):
         super().__init__(parent)
         self.initial_values: Dict[QWidget, Any] = {}
         self.widgets: List[QWidget] = []
+        self.dirty_widgets: set[QWidget] = set()
 
 
     def add_widget(
@@ -84,6 +88,7 @@ class InputWidgetChangeTracker(QObject):
         self.initial_values[widget] = self._get_value(widget)
         self._connect_signal(widget)
 
+
     def _connect_signal(self, widget: QWidget) -> None:
         """
         Connect the widget's change signal to dirty-check logic.
@@ -95,6 +100,7 @@ class InputWidgetChangeTracker(QObject):
                 return
         raise TypeError(f"Unsupported widget type: {type(widget)}")
 
+
     def _get_value(self, widget: QWidget) -> Any:
         """
         Get the current value of the widget.
@@ -104,6 +110,7 @@ class InputWidgetChangeTracker(QObject):
                 return value_func(widget)
         raise TypeError(f"No value accessor registered for: {type(widget)}")
     
+
     def get_value_of_widget(self, widget: QWidget) -> Any:
         """
         Return the current value of the given widget if supported.
@@ -119,6 +126,7 @@ class InputWidgetChangeTracker(QObject):
         """
         return self._get_value(widget)
     
+
     def _set_dirty(self, widget: QWidget, dirty: bool) -> None:
         """
         Set the 'dirty' property of the widget and refresh its style.
@@ -129,15 +137,23 @@ class InputWidgetChangeTracker(QObject):
         """
         widget.setProperty("dirty", dirty)
         self._refresh_style(widget)
+        if dirty:
+            self.dirty_widgets.add(widget)
+        else:
+            self.dirty_widgets.discard(widget)
+
 
     def _check_dirty(self, widget: QWidget) -> None:
         """
         Check if the widget is dirty and set the 'dirty' property accordingly.
         """
+        old_dirty = self.has_dirty_widgets()
         current = self._get_value(widget)
         initial = self.initial_values.get(widget)
         is_dirty = current != initial
         self._set_dirty(widget, is_dirty)
+        self._emit_dirty_state_changed(old_dirty)
+
 
     def _refresh_style(self, widget: QWidget) -> None:
         """
@@ -148,6 +164,18 @@ class InputWidgetChangeTracker(QObject):
         widget.update()
 
 
+    def _emit_dirty_state_changed(self, old_dirty: bool) -> None:
+        """
+        Emit the dirtyStateChanged signal if the dirty state has changed.
+        
+        Args:
+            old_dirty: Previous dirty state.
+        """
+        new_dirty = self.has_dirty_widgets()
+        if new_dirty != old_dirty:
+            self.dirtyStateChanged.emit(new_dirty)
+
+
     def capture_initial_values(self) -> None:
         """
         Set current widget values as the new initial values and clear dirty flags.
@@ -155,15 +183,30 @@ class InputWidgetChangeTracker(QObject):
         for widget in self.widgets:
             self.initial_values[widget] = self._get_value(widget)
             self._set_dirty(widget, False)
+        self._emit_dirty_state_changed(False)
 
 
     def reset(self) -> None:
         """
         Clear the dirty state of all tracked widgets.
         """
+        old_dirty = self.has_dirty_widgets()
         for widget in self.widgets:
             self.initial_values[widget] = self._get_value(widget)
             self._set_dirty(widget, False)
+        self._emit_dirty_state_changed(old_dirty)
+
+
+    def set_all_widgets_dirty(self, dirty: bool = True) -> None:
+        """
+        Set the 'dirty' property for all tracked widgets.
+        """
+        old_dirty = self.has_dirty_widgets()
+        for widget in self.widgets:
+            self._set_dirty(widget, dirty)
+            self.initial_values[widget] = "__dirty__"
+        self.dirtyStateChanged.emit(dirty)
+        self._emit_dirty_state_changed(old_dirty)
 
 
     def reset_widget(self, widget: QWidget) -> None:
@@ -188,3 +231,13 @@ class InputWidgetChangeTracker(QObject):
             List of widgets with property 'dirty' == True.
         """
         return [w for w in self.widgets if w.property("dirty") is True]
+    
+
+    def has_dirty_widgets(self) -> bool:
+        """
+        Check if there are any widgets currently marked as dirty.
+
+        Returns:
+            True if at least one widget is dirty, False otherwise.
+        """
+        return bool(self.dirty_widgets)

@@ -81,6 +81,8 @@ class NV200Widget(QWidget):
         self._initialized = False
         self._rec_positions : DataRecorder.ChannelRecordingData
         self._rec_voltages : DataRecorder.ChannelRecordingData
+        self.settings_widget_change_tracker: InputWidgetChangeTracker | None = None
+        self.waveform_widget_change_tracker: InputWidgetChangeTracker = InputWidgetChangeTracker(self)
 
         self.ui = Ui_NV200Widget()
 
@@ -113,8 +115,6 @@ class NV200Widget(QWidget):
         ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
 
         self.set_ui_connected(False)
-
-
 
 
     @property
@@ -275,7 +275,7 @@ class NV200Widget(QWidget):
 
         InputWidgetChangeTracker.register_widget_handler(
             SvgCycleWidget, "currentIndexChanged", lambda w: w.currentIndex())
-        tracker = self.input_change_tracker = InputWidgetChangeTracker(self)
+        tracker = self.settings_widget_change_tracker = InputWidgetChangeTracker(self)
         for widget_type in InputWidgetChangeTracker.supported_widget_types():
             for widget in ui.controllerStructureWidget.findChildren(widget_type):
                 tracker.add_widget(widget)
@@ -305,6 +305,31 @@ class NV200Widget(QWidget):
         ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
         self.update_waveform_running_duration()
         self.sync_waveform_recording_duration()
+
+        tracker = self.waveform_widget_change_tracker
+        tracker.add_widget(ui.waveFormComboBox)
+        tracker.add_widget(ui.freqSpinBox)
+        tracker.add_widget(ui.phaseShiftSpinBox)
+        tracker.add_widget(ui.dutyCycleSpinBox)
+        tracker.add_widget(ui.lowLevelSpinBox)
+        tracker.add_widget(ui.highLevelSpinBox)
+
+        tracker.set_all_widgets_dirty()  # set all widgets to dirty initially
+        tracker.dirtyStateChanged.connect(self.update_waveform_run_controls)
+
+
+    def update_waveform_run_controls(self, dirty: bool = False):
+        """
+        Updates the enabled state of waveform run control buttons based on the current state of waveform widgets.
+
+        Disables the 'Start Waveform' and 'Measure Hysteresis' buttons if any waveform widget has unsaved changes.
+        Enables the buttons if all widgets are in a clean state.
+        """
+        enable = not dirty
+        ui = self.ui
+        ui.startWaveformButton.setEnabled(enable)
+        ui.measureHysteresisButton.setEnabled(enable)
+
 
 
     def init_recorder_ui(self):
@@ -536,11 +561,11 @@ class NV200Widget(QWidget):
         try:
             print("Applying scontroller parameters...")
             dev = self.device
-            dirty_widgets = self.input_change_tracker.get_dirty_widgets()
+            dirty_widgets = self.settings_widget_change_tracker.get_dirty_widgets()
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
-                await widget.applyfunc(self.input_change_tracker.get_value_of_widget(widget))
-                self.input_change_tracker.reset_widget(widget)
+                await widget.applyfunc(self.settings_widget_change_tracker.get_value_of_widget(widget))
+                self.settings_widget_change_tracker.reset_widget(widget)
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -702,7 +727,7 @@ class NV200Widget(QWidget):
         self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
         cui.monsrcComboBox.applyfunc = lambda value: dev.set_analog_monitor_source(AnalogMonitorSource(value))
         self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
-        self.input_change_tracker.reset()
+        self.settings_widget_change_tracker.reset()
         cui.spiSrcComboBox.applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
         
 
@@ -991,7 +1016,9 @@ class NV200Widget(QWidget):
             self.setCursor(Qt.CursorShape.WaitCursor)
             unit = WaveformUnit.POSITION if self.ui.closedLoopCheckBox.isChecked() else WaveformUnit.VOLTAGE
             await wg.set_waveform(waveform, unit=unit, on_progress=self.report_progress)
+
             self.status_message.emit("Waveform uploaded successfully.", 2000)
+            self.waveform_widget_change_tracker.reset()
         except Exception as e:
             self.status_message.emit(f"Error uploading waveform: {e}", 4000)
         finally:#
