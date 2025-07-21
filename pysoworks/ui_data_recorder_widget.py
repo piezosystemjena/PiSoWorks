@@ -107,7 +107,7 @@ class Ui_DataRecorderWidget(object):
 
         self.historyCheckBox = QCheckBox(self.dataRecSettingsGroupBox)
         self.historyCheckBox.setObjectName(u"historyCheckBox")
-        self.historyCheckBox.setChecked(True)
+        self.historyCheckBox.setChecked(False)
         self.historyCheckBox.setProperty(u"toggleSwitch", True)
 
         self.horizontalLayout.addWidget(self.historyCheckBox)

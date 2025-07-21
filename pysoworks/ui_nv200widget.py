@@ -538,9 +538,23 @@ class Ui_NV200Widget(object):
         self.controllerStructureWidget = Nv200ControllerWidget()
         self.controllerStructureWidget.setObjectName(u"controllerStructureWidget")
         self.stackedWidget.addWidget(self.controllerStructureWidget)
-        self.waveformPlot = DataRecorderWidget()
+        self.waveformPlots = QWidget()
+        self.waveformPlots.setObjectName(u"waveformPlots")
+        self.verticalLayout_9 = QVBoxLayout(self.waveformPlots)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.splitter_2 = QSplitter(self.waveformPlots)
+        self.splitter_2.setObjectName(u"splitter_2")
+        self.splitter_2.setOrientation(Qt.Orientation.Vertical)
+        self.waveformPlot = DataRecorderWidget(self.splitter_2)
         self.waveformPlot.setObjectName(u"waveformPlot")
-        self.stackedWidget.addWidget(self.waveformPlot)
+        self.splitter_2.addWidget(self.waveformPlot)
+        self.hysteresisPlot = MplWidget(self.splitter_2)
+        self.hysteresisPlot.setObjectName(u"hysteresisPlot")
+        self.splitter_2.addWidget(self.hysteresisPlot)
+
+        self.verticalLayout_9.addWidget(self.splitter_2)
+
+        self.stackedWidget.addWidget(self.waveformPlots)
         self.resonancePlots = QWidget()
         self.resonancePlots.setObjectName(u"resonancePlots")
         self.verticalLayout_5 = QVBoxLayout(self.resonancePlots)
@@ -600,7 +614,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(3)
         self.stackedWidget.setCurrentIndex(2)
 
 

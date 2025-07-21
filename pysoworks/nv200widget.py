@@ -2,14 +2,14 @@
 from pathlib import Path
 import asyncio
 from enum import Enum
-from typing import Any, cast, Dict, Tuple
+from typing import Any, cast, Dict, Tuple, List
 import math
 import numpy as np
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu
 from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap
-from PySide6.QtWidgets import QDoubleSpinBox, QComboBox
+from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
 import qtinter
 
 from matplotlib.backends.backend_qtagg import FigureCanvas
@@ -79,10 +79,12 @@ class NV200Widget(QWidget):
         self._analyzer : ResonanceAnalyzer | None = None
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self._initialized = False
-        self._rec_positions : DataRecorder.ChannelRecordingData
-        self._rec_voltages : DataRecorder.ChannelRecordingData
+        self._rec_chan0 : DataRecorder.ChannelRecordingData
+        self._rec_chan1 : DataRecorder.ChannelRecordingData
         self.settings_widget_change_tracker: InputWidgetChangeTracker | None = None
         self.waveform_widget_change_tracker: InputWidgetChangeTracker = InputWidgetChangeTracker(self)
+        self._last_waveform_freq_hz: float = 1.0
+        self._hysteresis_rec_cycles: int = 1  # number of recorded cycles for hysteresis measurement
 
         self.ui = Ui_NV200Widget()
 
@@ -298,7 +300,7 @@ class NV200Widget(QWidget):
         ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
         ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
-        ui.plotHysteresisButton.clicked.connect(qtinter.asyncslot(self.plot_hysteresis))
+        ui.plotHysteresisButton.clicked.connect(self.plot_hysteresis)
         ui.measureHysteresisButton.clicked.connect(qtinter.asyncslot(self.measure_hysteresis))
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
@@ -325,7 +327,8 @@ class NV200Widget(QWidget):
         Disables the 'Start Waveform' and 'Measure Hysteresis' buttons if any waveform widget has unsaved changes.
         Enables the buttons if all widgets are in a clean state.
         """
-        enable = not dirty
+        #enable = not dirty
+        enable = True  # Always enable for now
         ui = self.ui
         ui.startWaveformButton.setEnabled(enable)
         ui.measureHysteresisButton.setEnabled(enable)
@@ -845,22 +848,56 @@ class NV200Widget(QWidget):
         return rec_data0, rec_data1
 
 
-    async def plot_hysteresis(self):
+    def ask_upload_waveform(self) -> bool:
         """
-        Asynchronously plots hysteresis data by reading position and voltage data from two channels.
-        This method waits for the recorder to finish recording, reads the data, and plots it as a hysteresis curve.
-        The plot is labeled "Hysteresis" and uses a purple color for the data line.
+        Prompts the user with a dialog asking whether to upload waveform data to the device.
 
-        Emits:
-            status_message (str, int): Status updates for the UI.
+        Returns:
+            bool: True if the user chooses 'Yes' to upload the waveform, False otherwise.
         """
-        ui = self.ui
-        await self.plot_hysteresis_data(ui.waveformPlot, clear_plot=True)  
+        reply = QMessageBox.question(
+            self.parent(),
+            "Upload Waveform",
+            "Waveform data has not been uploaded to the device yet.\n\nShould it be uploaded now?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        return reply == QMessageBox.Yes
+    
+
+    async def ensure_waveform_uploaded(self) -> bool:
+        """
+        Ensures that the waveform data is uploaded to the device before proceeding with any operations.
+
+        Returns:
+            bool: True if the waveform was successfully uploaded, False if the user cancelled the upload.
+        """
+        if not self.waveform_widget_change_tracker.has_dirty_widgets():
+            return True
+
+        if self.ask_upload_waveform():
+            await self.upload_waveform()
+            return True
+        else:
+            print("Waveform upload cancelled by user.")
+            return False
 
 
     async def measure_hysteresis(self): 
+        """
+        Measures hysteresis by configuring the UI and starting the waveform generator.
+
+        - Sets the number of cycles to 3 in the UI.
+        - Selects recording sources for the waveform plot based on whether closed-loop mode is enabled:
+            - If closed-loop: records setpoint and piezo position.
+            - If open-loop: records piezo voltage and piezo position.
+        - Initiates the waveform generator asynchronously.
+        """
+        if not await self.ensure_waveform_uploaded():
+            return
+
         ui = self.ui
-        ui.cyclesSpinBox.setValue(3)  # Set cycles to 1 for hysteresis measurement
+        ui.cyclesSpinBox.setValue(3)  # Set cycles to 3 for hysteresis measurement
+        self._hysteresis_rec_cycles = ui.cyclesSpinBox.value()
         if ui.closedLoopCheckBox.isChecked():
             ui.waveformPlot.set_recording_source(0, DataRecorderSource.SETPOINT)
             ui.waveformPlot.set_recording_source(1, DataRecorderSource.PIEZO_POSITION)
@@ -868,35 +905,47 @@ class NV200Widget(QWidget):
             ui.waveformPlot.set_recording_source(0, DataRecorderSource.PIEZO_VOLTAGE)
             ui.waveformPlot.set_recording_source(1, DataRecorderSource.PIEZO_POSITION)
         await self.start_waveform_generator()
+        self.plot_hysteresis()
 
 
-
-    async def plot_hysteresis_data(self, plot_widget: MplWidget, clear_plot: bool = True):
+    def calculate_hysteresis_plot_data(self) -> Tuple[List[float], List[float]]:
         """
-        Asynchronously plots hysteresis data on the provided MplWidget.
-        This method waits for the recorder to finish recording, reads position and voltage data from two channels,
-        and plots the voltage versus position as a hysteresis curve on the given plot widget. The plot is labeled
-        "Hysteresis" and uses a purple color for the data line. Status messages are emitted before and after data
-        processing.
+        Calculates the data required for plotting a hysteresis curve based on recorded channel values.
+        If there are enough cycles recorded, it excludes the first cycle to provide a cleaner plot.
 
-        Args:
-            plot_widget (MplWidget): The widget containing the matplotlib canvas to plot on.
-            clear_plot (bool, optional): Whether to clear the existing plot before plotting new data. Defaults to True.
-
-        Emits:
-            status_message (str, int): Status updates for the UI.
+        Returns:
+            Tuple[List[float], List[float]]: A tuple containing two lists:
+                - x_values: The values from channel 0, possibly excluding the first cycle if enough cycles are present.
+                - y_values: The values from channel 1, possibly excluding the first cycle if enough cycles are present.
         """
-        plot = plot_widget.canvas
-        recorder = self.recorder
-        await recorder.wait_until_finished()
-        self.status_message.emit("Reading recorded data from device...", 0)
-        #position = await recorder.read_recorded_data_of_channel(0)
-        #plot.add_recorder_data_line(rec_data, QColor(0, 255, 0))
-        #voltage = await recorder.read_recorded_data_of_channel(1)
-        #plot.add_recorder_data_line(rec_data,  QColor('orange'))
-        if clear_plot:
-            plot.clear_plot()
-        plot.plot_data(self._rec_voltages.values, self._rec_positions.values, "Hysteresis", QColor(255, 0, 255))  # Purple color for hysteresis
+        cycles = self._last_waveform_freq_hz * (self._rec_chan0.total_time_ms / 1000.0)    
+        print(f"Plotting hysteresis data for {cycles} cycles...")
+        if cycles >= 2:
+            samples_per_cycle = int(len(self._rec_chan0.values) // cycles)
+            x_values = self._rec_chan0.values[samples_per_cycle:]
+            y_values = self._rec_chan1.values[samples_per_cycle:]
+        else:
+            x_values = self._rec_chan0.values
+            y_values = self._rec_chan1.values
+        return x_values, y_values
+
+
+    def plot_hysteresis(self):
+        """
+        Plots the hysteresis curve on the UI's hysteresis plot canvas.
+        This method clears the existing plot, calculates the hysteresis data (excluding the first cycle),
+        and plots the data with a purple color. It then resets and autoscale the axes to fit the new data.
+        Finally, it emits a status message to indicate completion.
+        Returns:
+            None
+        """
+        ui = self.ui
+        plot = ui.hysteresisPlot.canvas
+        plot.clear_plot()
+
+        # Drop the first cycle for a nice hysteresis plot
+        x_values, y_values = self.calculate_hysteresis_plot_data()
+        plot.plot_data(x_values, y_values, "Hysteresis", QColor(255, 0, 255))  # Purple color for hysteresis
 
         ax = plot.ax1
         ax.set_autoscale_on(True)       # Turns autoscale mode back on
@@ -1084,6 +1133,9 @@ class NV200Widget(QWidget):
         ui = self.ui
         rec_ui = ui.waveformPlot.ui
         try:
+            if not await self.ensure_waveform_uploaded():
+                return
+            
             wg = self.waveform_generator
             ui.mainProgressBar.start(5000, "start_waveform")
 
@@ -1099,10 +1151,13 @@ class NV200Widget(QWidget):
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)
             
-            self._rec_positions , self._rec_voltages = await self.plot_waveform_recorder_data()
+            self._rec_chan0 , self._rec_chan1 = await self.plot_waveform_recorder_data()
 
             ui.mainProgressBar.stop(success=True, context="start_waveform")
             await wg.wait_until_finished()
+            self._last_waveform_freq_hz = ui.freqSpinBox.value()
+            print("Total recording time: ", self._rec_chan0.total_time_ms)
+
         except Exception as e:
             print(f"Error starting waveform generator: {e}")
             self.status_message.emit(f"Error starting waveform generator: {e}", 4000)

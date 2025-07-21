@@ -25,7 +25,7 @@ class DataRecorderWidget(QFrame):
         ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
         ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
         ui.clearPlotButton.setIcon(get_icon("delete", size=24, fill=True))
-        ui.historyCheckBox.setChecked(True)
+        ui.historyCheckBox.setChecked(False)
         self.init_recording_source_combobox(ui.recsrc1ComboBox)
         self.init_recording_source_combobox(ui.recsrc2ComboBox)
         self.update_sampling_period()

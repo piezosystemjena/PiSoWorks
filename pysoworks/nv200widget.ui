@@ -180,7 +180,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -986,7 +986,19 @@
          </property>
          <widget class="MplWidget" name="easyModePlot"/>
          <widget class="Nv200ControllerWidget" name="controllerStructureWidget"/>
-         <widget class="DataRecorderWidget" name="waveformPlot"/>
+         <widget class="QWidget" name="waveformPlots">
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QSplitter" name="splitter_2">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <widget class="DataRecorderWidget" name="waveformPlot" native="true"/>
+             <widget class="MplWidget" name="hysteresisPlot" native="true"/>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="resonancePlots">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">
