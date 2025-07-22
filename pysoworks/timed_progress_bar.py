@@ -22,7 +22,7 @@ class TimedProgressBar(QProgressBar):
         #self.setVisible(False)  # Initially hidden
 
         self.duration = 5000  # total time to reach 100%
-        self.update_interval = 100  # how often to update
+        self.update_interval = 10  # how often to update
         self._timer = QTimer(self)
         self._timer.timeout.connect(self.update_progress)
         self._elapsed_timer = QElapsedTimer()
@@ -37,16 +37,17 @@ class TimedProgressBar(QProgressBar):
         Start the progress bar from 0. Resets any existing state.
         Starts the internal timer and begins tracking elapsed time.
         """
-        self.setMaximum(100)
         self.reset()
         self._current_value = 0
         self.setValue(0)
         #self.setVisible(True)  # Initially hidden
         self.duration = self._elapsed_times.get(context, default_duration)
+        self.setMaximum(default_duration)
 
         # Recalculate steps and increment
         self._steps = self.duration / self.update_interval
-        self._step_value = 100 / self._steps
+        self._step_value = self.maximum() / self._steps
+        print(f"Starting progress bar with duration: {self.duration} ms, steps: {self._steps}, step value: {self._step_value}")
 
         self._timer.start(self.update_interval)
         self._elapsed_timer.start()
@@ -84,37 +85,23 @@ class TimedProgressBar(QProgressBar):
         Internal slot called on each QTimer timeout.
         Increments the progress bar and stops when 100% is reached.
         """
-        self._current_value += self._step_value
-        if self._current_value >= 100:
-            self._current_value = 100
+        decay_progress_start = 0.5  # Start slowing down at 50% progress
+        step = self._step_value
+        if self._current_value >= (self.maximum() * decay_progress_start):
+            progress_ratio = self._current_value / self.maximum()
+            slowdown_factor = (1.0 - progress_ratio) / (1.0 - decay_progress_start)  # 1 at 50%, 0 at 100%
+            decay_strength = step / 70  # adjust divisor to control aggressiveness
+            step = step * (slowdown_factor ** decay_strength)
+        
+        self._current_value += step
+        if self._current_value >= self.maximum():
+            self._current_value = self.maximum()
             self.setValue(int(self._current_value))
             self._timer.stop()
             #self.setVisible(False)  # Initially hidden
         else:
             self.setValue(int(self._current_value))
 
-    def set_duration(self, duration):
-        """
-        Set a new duration for the progress bar.
-
-        Args:
-            duration (int): Total duration in milliseconds.
-        """
-        self.duration = duration
-        self._steps = self.duration / self.update_interval
-        self._step_value = 100 / self._steps
-
-    def set_update_interval(self, interval):
-        """
-        Set a new update interval for the internal timer.
-
-        Args:
-            interval (int): Update interval in milliseconds.
-        """
-        self.update_interval = interval
-        self._steps = self.duration / self.update_interval
-        self._step_value = 100 / self._steps
-        self._timer.setInterval(self.update_interval)
 
 
 # Example usage in a small application

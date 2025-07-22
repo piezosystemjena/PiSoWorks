@@ -98,8 +98,6 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.setupUi(self)
 
-        ui.mainProgressBar.set_duration(5000)
-        ui.mainProgressBar.set_update_interval(20)
         ui.tabWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
         ui.stackedWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
         ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
