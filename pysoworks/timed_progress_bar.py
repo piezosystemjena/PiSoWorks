@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QProgressBar
 from PySide6.QtCore import QTimer, QElapsedTimer
 from typing import Dict
+import math
 
 
 class TimedProgressBar(QProgressBar):
@@ -75,7 +76,6 @@ class TimedProgressBar(QProgressBar):
             if elapsed > 0:
                 self._elapsed_times[context] = elapsed
 
-        self._timer.stop()
         self._current_value = 0
         self.setValue(0)
         #self.setVisible(False)
@@ -90,8 +90,10 @@ class TimedProgressBar(QProgressBar):
         if self._current_value >= (self.maximum() * decay_progress_start):
             progress_ratio = self._current_value / self.maximum()
             slowdown_factor = (1.0 - progress_ratio) / (1.0 - decay_progress_start)  # 1 at 50%, 0 at 100%
-            decay_strength = step / 70  # adjust divisor to control aggressiveness
+            aggressiveness = 0.3  # Adjust this to control how quickly the slowdown kicks in
+            decay_strength = math.log2(step + 1)  * aggressiveness # +1 to avoid log(0)
             step = step * (slowdown_factor ** decay_strength)
+            print(f"Decaying step: {step} at progress {self._current_value} - decay_strength: {decay_strength}, slowdown_factor: {slowdown_factor}")
         
         self._current_value += step
         if self._current_value >= self.maximum():

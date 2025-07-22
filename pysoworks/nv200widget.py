@@ -463,7 +463,7 @@ class NV200Widget(QWidget):
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
        
         print("Searching...")
-        ui.mainProgressBar.start(5000, "search_devices")
+        ui.mainProgressBar.start(3000)
         try:
             print("Discovering devices...")
             devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
