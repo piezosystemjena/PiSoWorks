@@ -48,7 +48,6 @@ class TimedProgressBar(QProgressBar):
         # Recalculate steps and increment
         self._steps = self.duration / self.update_interval
         self._step_value = self.maximum() / self._steps
-        print(f"Starting progress bar with duration: {self.duration} ms, steps: {self._steps}, step value: {self._step_value}")
 
         self._timer.start(self.update_interval)
         self._elapsed_timer.start()
@@ -78,6 +77,7 @@ class TimedProgressBar(QProgressBar):
 
         self._current_value = 0
         self.setValue(0)
+        self._timer.stop()
         #self.setVisible(False)
 
     def update_progress(self):
@@ -93,7 +93,6 @@ class TimedProgressBar(QProgressBar):
             aggressiveness = 0.3  # Adjust this to control how quickly the slowdown kicks in
             decay_strength = math.log2(step + 1)  * aggressiveness # +1 to avoid log(0)
             step = step * (slowdown_factor ** decay_strength)
-            print(f"Decaying step: {step} at progress {self._current_value} - decay_strength: {decay_strength}, slowdown_factor: {slowdown_factor}")
         
         self._current_value += step
         if self._current_value >= self.maximum():

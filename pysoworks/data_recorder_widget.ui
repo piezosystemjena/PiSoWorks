@@ -47,35 +47,6 @@
       <item row="0" column="1">
        <widget class="QComboBox" name="recsrc1ComboBox"/>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="channel1Label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Channel 1:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Policy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="1" column="3">
        <widget class="QDoubleSpinBox" name="samplePeriodSpinBox">
         <property name="sizePolicy">
@@ -98,74 +69,21 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QCheckBox" name="historyCheckBox">
-        <property name="text">
-         <string/>
+      <item row="0" column="4">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
-        <property name="checked">
-         <bool>false</bool>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Expanding</enum>
         </property>
-        <property name="toggleSwitch" stdset="0">
-         <bool>true</bool>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="samplingPeriodLabel">
-        <property name="styleSheet">
-         <string notr="true">margin-left: 6px</string>
-        </property>
-        <property name="text">
-         <string>Sampling Period</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="channekl2Label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Channel 2:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5" colspan="3">
-       <widget class="QPushButton" name="clearPlotButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Clear Plot</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="recDurationLabel">
-        <property name="styleSheet">
-         <string notr="true">margin-left: 6px</string>
-        </property>
-        <property name="text">
-         <string>Duration:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QLabel" name="historyLabel">
-        <property name="text">
-         <string>Keep History</string>
-        </property>
-       </widget>
+       </spacer>
       </item>
       <item row="0" column="3">
        <widget class="QSpinBox" name="recDurationSpinBox">
@@ -186,8 +104,57 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="recDurationLabel">
+        <property name="styleSheet">
+         <string notr="true">margin-left: 6px</string>
+        </property>
+        <property name="text">
+         <string>Duration:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="channel1Label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Channel 1:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="channekl2Label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>Channel 2:</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="recsrc2ComboBox"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="samplingPeriodLabel">
+        <property name="styleSheet">
+         <string notr="true">margin-left: 6px</string>
+        </property>
+        <property name="text">
+         <string>Sampling Period</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

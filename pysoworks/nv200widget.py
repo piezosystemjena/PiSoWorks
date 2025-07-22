@@ -337,8 +337,7 @@ class NV200Widget(QWidget):
         """
         Initializes the data recorder UI components for recording and plotting data.
         """
-        ui = self.ui.waveformPlot.ui
-        ui.clearPlotButton.clicked.connect(self.clear_waveform_plot)
+        self.ui.waveformPlot.clear_plot_action.triggered.connect(self.clear_waveform_plot)
 
 
     def init_resonance_ui(self):
@@ -1116,7 +1115,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         rec_ui = ui.waveformPlot.ui
         plot = ui.waveformPlot.ui.mplWidget.canvas
-        if rec_ui.historyCheckBox.isChecked():
+        if ui.waveformPlot.history_checkbox.isChecked():
             for i in range(1, plot.get_line_count()):
                 self.fade_plot_line(i)
         else:
@@ -1145,6 +1144,8 @@ class NV200Widget(QWidget):
             await recorder.start_recording()
 
             ui.startWaveformButton.setEnabled(False)
+            # Ensure that the right PID mode is set in case somene changed it externally
+            await self.device.pid.set_mode(PidLoopMode.CLOSED_LOOP if ui.closedLoopCheckBox.isChecked() else PidLoopMode.OPEN_LOOP)
             await wg.start(cycles=self.ui.cyclesSpinBox.value())
             print("Waveform generator started successfully.")
             self.status_message.emit("Waveform generator started successfully.", 2000)

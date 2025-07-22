@@ -180,7 +180,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -211,7 +211,7 @@
                     <item>
                      <widget class="QCheckBox" name="closedLoopCheckBox">
                       <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Open Loop&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Toggles between open loop (OL) and closed loop (CL) mode. In open loop mode the PID-controller is bridged and the command input directly controls the amplifier. The resulting piezo stroke then depends on the characteristic of the piezo actuator and is affected by piezo-typical creeping and hysteresis behavior.&lt;/p&gt;&lt;p&gt;In closed loop mode (CL), these effects will be compensated by the digital loop controller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Open Loop / Closed Loop&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Toggles between open loop (OL) and closed loop (CL) mode. In open loop mode the PID-controller is bridged and the command input directly controls the amplifier. The resulting piezo stroke then depends on the characteristic of the piezo actuator and is affected by piezo-typical creeping and hysteresis behavior.&lt;/p&gt;&lt;p&gt;In closed loop mode (CL), these effects will be compensated by the digital loop controller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                       <property name="text">
                        <string>Open Loop</string>
@@ -257,6 +257,9 @@
                           <verstretch>0</verstretch>
                          </sizepolicy>
                         </property>
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Setpoint 2&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The second setpoint. Depending on the Open Loop / Closed Loop switch this value is given as voltage (Open Loop) or as position in µm or mrad (Closed Loop).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
                         <property name="alignment">
                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                         </property>
@@ -291,6 +294,9 @@
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Setpoint 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The first setpoint. Depending on the Open Loop / Closed Loop switch this value is given as voltage (Open Loop) or as position in µm or mrad (Closed Loop).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -373,7 +379,7 @@
                  <item>
                   <widget class="QPushButton" name="retrieveButton">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Retrieve Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Read the current parameters from the device and update the local view.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Retrieve Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Read the current parameters from the device and update the local view in case you modified the parameters from outside or via a terminal program.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
                     <string>Retrieve Parameters</string>
@@ -383,10 +389,10 @@
                  <item>
                   <widget class="QPushButton" name="restoreButton">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Restore Default Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Reset the device parameters to their previous values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Restore Initial Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Reset the device parameters to their previous values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string>Restore Default Parameters</string>
+                    <string>Restore Initial Parameters</string>
                    </property>
                   </widget>
                  </item>
@@ -988,6 +994,18 @@
          <widget class="Nv200ControllerWidget" name="controllerStructureWidget"/>
          <widget class="QWidget" name="waveformPlots">
           <layout class="QVBoxLayout" name="verticalLayout_9">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QSplitter" name="splitter_2">
              <property name="orientation">

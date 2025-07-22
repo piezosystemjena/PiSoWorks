@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QComboBox,
-    QDoubleSpinBox, QFrame, QGridLayout, QGroupBox,
-    QLabel, QLayout, QPushButton, QSizePolicy,
-    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
+    QFrame, QGridLayout, QGroupBox, QLabel,
+    QLayout, QSizePolicy, QSpacerItem, QSpinBox,
+    QVBoxLayout, QWidget)
 
 from pysoworks.mplcanvas import MplWidget
 
@@ -46,20 +46,6 @@ class Ui_DataRecorderWidget(object):
 
         self.gridLayout.addWidget(self.recsrc1ComboBox, 0, 1, 1, 1)
 
-        self.channel1Label = QLabel(self.dataRecSettingsGroupBox)
-        self.channel1Label.setObjectName(u"channel1Label")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.channel1Label.sizePolicy().hasHeightForWidth())
-        self.channel1Label.setSizePolicy(sizePolicy1)
-
-        self.gridLayout.addWidget(self.channel1Label, 0, 0, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer, 0, 4, 1, 1)
-
         self.samplePeriodSpinBox = QDoubleSpinBox(self.dataRecSettingsGroupBox)
         self.samplePeriodSpinBox.setObjectName(u"samplePeriodSpinBox")
         sizePolicy.setHeightForWidth(self.samplePeriodSpinBox.sizePolicy().hasHeightForWidth())
@@ -70,44 +56,9 @@ class Ui_DataRecorderWidget(object):
 
         self.gridLayout.addWidget(self.samplePeriodSpinBox, 1, 3, 1, 1)
 
-        self.historyCheckBox = QCheckBox(self.dataRecSettingsGroupBox)
-        self.historyCheckBox.setObjectName(u"historyCheckBox")
-        self.historyCheckBox.setChecked(False)
-        self.historyCheckBox.setProperty(u"toggleSwitch", True)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addWidget(self.historyCheckBox, 0, 6, 1, 1)
-
-        self.samplingPeriodLabel = QLabel(self.dataRecSettingsGroupBox)
-        self.samplingPeriodLabel.setObjectName(u"samplingPeriodLabel")
-        self.samplingPeriodLabel.setStyleSheet(u"margin-left: 6px")
-
-        self.gridLayout.addWidget(self.samplingPeriodLabel, 1, 2, 1, 1)
-
-        self.channekl2Label = QLabel(self.dataRecSettingsGroupBox)
-        self.channekl2Label.setObjectName(u"channekl2Label")
-        sizePolicy1.setHeightForWidth(self.channekl2Label.sizePolicy().hasHeightForWidth())
-        self.channekl2Label.setSizePolicy(sizePolicy1)
-        self.channekl2Label.setStyleSheet(u"")
-
-        self.gridLayout.addWidget(self.channekl2Label, 1, 0, 1, 1)
-
-        self.clearPlotButton = QPushButton(self.dataRecSettingsGroupBox)
-        self.clearPlotButton.setObjectName(u"clearPlotButton")
-        sizePolicy.setHeightForWidth(self.clearPlotButton.sizePolicy().hasHeightForWidth())
-        self.clearPlotButton.setSizePolicy(sizePolicy)
-
-        self.gridLayout.addWidget(self.clearPlotButton, 1, 5, 1, 3)
-
-        self.recDurationLabel = QLabel(self.dataRecSettingsGroupBox)
-        self.recDurationLabel.setObjectName(u"recDurationLabel")
-        self.recDurationLabel.setStyleSheet(u"margin-left: 6px")
-
-        self.gridLayout.addWidget(self.recDurationLabel, 0, 2, 1, 1)
-
-        self.historyLabel = QLabel(self.dataRecSettingsGroupBox)
-        self.historyLabel.setObjectName(u"historyLabel")
-
-        self.gridLayout.addWidget(self.historyLabel, 0, 5, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer, 0, 4, 1, 1)
 
         self.recDurationSpinBox = QSpinBox(self.dataRecSettingsGroupBox)
         self.recDurationSpinBox.setObjectName(u"recDurationSpinBox")
@@ -118,10 +69,40 @@ class Ui_DataRecorderWidget(object):
 
         self.gridLayout.addWidget(self.recDurationSpinBox, 0, 3, 1, 1)
 
+        self.recDurationLabel = QLabel(self.dataRecSettingsGroupBox)
+        self.recDurationLabel.setObjectName(u"recDurationLabel")
+        self.recDurationLabel.setStyleSheet(u"margin-left: 6px")
+
+        self.gridLayout.addWidget(self.recDurationLabel, 0, 2, 1, 1)
+
+        self.channel1Label = QLabel(self.dataRecSettingsGroupBox)
+        self.channel1Label.setObjectName(u"channel1Label")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.channel1Label.sizePolicy().hasHeightForWidth())
+        self.channel1Label.setSizePolicy(sizePolicy1)
+
+        self.gridLayout.addWidget(self.channel1Label, 0, 0, 1, 1)
+
+        self.channekl2Label = QLabel(self.dataRecSettingsGroupBox)
+        self.channekl2Label.setObjectName(u"channekl2Label")
+        sizePolicy1.setHeightForWidth(self.channekl2Label.sizePolicy().hasHeightForWidth())
+        self.channekl2Label.setSizePolicy(sizePolicy1)
+        self.channekl2Label.setStyleSheet(u"")
+
+        self.gridLayout.addWidget(self.channekl2Label, 1, 0, 1, 1)
+
         self.recsrc2ComboBox = QComboBox(self.dataRecSettingsGroupBox)
         self.recsrc2ComboBox.setObjectName(u"recsrc2ComboBox")
 
         self.gridLayout.addWidget(self.recsrc2ComboBox, 1, 1, 1, 1)
+
+        self.samplingPeriodLabel = QLabel(self.dataRecSettingsGroupBox)
+        self.samplingPeriodLabel.setObjectName(u"samplingPeriodLabel")
+        self.samplingPeriodLabel.setStyleSheet(u"margin-left: 6px")
+
+        self.gridLayout.addWidget(self.samplingPeriodLabel, 1, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.dataRecSettingsGroupBox)
@@ -146,14 +127,11 @@ class Ui_DataRecorderWidget(object):
     def retranslateUi(self, DataRecorderWidget):
         DataRecorderWidget.setWindowTitle(QCoreApplication.translate("DataRecorderWidget", u"Frame", None))
         self.dataRecSettingsGroupBox.setTitle(QCoreApplication.translate("DataRecorderWidget", u"Data Recorder", None))
-        self.channel1Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 1:", None))
         self.samplePeriodSpinBox.setSuffix(QCoreApplication.translate("DataRecorderWidget", u" ms", None))
-        self.historyCheckBox.setText("")
-        self.samplingPeriodLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Sampling Period", None))
-        self.channekl2Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 2:", None))
-        self.clearPlotButton.setText(QCoreApplication.translate("DataRecorderWidget", u"Clear Plot", None))
-        self.recDurationLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Duration:", None))
-        self.historyLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Keep History", None))
         self.recDurationSpinBox.setSuffix(QCoreApplication.translate("DataRecorderWidget", u" ms", None))
+        self.recDurationLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Duration:", None))
+        self.channel1Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 1:", None))
+        self.channekl2Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 2:", None))
+        self.samplingPeriodLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Sampling Period", None))
     # retranslateUi
 

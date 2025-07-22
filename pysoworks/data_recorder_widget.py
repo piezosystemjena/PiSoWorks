@@ -1,11 +1,9 @@
-from PySide6.QtWidgets import QFrame, QComboBox
+from PySide6.QtWidgets import QFrame, QComboBox, QCheckBox
+from PySide6.QtGui import QAction, QPalette
 
 from nv200.data_recorder import DataRecorder, DataRecorderSource
 
 from pysoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
-from pysoworks.mplcanvas import MplCanvas
-from pysoworks.mplcanvas import NavigationToolbar2QT
-from pysoworks.mplcanvas import MplWidget
 from pysoworks.ui_helpers import get_icon, set_combobox_value
 
 
@@ -22,10 +20,19 @@ class DataRecorderWidget(QFrame):
         ui.mplWidget.setStyleSheet("") # clear designer stylesheet
         self.canvas = ui.mplWidget.canvas # forward the canvas object
 
+        ui.mplWidget.add_toolbar_separator()
+        self.clear_plot_action = a = QAction("Clear Plot", parent=self, icon=get_icon("delete", size=24, fill=False, color=QPalette.ColorRole.WindowText))
+        ui.mplWidget.add_toolbar_action(a)
+
+        cb = self.history_checkbox = QCheckBox("Keep History", self)
+        cb.setObjectName("historyCheckBox")
+        cb.setProperty("toggleSwitch", True)
+        cb.setStyleSheet("QCheckBox#historyCheckBox { margin-left: 10px; }")
+        ui.mplWidget.toolbar.addWidget(cb)
+        cb.setChecked(False)
+
         ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
         ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
-        ui.clearPlotButton.setIcon(get_icon("delete", size=24, fill=True))
-        ui.historyCheckBox.setChecked(False)
         self.init_recording_source_combobox(ui.recsrc1ComboBox)
         self.init_recording_source_combobox(ui.recsrc2ComboBox)
         self.update_sampling_period()

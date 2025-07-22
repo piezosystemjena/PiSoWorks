@@ -4,12 +4,14 @@ from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib.colors import to_rgba
 from matplotlib.axes import Axes
+from matplotlib.backend_tools import ToolBase, ToolToggleBase
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from nv200.data_recorder import DataRecorder
 from qt_material_icons import MaterialIcon
+from pysoworks.ui_helpers import get_icon
 
 
 class MplCanvas(FigureCanvas):
@@ -261,10 +263,29 @@ class MplCanvas(FigureCanvas):
 
 
 class LightIconToolbar(NavigationToolbar2QT):
+    """
+    A customized Matplotlib navigation toolbar for Qt applications with light-themed icons.
+    This toolbar extends the default NavigationToolbar2QT to provide:
+    - Custom icons for standard navigation actions (home, back, forward, pan, zoom, save, etc.)
+    - A custom "Clear Plot" action with its own icon.
+    - Icon initialization on first show event to ensure proper styling.
+    """
     _icons_initialized : bool = False
 
     def __init__(self, canvas, parent):
         super().__init__(canvas, parent)
+
+
+    def add_custom_action(self, action: QAction, index : int = -1):
+        """
+        Adds a custom action to the toolbar at the specified index.
+        
+        Args:
+            index (int): The position to insert the action. Defaults to -1 (end of the toolbar).
+            action (QAction): The action to add. If None, a default action is created.
+        """
+        self.insertAction(self.actions()[index], action)
+            
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -287,10 +308,8 @@ class LightIconToolbar(NavigationToolbar2QT):
         for action_name, icon_path in icon_paths.items():
             action = self._actions.get(action_name)
             if action:
-                icon = MaterialIcon(icon_path, size=24)
-                icon.set_color(self.palette().color(QPalette.ColorRole.WindowText))
+                icon = get_icon(icon_path, size=24, fill=False, color=QPalette.ColorRole.WindowText)
                 action.setIcon(icon)
-
 
 
 class MplWidget(QWidget):
@@ -308,6 +327,24 @@ class MplWidget(QWidget):
         self.vbl.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.vbl)
         self.setContentsMargins(0, 0, 0, 0)
+
+
+    def add_toolbar_action(self, action: QAction):
+        """
+        Adds a custom action to the toolbar.
+        
+        Args:
+            action (QAction): The action to add to the toolbar.
+        """
+        self.toolbar.add_custom_action(action)
+
+    def add_toolbar_separator(self):
+        """
+        Adds a separator to the toolbar.
+        """
+        action = QAction(self)
+        action.setSeparator(True)
+        self.toolbar.add_custom_action(action)
 
 
     
