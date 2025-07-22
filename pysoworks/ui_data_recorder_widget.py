@@ -127,11 +127,23 @@ class Ui_DataRecorderWidget(object):
     def retranslateUi(self, DataRecorderWidget):
         DataRecorderWidget.setWindowTitle(QCoreApplication.translate("DataRecorderWidget", u"Frame", None))
         self.dataRecSettingsGroupBox.setTitle(QCoreApplication.translate("DataRecorderWidget", u"Data Recorder", None))
+#if QT_CONFIG(tooltip)
+        self.recsrc1ComboBox.setToolTip(QCoreApplication.translate("DataRecorderWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Recorder Channel 1</span></p><p>Choose the source for high-frequency data (up to 20 kHz) recorded by device channel 1.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.samplePeriodSpinBox.setToolTip(QCoreApplication.translate("DataRecorderWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Sampling Period</span></p><p>Calculated based on the total recording duration and available memory.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.samplePeriodSpinBox.setSuffix(QCoreApplication.translate("DataRecorderWidget", u" ms", None))
+#if QT_CONFIG(tooltip)
+        self.recDurationSpinBox.setToolTip(QCoreApplication.translate("DataRecorderWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Recording Duration</span></p><p>Set the total duration for the internal data recorder. Longer durations result in lower sampling frequencies due to memory limits.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.recDurationSpinBox.setSuffix(QCoreApplication.translate("DataRecorderWidget", u" ms", None))
         self.recDurationLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Duration:", None))
         self.channel1Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 1:", None))
         self.channekl2Label.setText(QCoreApplication.translate("DataRecorderWidget", u"Channel 2:", None))
+#if QT_CONFIG(tooltip)
+        self.recsrc2ComboBox.setToolTip(QCoreApplication.translate("DataRecorderWidget", u"<html><head/><body><p><span style=\" font-weight:700;\">Recorder Channel 2</span></p><p>Choose the source for high-frequency data (up to 20 kHz) recorded by device channel 2.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.samplingPeriodLabel.setText(QCoreApplication.translate("DataRecorderWidget", u"Sampling Period", None))
     # retranslateUi
 

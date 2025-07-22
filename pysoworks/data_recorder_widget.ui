@@ -45,7 +45,11 @@
        <number>9</number>
       </property>
       <item row="0" column="1">
-       <widget class="QComboBox" name="recsrc1ComboBox"/>
+       <widget class="QComboBox" name="recsrc1ComboBox">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Recorder Channel 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Choose the source for high-frequency data (up to 20 kHz) recorded by device channel 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="3">
        <widget class="QDoubleSpinBox" name="samplePeriodSpinBox">
@@ -54,6 +58,9 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Sampling Period&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Calculated based on the total recording duration and available memory.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -92,6 +99,9 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Recording Duration&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Set the total duration for the internal data recorder. Longer durations result in lower sampling frequencies due to memory limits.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="suffix">
          <string> ms</string>
@@ -144,7 +154,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="recsrc2ComboBox"/>
+       <widget class="QComboBox" name="recsrc2ComboBox">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Recorder Channel 2&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Choose the source for high-frequency data (up to 20 kHz) recorded by device channel 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="2">
        <widget class="QLabel" name="samplingPeriodLabel">

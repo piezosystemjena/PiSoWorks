@@ -710,9 +710,9 @@ class NV200Widget(QWidget):
         cui.modsrcToggleWidget.setCurrentIndex(modsrc.value)
         cui.modsrcToggleWidget.applyfunc = lambda value: dev.set_modulation_source(ModulationSource(value))
 
-        self.set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
+        set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
         cui.monsrcComboBox.applyfunc = lambda value: dev.set_analog_monitor_source(AnalogMonitorSource(value))
-        self.set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
+        set_combobox_index_by_value(cui.spiSrcComboBox, await dev.get_spi_monitor_source())
         self.settings_widget_change_tracker.reset()
         cui.spiSrcComboBox.applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
         
