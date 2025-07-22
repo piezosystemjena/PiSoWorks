@@ -4,7 +4,7 @@ from PySide6.QtGui import QAction, QPalette
 from nv200.data_recorder import DataRecorder, DataRecorderSource
 
 from pysoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
-from pysoworks.ui_helpers import get_icon, set_combobox_value
+from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
 
 
 class DataRecorderWidget(QFrame):
@@ -33,12 +33,12 @@ class DataRecorderWidget(QFrame):
 
         ui.recDurationSpinBox.valueChanged.connect(self.update_sampling_period)
         ui.recDurationSpinBox.setValue(self.DEFAULT_RECORDING_DURATION_MS)
-        self.init_recording_source_combobox(ui.recsrc1ComboBox)
-        self.init_recording_source_combobox(ui.recsrc2ComboBox)
+        self.init_recording_source_combobox(ui.recsrc1ComboBox, DataRecorderSource.PIEZO_VOLTAGE)
+        self.init_recording_source_combobox(ui.recsrc2ComboBox, DataRecorderSource.PIEZO_POSITION)
         self.update_sampling_period()
 
     
-    def init_recording_source_combobox(self, cb : QComboBox):
+    def init_recording_source_combobox(self, cb : QComboBox, default_value : DataRecorderSource):
         """
         Initializes the recording source combobox with available data sources.
         
@@ -48,6 +48,7 @@ class DataRecorderWidget(QFrame):
         cb.clear()
         for source in DataRecorderSource:
             cb.addItem(str(source), source)
+        set_combobox_index_by_value(cb, default_value)
 
         
     def update_sampling_period(self):
@@ -91,5 +92,5 @@ class DataRecorderWidget(QFrame):
             channel (int): The channel number (1 or 2).
             source (DataRecorderSource): The recording source to set.
         """
-        set_combobox_value(self.recsrc_combo_boxes[channel], source)
+        set_combobox_index_by_value(self.recsrc_combo_boxes[channel], source)
 

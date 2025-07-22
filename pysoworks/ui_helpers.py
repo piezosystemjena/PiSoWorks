@@ -20,7 +20,7 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
     return icon
 
 
-def set_combobox_value(combo: QComboBox, value: Any) -> None:
+def set_combobox_index_by_value(combo: QComboBox, value: Any) -> None:
     """
     Sets the current index of the QComboBox to the item with the given userData value.
 

@@ -37,7 +37,7 @@ from nv200.analysis import ResonanceAnalyzer
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon
+from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
 
 
 # Important:
@@ -410,21 +410,6 @@ class NV200Widget(QWidget):
         self.ui.dutyCycleSpinBox.setVisible(visible)
         self.update_waveform_plot()
 
-  
-    def set_combobox_index_by_value(self, combobox: QComboBox, value: Any) -> None:
-        """
-        Sets the current index of a QComboBox based on the given userData value.
-
-        :param combobox: The QComboBox to modify.
-        :param value: The value to match against the item userData.
-        """
-        index = combobox.findData(value)
-        if index != -1:
-            combobox.setCurrentIndex(index)
-        else:
-            # Optional: Log or raise if not found
-            print(f"Warning: Value {value} not found in combobox.")
-
 
     async def search_all_devices(self):
         """
@@ -433,6 +418,7 @@ class NV200Widget(QWidget):
         """
         self._discover_flags = DiscoverFlags.ALL
         await self.search_devices()
+
 
     async def search_serial_devices(self):
         """
@@ -807,14 +793,14 @@ class NV200Widget(QWidget):
         dev = self.device
         recorder = self.recorder
         if recsrc0 is None:
+            recsrc0 = DataRecorderSource.PIEZO_VOLTAGE
+        if recsrc1 is None:
             pos_sensor_type = await dev.get_actuator_sensor_type()
             if pos_sensor_type is PostionSensorType.NONE:
-                recsrc0 = DataRecorderSource.SETPOINT
+                recsrc1 = DataRecorderSource.SETPOINT
             else:
-                recsrc0 = DataRecorderSource.PIEZO_POSITION
-        if recsrc1 is None:
-            recsrc1 = DataRecorderSource.PIEZO_VOLTAGE
-
+                recsrc1 = DataRecorderSource.PIEZO_POSITION
+ 
         await recorder.set_data_source(0, recsrc0)
         await recorder.set_data_source(1, recsrc1)
         await recorder.set_recording_duration_ms(duration_ms)
@@ -838,9 +824,9 @@ class NV200Widget(QWidget):
         rec_data0 = await recorder.read_recorded_data_of_channel(0)
         if clear_plot:
             plot.clear_plot()
-        plot.add_recorder_data_line(rec_data0, QColor(0, 255, 0), 0)
+        plot.add_recorder_data_line(rec_data0, QColor('orange'), 0)
         rec_data1 = await recorder.read_recorded_data_of_channel(1)
-        plot.add_recorder_data_line(rec_data1,  QColor('orange'), second_axes_index)
+        plot.add_recorder_data_line(rec_data1, QColor(0, 255, 0), second_axes_index)
         self.status_message.emit("", 0)
         return rec_data0, rec_data1
 
