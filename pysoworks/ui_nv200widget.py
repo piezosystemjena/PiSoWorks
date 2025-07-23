@@ -100,7 +100,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 668))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 249, 668))
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
@@ -263,7 +263,7 @@ class Ui_NV200Widget(object):
         sizePolicy5.setHeightForWidth(self.freqSpinBox.sizePolicy().hasHeightForWidth())
         self.freqSpinBox.setSizePolicy(sizePolicy5)
         self.freqSpinBox.setMinimum(0.010000000000000)
-        self.freqSpinBox.setMaximum(100.000000000000000)
+        self.freqSpinBox.setMaximum(100000.000000000000000)
         self.freqSpinBox.setValue(20.000000000000000)
 
         self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.freqSpinBox)
@@ -615,7 +615,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         self.stackedWidget.setCurrentIndex(2)
 
 

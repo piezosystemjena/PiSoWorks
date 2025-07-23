@@ -136,7 +136,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>248</width>
+              <width>249</width>
               <height>668</height>
              </rect>
             </property>
@@ -180,7 +180,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -501,7 +501,7 @@
                        <double>0.010000000000000</double>
                       </property>
                       <property name="maximum">
-                       <double>100.000000000000000</double>
+                       <double>100000.000000000000000</double>
                       </property>
                       <property name="value">
                        <double>20.000000000000000</double>

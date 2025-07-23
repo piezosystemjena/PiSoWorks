@@ -84,9 +84,38 @@ class MplCanvas(FigureCanvas):
 
 
     def resizeEvent(self, event):
+        """
+        Handles the widget's resize event.
+
+        Calls the parent class's resizeEvent to ensure default behavior,
+        then updates the layout to maintain proper spacing and appearance
+        after the widget has been resized.
+
+        Args:
+            event (QResizeEvent): The resize event containing the new size information.
+        """
         super().resizeEvent(event)
+        self.update_layout()  # Update layout on resize to ensure proper spacing
+
+
+    def update_layout(self):
+        """
+        Updates the layout of the figure to ensure proper spacing and alignment.
+        This method is useful after adding or modifying elements in the figure.
+        """
         self._fig.tight_layout()
         self.draw()
+
+
+    def set_plot_title(self, title: str):
+        """
+        Sets the title of the plot.
+
+        Args:
+            title (str): The title to set for the plot.
+        """
+        self.ax1.set_title(title)  # Set title with dark gray color
+        self.update_layout
 
 
     def plot_recorder_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange'), axis : int = 0):
@@ -151,7 +180,6 @@ class MplCanvas(FigureCanvas):
 
         # Redraw the canvas
         self.draw()
-
    
     def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float], axis : int = 0):
         """
@@ -259,6 +287,8 @@ class MplCanvas(FigureCanvas):
         """
         self.remove_all_axes_lines(0)
         self.remove_all_axes_lines(1)
+
+
 
 
 

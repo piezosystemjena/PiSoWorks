@@ -38,6 +38,7 @@ from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
 from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
+from pysoworks.data_recorder_widget import DataRecorderWidget, Ui_DataRecorderWidget
 
 
 # Important:
@@ -316,6 +317,18 @@ class NV200Widget(QWidget):
 
         tracker.set_all_widgets_dirty()  # set all widgets to dirty initially
         tracker.dirtyStateChanged.connect(self.update_waveform_run_controls)
+
+        #setup waveform plot
+        plot = ui.waveformPlot.canvas
+        plot.set_plot_title("Data Recorder")
+
+        # setup hysteresis plot
+        plot = ui.hysteresisPlot.canvas
+        ax = plot.ax1
+        rec_ui = ui.waveformPlot.ui
+        ax.set_xlabel(rec_ui.recsrc1ComboBox.currentData())
+        ax.set_ylabel(rec_ui.recsrc2ComboBox.currentData())
+        plot.set_plot_title("Hysteresis")
 
 
     def update_waveform_run_controls(self, dirty: bool = False):
@@ -924,20 +937,18 @@ class NV200Widget(QWidget):
         """
         ui = self.ui
         plot = ui.hysteresisPlot.canvas
+        ax = plot.ax1
+        rec_ui = ui.waveformPlot.ui
+        ax.set_xlabel(rec_ui.recsrc1ComboBox.currentData())
+        ax.set_ylabel(rec_ui.recsrc2ComboBox.currentData())
+        ax.set_title("Hysteresis")
         plot.clear_plot()
+    
 
         # Drop the first cycle for a nice hysteresis plot
         x_values, y_values = self.calculate_hysteresis_plot_data()
         plot.plot_data(x_values, y_values, "Hysteresis", QColor(255, 0, 255))  # Purple color for hysteresis
-
-        ax = plot.ax1
-        ax.set_autoscale_on(True)       # Turns autoscale mode back on
-        ax.set_xlim(auto=True)          # Reset x-axis limits
-        ax.set_ylim(auto=True)          # Reset y-axis limits
-
-        # Autoscale the axes after plotting the data
-        ax.relim()
-        ax.autoscale_view()
+        plot.update_layout()
 
         self.status_message.emit("", 0)
 
