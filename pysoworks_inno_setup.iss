@@ -13,7 +13,7 @@ SolidCompression=yes
 PrivilegesRequired=lowest
 ArchitecturesInstallIn64BitMode=x64
 UninstallDisplayIcon={app}\PySoWorks.exe
-SetupIconFile={app}\PySoWorks.exe
+SetupIconFile=pysoworks\assets\app_icon.ico
 WizardStyle=modern
 
 [Files]
