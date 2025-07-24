@@ -16,7 +16,7 @@ from pysoworks.ui_helpers import get_icon
 
 class MplCanvas(FigureCanvas):
     '''
-    Class to represent the FigureCanvas widget
+    Class to represent the FigureCanvas widget for integration of Matplotlib with Qt.
     '''
     _fig: Figure = None
 
@@ -179,7 +179,7 @@ class MplCanvas(FigureCanvas):
         )
 
         # Redraw the canvas
-        self.draw()
+        self.update_layout()
    
     def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float], axis : int = 0):
         """
