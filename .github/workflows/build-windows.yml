@@ -58,5 +58,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/PySoWorks.exe
+          name: PySoWorks-${{ github.ref_name }}.exe
 
     
