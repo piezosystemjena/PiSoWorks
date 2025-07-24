@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PySoWorks_Setup.exe
-          path: Output/PySoWorks_Setup.exe
+          path: dist/PySoWorks_Setup.exe
 
       - name: Upload to GitHub Release (if applicable)
         if: github.event_name == 'release'
