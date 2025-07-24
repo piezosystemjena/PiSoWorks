@@ -65,7 +65,7 @@ class Ui_DataRecorderWidget(object):
         sizePolicy.setHeightForWidth(self.recDurationSpinBox.sizePolicy().hasHeightForWidth())
         self.recDurationSpinBox.setSizePolicy(sizePolicy)
         self.recDurationSpinBox.setMinimum(1)
-        self.recDurationSpinBox.setMaximum(5000)
+        self.recDurationSpinBox.setMaximum(16777215)
 
         self.gridLayout.addWidget(self.recDurationSpinBox, 0, 3, 1, 1)
 

@@ -13,6 +13,7 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
     QStandardPaths,
+    QLocale
 )
 from PySide6.QtGui import QIcon, QGuiApplication
 
@@ -158,6 +159,7 @@ def main():
     """
     Initializes and runs the main application window.
     """
+    QLocale.setDefault(QLocale(QLocale.English, QLocale.UnitedStates))
     setup_logging()
     QGuiApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
     QGuiApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
