@@ -57,12 +57,14 @@ jobs:
           name: PySoWorks.exe
           path: dist/PySoWorks.exe
 
+      - name: Rename executable
+        run: mv dist/PySoWorks.exe dist/PySoWorks_${{ github.ref_name }}.exe
+
       - name: Upload to GitHub Release (if applicable)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PySoWorks.exe
-          name: PySoWorks-${{ github.ref_name }}.exe
+          files: dist/PySoWorks_${{ github.ref_name }}.exe
 
 
   build-installer:
@@ -95,4 +97,4 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PySoWorks_Setup.exe
+          files: dist/PySoWorks_Setup_${{ github.ref_name }}.exe
