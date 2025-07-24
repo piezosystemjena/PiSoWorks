@@ -1,3 +1,4 @@
+from xml.sax import handler
 from PySide6.QtWidgets import (
     QWidget,
     QSpinBox,
@@ -31,18 +32,38 @@ class InputWidgetChangeTracker(QObject):
     dirtyStateChanged: Signal = Signal(bool)
     """Signal emitted when the dirty state changes."""
 
-    widget_handlers: Dict[Type[QWidget], Tuple[str, Callable[[QWidget], Any]]] = {
-        QDoubleSpinBox: ("valueChanged", lambda w: w.value()),
-        QSpinBox: ("valueChanged", lambda w: w.value()),
-        QCheckBox: ("stateChanged", lambda w: w.isChecked()),
-        QComboBox: ("currentIndexChanged", lambda w: w.currentIndex()),
+    widget_handlers: Dict[
+        Type[QWidget],
+        Tuple[str, Callable[[QWidget], Any], Callable[[QWidget, Any], None]],
+    ] = {
+        QDoubleSpinBox: (
+            "valueChanged",
+            lambda w: w.value(),
+            lambda w, v: w.setValue(v),
+        ),
+        QSpinBox: (
+            "valueChanged",
+            lambda w: w.value(),
+            lambda w, v: w.setValue(v),
+        ),
+        QCheckBox: (
+            "stateChanged",
+            lambda w: w.isChecked(),
+            lambda w, v: w.setChecked(v),
+        ),
+        QComboBox: (
+            "currentIndexChanged",
+            lambda w: w.currentIndex(),
+            lambda w, v: w.setCurrentIndex(v),
+        ),
     }
 
     @classmethod
     def register_widget_handler(cls,
         widget_type: Type[QWidget],
         signal_name: str,
-        value_getter: Callable[[QWidget], Any]
+        value_getter: Callable[[QWidget], Any],
+        value_setter: Callable[[QWidget, Any], None]
     ) -> None:
         """
         Register a custom widget type with its signal and value getter.
@@ -52,7 +73,7 @@ class InputWidgetChangeTracker(QObject):
             signal_name: Name of the signal to connect (e.g. 'valueChanged').
             value_getter: Function that returns the widget's current value.
         """
-        cls.widget_handlers[widget_type] = (signal_name, value_getter)
+        cls.widget_handlers[widget_type] = (signal_name, value_getter, value_setter)
 
 
     @classmethod
@@ -68,6 +89,7 @@ class InputWidgetChangeTracker(QObject):
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self.initial_values: Dict[QWidget, Any] = {}
+        self.backups: Dict[str, Dict[QWidget, Any]] = {} # a dictionary of named backups
         self.widgets: List[QWidget] = []
         self.dirty_widgets: set[QWidget] = set()
 
@@ -93,7 +115,7 @@ class InputWidgetChangeTracker(QObject):
         """
         Connect the widget's change signal to dirty-check logic.
         """
-        for widget_type, (signal_name, _) in self.widget_handlers.items():
+        for widget_type, (signal_name, _, _) in self.widget_handlers.items():
             if isinstance(widget, widget_type):
                 signal = getattr(widget, signal_name)
                 signal.connect(lambda _, w=widget: self._check_dirty(w))
@@ -105,10 +127,43 @@ class InputWidgetChangeTracker(QObject):
         """
         Get the current value of the widget.
         """
-        for widget_type, (_, value_func) in self.widget_handlers.items():
-            if isinstance(widget, widget_type):
-                return value_func(widget)
-        raise TypeError(f"No value accessor registered for: {type(widget)}")
+        widget_type = type(widget)
+
+        # Try exact type match first (fast path)
+        handler = self.widget_handlers.get(widget_type)
+        if handler is not None:
+            _, getter, _ = handler
+            return getter(widget)
+
+        # Fallback: check if widget is instance of any registered base type (slower)
+        for registered_type, (_, getter, _) in self.widget_handlers.items():
+            if isinstance(widget, registered_type):
+                return getter(widget) 
+        raise TypeError(f"No value accessor registered for: {widget_type}")
+            
+
+    def _set_value(self, widget: QWidget, value: Any) -> None:
+        """
+        Set the value of the widget if supported.
+        
+        Args:
+            widget: The widget to set the value for.
+            value: The value to set.
+        
+        Raises:
+            TypeError: If the widget type is not supported.
+        """
+        widget_type = type(widget)
+        handler = self.widget_handlers.get(widget_type)
+        if handler is not None:
+            _, _, setter = handler
+            setter(widget, value)
+
+        for registered_type, (_, _, setter) in self.widget_handlers.items():
+            if isinstance(widget, registered_type):
+                setter(widget, value)
+                return
+        raise TypeError(f"No value accessor registered for: {widget_type}")
     
 
     def get_value_of_widget(self, widget: QWidget) -> Any:
@@ -125,6 +180,24 @@ class InputWidgetChangeTracker(QObject):
             TypeError: If the widget type is not supported.
         """
         return self._get_value(widget)
+    
+
+    def get_initial_value_of_widget(self, widget: QWidget) -> Any:
+        """
+        Get the initial value of a widget when it was first registered.
+
+        Args:
+            widget: The widget to query.
+
+        Returns:
+            The initial value of the widget.
+        
+        Raises:
+            ValueError: If the widget is not being tracked.
+        """
+        if widget not in self.initial_values:
+            raise ValueError(f"Widget {widget} is not being tracked.")
+        return self.initial_values[widget]
     
 
     def _set_dirty(self, widget: QWidget, dirty: bool) -> None:
@@ -186,6 +259,44 @@ class InputWidgetChangeTracker(QObject):
         self._emit_dirty_state_changed(False)
 
 
+    def backup_current_values(self, backup_name : str) -> None:
+        """
+        Store the current values of all tracked widgets in a backup dictionary.
+
+        Args:
+            backup_name: Name of the backup to store values under.
+        """
+        self.backups[backup_name] = {widget: self._get_value(widget) for widget in self.widgets}
+
+
+    def backup_initial_values(self, backup_name: str) -> None:
+        """
+        Store the initial values of all tracked widgets in a backup dictionary.
+
+        Args:
+            backup_name: Name of the backup to store initial values under.
+        """
+        self.backups[backup_name] = self.initial_values.copy()    
+
+
+    def restore_backup(self, backup_name: str) -> None:
+        """
+        Restore the values of all tracked widgets from a named backup.
+
+        Args:
+            backup_name: Name of the backup to restore.
+        
+        Raises:
+            KeyError: If the backup does not exist.
+        """
+        if backup_name not in self.backups:
+            raise KeyError(f"No backup found with name '{backup_name}'.")
+
+        backup = self.backups[backup_name]
+        for widget, value in backup.items():
+            self._set_value(widget, value)
+                
+
     def reset(self) -> None:
         """
         Clear the dirty state of all tracked widgets.
@@ -207,6 +318,18 @@ class InputWidgetChangeTracker(QObject):
             self.initial_values[widget] = "__dirty__"
         self.dirtyStateChanged.emit(dirty)
         self._emit_dirty_state_changed(old_dirty)
+
+
+    def undo_changes(self) -> None:
+        """
+        Revert all tracked widgets to their initial values.
+        """
+        for widget in self.widgets:
+            initial_value = self.initial_values.get(widget)
+            if initial_value is not None:
+                self._set_value(widget, initial_value)
+                self._set_dirty(widget, False)
+        self._emit_dirty_state_changed(True)
 
 
     def reset_widget(self, widget: QWidget) -> None:
