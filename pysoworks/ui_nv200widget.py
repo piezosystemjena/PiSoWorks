@@ -100,7 +100,7 @@ class Ui_NV200Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 249, 668))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 266, 668))
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
@@ -216,10 +216,33 @@ class Ui_NV200Widget(object):
 
         self.verticalLayout_8.addWidget(self.retrieveButton)
 
-        self.restoreButton = QPushButton(self.settingsTab)
-        self.restoreButton.setObjectName(u"restoreButton")
+        self.verticalSpacer_10 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-        self.verticalLayout_8.addWidget(self.restoreButton)
+        self.verticalLayout_8.addItem(self.verticalSpacer_10)
+
+        self.restorePrevButton = QPushButton(self.settingsTab)
+        self.restorePrevButton.setObjectName(u"restorePrevButton")
+
+        self.verticalLayout_8.addWidget(self.restorePrevButton)
+
+        self.restoreInitialButton = QPushButton(self.settingsTab)
+        self.restoreInitialButton.setObjectName(u"restoreInitialButton")
+
+        self.verticalLayout_8.addWidget(self.restoreInitialButton)
+
+        self.restoreDefaultButton = QPushButton(self.settingsTab)
+        self.restoreDefaultButton.setObjectName(u"restoreDefaultButton")
+
+        self.verticalLayout_8.addWidget(self.restoreDefaultButton)
+
+        self.verticalSpacer_11 = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_11)
+
+        self.exportSettingsButton = QPushButton(self.settingsTab)
+        self.exportSettingsButton.setObjectName(u"exportSettingsButton")
+
+        self.verticalLayout_8.addWidget(self.exportSettingsButton)
 
         self.verticalSpacer_2 = QSpacerItem(20, 654, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -615,7 +638,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(1)
         self.stackedWidget.setCurrentIndex(2)
 
 
@@ -669,9 +692,18 @@ class Ui_NV200Widget(object):
 #endif // QT_CONFIG(tooltip)
         self.retrieveButton.setText(QCoreApplication.translate("NV200Widget", u"Retrieve Parameters", None))
 #if QT_CONFIG(tooltip)
-        self.restoreButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Initial Parameters</span></p><p>Reset the device parameters to their previous values.</p></body></html>", None))
+        self.restorePrevButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Previous Parameters</span></p><p>Reverts parameters to their values before the last time you clicked &quot;Apply Parameters&quot;.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.restoreButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Initial Parameters", None))
+        self.restorePrevButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Previous Parameters", None))
+#if QT_CONFIG(tooltip)
+        self.restoreInitialButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Initial Parameters</span></p><p>Load the parameters as they were when the device was first connected this session.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.restoreInitialButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Initial Parameters", None))
+#if QT_CONFIG(tooltip)
+        self.restoreDefaultButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Original Parameters</span></p><p>Restore the parameters that were backed up when this device was first connected.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.restoreDefaultButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Original Parameters", None))
+        self.exportSettingsButton.setText(QCoreApplication.translate("NV200Widget", u"Export Parameters", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
         self.waveformGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Waveform Settings", None))
         self.wavefomLabel.setText(QCoreApplication.translate("NV200Widget", u"Waveform", None))

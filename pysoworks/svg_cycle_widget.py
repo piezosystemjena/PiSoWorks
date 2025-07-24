@@ -170,12 +170,12 @@ class SvgCycleWidget(QFrame):
             # Cycle to next image on click
             if self.renderers:
                 next_index = (self.current_index + 1) % len(self.renderers)
-                self.setCurrentIndex(next_index)
+                self.set_current_index(next_index)
                 self.clicked.emit(next_index)  # Emit clicked signal with current index
         super().mousePressEvent(event)
 
 
-    def setCurrentIndex(self, index: int) -> None:
+    def set_current_index(self, index: int) -> None:
         """
         Set the current image index, update display and emit currentChanged signal.
 
@@ -192,7 +192,7 @@ class SvgCycleWidget(QFrame):
         self.update()
         self.currentIndexChanged.emit(self.current_index)
 
-    def currentIndex(self) -> int:
+    def get_current_index(self) -> int:
         """
         Get the current image index.
 
@@ -236,3 +236,4 @@ class SvgCycleWidget(QFrame):
         self.update_svg_colors()
 
     color = Property(QColor, get_color, set_color)
+    currentIndex = Property(int, get_current_index, set_current_index)

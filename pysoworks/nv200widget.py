@@ -6,8 +6,8 @@ from typing import Any, cast, Dict, Tuple, List
 import math
 import numpy as np
 
-from PySide6.QtWidgets import QApplication, QWidget, QMenu
-from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer
+from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog
+from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
 import qtinter
@@ -34,6 +34,7 @@ from nv200.data_recorder import DataRecorder, DataRecorderSource, RecorderAutoSt
 from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from nv200.analysis import ResonanceAnalyzer
+from nv200.utils import DeviceParamFile
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
@@ -82,11 +83,12 @@ class NV200Widget(QWidget):
         self._initialized = False
         self._rec_chan0 : DataRecorder.ChannelRecordingData
         self._rec_chan1 : DataRecorder.ChannelRecordingData
-        self.settings_widget_change_tracker: InputWidgetChangeTracker | None = None
+        self.settings_widget_change_tracker: InputWidgetChangeTracker = InputWidgetChangeTracker(self)
         self.waveform_widget_change_tracker: InputWidgetChangeTracker = InputWidgetChangeTracker(self)
         self._last_waveform_freq_hz: float = 1.0
         self._hysteresis_rec_cycles: int = 1  # number of recorded cycles for hysteresis measurement
-
+        self._controller_param_widgets: Dict[str, QWidget] = {}
+   
         self.ui = Ui_NV200Widget()
 
         qt_font = self.font()
@@ -267,20 +269,66 @@ class NV200Widget(QWidget):
         ui.retrieveButton.setIcon(get_icon("sync", size=24, fill=True))
         ui.retrieveButton.clicked.connect(qtinter.asyncslot(self.update_controller_ui_from_device))
 
-        ui.restoreButton.setIconSize(QSize(24, 24))
-        ui.restoreButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
+        ui.restorePrevButton.setIconSize(QSize(24, 24))
+        ui.restorePrevButton.setIcon(get_icon("arrow_back", size=24, fill=True))
+        ui.restorePrevButton.clicked.connect(qtinter.asyncslot(self.restore_previous_settings))
+
+        ui.restoreInitialButton.setIconSize(QSize(24, 24))
+        ui.restoreInitialButton.setIcon(get_icon("replay", size=24, fill=True))
+        ui.restoreInitialButton.clicked.connect(qtinter.asyncslot(self.restore_initial_settings))
+
+        ui.exportSettingsButton.setIconSize(QSize(24, 24))
+        ui.exportSettingsButton.setIcon(get_icon("save", size=24, fill=True))
+        ui.exportSettingsButton.clicked.connect(qtinter.asyncslot(self.export_controller_param))
+
+        ui.restoreDefaultButton.setIconSize(QSize(24, 24))
+        ui.restoreDefaultButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
+        ui.restoreDefaultButton.clicked.connect(qtinter.asyncslot(self.restore_default_settings))
 
         self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
         self.init_waveform_combobox()
 
         InputWidgetChangeTracker.register_widget_handler(
-            SvgCycleWidget, "currentIndexChanged", lambda w: w.currentIndex())
-        tracker = self.settings_widget_change_tracker = InputWidgetChangeTracker(self)
+            SvgCycleWidget, "currentIndexChanged", lambda w: w.get_current_index(), lambda w, v: w.set_current_index(v))
+        tracker = self.settings_widget_change_tracker
         for widget_type in InputWidgetChangeTracker.supported_widget_types():
             for widget in ui.controllerStructureWidget.findChildren(widget_type):
                 tracker.add_widget(widget)
+
+        # Assign commands to controller structure widgets for parameter export / import
+        cui = ui.controllerStructureWidget.ui
+        prop_name = "cmd"
+        cui.srSpinBox.setProperty(prop_name, "sr")
+        cui.setlponCheckBox.setProperty(prop_name, "setlpon")
+        cui.setlpfSpinBox.setProperty(prop_name, "setlpf")
+
+        cui.poslponCheckBox.setProperty(prop_name, "poslpon")
+        cui.poslpfSpinBox.setProperty(prop_name, "poslpf")
+
+        cui.notchonCheckBox.setProperty(prop_name, "notchon")
+        cui.notchfSpinBox.setProperty(prop_name, "notchf")
+        cui.notchbSpinBox.setProperty(prop_name, "notchb")
+
+        cui.kpSpinBox.setProperty(prop_name, "kp")
+        cui.kiSpinBox.setProperty(prop_name, "ki")
+        cui.kdSpinBox.setProperty(prop_name, "kd")
         
+        cui.pcfaSpinBox.setProperty(prop_name, "pcf")
+        cui.pcfaSpinBox.export_func = lambda: f"{cui.pcfxSpinBox.value()},{cui.pcfvSpinBox.value()},{cui.pcfaSpinBox.value()}"
+
+        cui.clToggleWidget.setProperty(prop_name, "cl")
+        cui.modsrcToggleWidget.setProperty(prop_name, "modsrc")
+        cui.monsrcComboBox.setProperty(prop_name, "monsrc")
+        cui.spiSrcComboBox.setProperty(prop_name, "mspisrc")
+
+        parent = cui.srSpinBox.parentWidget()
+        for child in parent.findChildren(QWidget, options=Qt.FindChildOption.FindDirectChildrenOnly):
+            if child.property("cmd") is not None:
+                cmd_value = str(child.property("cmd"))
+                self._controller_param_widgets[cmd_value] = child
+
+            
         
 
     def init_waveform_ui(self):
@@ -558,13 +606,14 @@ class NV200Widget(QWidget):
         Asynchronously applies setpoint parameters to the connected device.
         """
         try:
-            print("Applying scontroller parameters...")
-            dev = self.device
-            dirty_widgets = self.settings_widget_change_tracker.get_dirty_widgets()
+            print("Applying controller parameters...")
+            tracker = self.settings_widget_change_tracker
+            tracker.backup_initial_values("previous")
+            dirty_widgets = tracker.get_dirty_widgets()
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
-                await widget.applyfunc(self.settings_widget_change_tracker.get_value_of_widget(widget))
-                self.settings_widget_change_tracker.reset_widget(widget)
+                await widget.applyfunc(tracker.get_value_of_widget(widget))
+                tracker.reset_widget(widget)
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -579,7 +628,7 @@ class NV200Widget(QWidget):
         return self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
     
 
-    async def update_ui_from_device(self):
+    async def init_ui_from_device(self):
         """
         Asynchronously initializes the UI elements for easy mode UI.
         """
@@ -590,6 +639,8 @@ class NV200Widget(QWidget):
         ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
+        self.settings_widget_change_tracker.backup_current_values("initial")
+        self.settings_widget_change_tracker.backup_current_values("previous")
         await self.update_resonance_ui_from_device()
         await self.update_resonance_voltages_ui()
 
@@ -683,6 +734,7 @@ class NV200Widget(QWidget):
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
         cui.kpSpinBox.applyfunc = lambda value: pid_controller.set_pid_gains(kp=value)
+        #cui.kpSpinBox.restorefunc = lambda: cui.kpSpinBox.setValue(float(self._prev_controller_settings['kp']))
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
@@ -716,11 +768,11 @@ class NV200Widget(QWidget):
         cui.pcfxSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(position=value)
 
         pidmode = await pid_controller.get_mode()
-        cui.clToggleWidget.setCurrentIndex(pidmode.value)
+        cui.clToggleWidget.set_current_index(pidmode.value)
         cui.clToggleWidget.applyfunc = lambda value: pid_controller.set_mode(PidLoopMode(value))
 
         modsrc = await dev.get_modulation_source()
-        cui.modsrcToggleWidget.setCurrentIndex(modsrc.value)
+        cui.modsrcToggleWidget.set_current_index(modsrc.value)
         cui.modsrcToggleWidget.applyfunc = lambda value: dev.set_modulation_source(ModulationSource(value))
 
         set_combobox_index_by_value(cui.monsrcComboBox, await dev.get_analog_monitor_source())
@@ -760,6 +812,7 @@ class NV200Widget(QWidget):
         try:
             await self.disconnect_from_device()
             self._device = cast(NV200Device, await connect_to_detected_device(detected_device))
+            await self.backup_actuator_config()
             self.ui.easyModeGroupBox.setEnabled(True)
 
             self._recorder = DataRecorder(self._device)
@@ -767,7 +820,7 @@ class NV200Widget(QWidget):
             self._analyzer = ResonanceAnalyzer(self._device)
 
             self.set_ui_connected(True)
-            await self.update_ui_from_device()
+            await self.init_ui_from_device()
             self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
             print(f"Connected to {detected_device.identifier}.")
         except Exception as e:
@@ -776,6 +829,37 @@ class NV200Widget(QWidget):
             return
         finally:
             self.setCursor(Qt.CursorShape.ArrowCursor)
+
+
+    async def actuator_backup_filepath(self) -> Path:
+        """
+        Asynchronously generates the backup file path for the actuator configuration.
+        """
+        dev = self.device
+        filename = await dev.default_actuator_export_filename()
+        documents_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.DocumentsLocation)
+        app_name = QApplication.applicationName()
+        backup_dir = Path(documents_path) / app_name / "actuator_configs"
+        return backup_dir / filename
+
+
+    async def backup_actuator_config(self):
+        """
+        Asynchronously backs up the current actuator configuration to a file.
+        
+        This method retrieves the current actuator configuration from the device and saves it to a file.
+        The file is named with the device's serial number and the current timestamp.
+        """
+        try:
+            backup_path = await self.actuator_backup_filepath()
+            print(f"Backup path: {backup_path}")
+            if backup_path.exists():
+                print("Backup already exists. Skipping backup.")
+                return  # or return True / some status indicator
+            dev = self.device
+            await dev.export_actuator_config(filepath=str(backup_path))
+        except Exception as e:
+            self.status_message.emit(f"Error backing up actuator config: {e}", 2000)
    
 
     def start_move(self):
@@ -1311,7 +1395,7 @@ class NV200Widget(QWidget):
                 fontsize=10
             )
 
-            plot.draw()
+            plot.update_layout()
  
 
             self.status_message.emit("Resonance spectrum retrieved successfully.", 2000)
@@ -1321,4 +1405,66 @@ class NV200Widget(QWidget):
             self.status_message.emit(f"Error retrieving resonance spectrum: {e}", 4000)
             ui.mainProgressBar.reset()
 
+    async def restore_previous_settings(self):
+        """
+        evert to the parameter values before your most recent change.
+        """
+        print("Restoring previous settings...")
+        tracker = self.settings_widget_change_tracker
+        tracker.restore_backup("previous")
 
+
+    async def restore_initial_settings(self):
+        """
+        Load the parameters as they were when the device was first connected this session.
+        """
+        print("Restoring initial settings...")
+        tracker = self.settings_widget_change_tracker
+        tracker.restore_backup("initial")
+
+
+    async def restore_default_settings(self):
+        """
+        Restores the default settings of the device.
+        This method is called to reset the device settings to their factory defaults saved
+        on first connection.
+        """
+        pass
+
+
+    async def export_controller_param(self):
+        """
+        Asynchronously exports controller parameters to a file.
+        Iterates through controller parameter widgets, retrieves their values using either a custom
+        export function or a change tracker, and converts boolean values to integers. The parameters
+        are then saved to a file selected by the user via a file dialog. If an error occurs during
+        file writing, a status message is emitted.
+        """
+        params : dict[str, str] = {}
+        for cmd, widget in self._controller_param_widgets.items():
+            if hasattr(widget, "export_func") and callable(widget.export_func):
+                result = widget.export_func()
+            else:
+                result = self.settings_widget_change_tracker.get_value_of_widget(widget)
+
+            if isinstance(result, bool):
+                result = int(result)
+            print(f"Exporting {cmd}: {result}")
+            params[cmd] = str(result)
+        
+        path = (await self.actuator_backup_filepath()).parent
+        filename, _ = QFileDialog.getSaveFileName(
+            self.parent(),
+            "Export Controller Parameters",
+            str(path),
+            "Device Paramezter Files (*.ini)"
+        )
+        if not filename:
+            return
+        
+        try:
+            file = DeviceParamFile(params)
+            file.write(Path(filename))
+        except Exception as e:
+            status_message = f"Error exporting controller parameters: {e}"
+            self.status_message.emit(status_message, 4000)
