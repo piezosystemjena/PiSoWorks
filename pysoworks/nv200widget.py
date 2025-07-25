@@ -7,8 +7,8 @@ import math
 import numpy as np
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog
-from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths
-from PySide6.QtGui import QColor, QPalette, QAction, QPixmap
+from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths, QUrl
+from PySide6.QtGui import QColor, QPalette, QAction, QPixmap, QDesktopServices
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
 import qtinter
 
@@ -39,7 +39,7 @@ from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
 from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
-from pysoworks.data_recorder_widget import DataRecorderWidget, Ui_DataRecorderWidget
+from pysoworks.action_manager import ActionManager, MenuID, action_manager
 
 
 # Important:
@@ -118,6 +118,17 @@ class NV200Widget(QWidget):
         ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
 
         self.set_ui_connected(False)
+        self.register_main_menu_actions()
+
+
+    def register_main_menu_actions(self):
+        """
+        Registers the main menu actions with the ActionManager.
+        This method should be called after the main window is initialized.
+        """
+        a = QAction("Browse Device Parameter Backups ...", self)
+        action_manager.add_action_to_menu(MenuID.FILE, a)
+        a.triggered.connect(qtinter.asyncslot(self.browse_device_param_backups))
 
 
     @property
@@ -849,16 +860,29 @@ class NV200Widget(QWidget):
             self.setCursor(Qt.CursorShape.ArrowCursor)
 
 
+    def actuator_backup_path(self) -> Path:
+        """
+        Returns the backup directory path for actuator configurations.
+
+        The path is constructed by retrieving the user's Documents location,
+        appending the application name, and then the 'actuator_configs' folder.
+
+        Returns:
+            Path: The full path to the actuator backup directory.
+        """
+        documents_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.DocumentsLocation)
+        app_name = QApplication.applicationName()
+        backup_dir = Path(documents_path) / app_name / "actuator_configs"
+        return backup_dir
+
+
     async def actuator_backup_filepath(self) -> Path:
         """
         Asynchronously generates the backup file path for the actuator configuration.
         """
         dev = self.device
         filename = await dev.default_actuator_export_filename()
-        documents_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.DocumentsLocation)
-        app_name = QApplication.applicationName()
-        backup_dir = Path(documents_path) / app_name / "actuator_configs"
-        return backup_dir / filename
+        return self.actuator_backup_path() / filename
 
 
     async def backup_actuator_config(self):
@@ -1536,3 +1560,11 @@ class NV200Widget(QWidget):
             return
         
         await self.load_controller_param_file(filename)
+
+
+    def browse_device_param_backups(self):
+        """
+        Opens a file dialog to browse device parameter backups.
+        The dialog allows the user to select a backup file, which is then loaded into the device.
+        """
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.actuator_backup_path()))

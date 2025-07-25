@@ -53,6 +53,12 @@
      <string>Help</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -70,6 +76,11 @@
   <action name="actionTestView">
    <property name="text">
     <string>Add Test View</string>
+   </property>
+  </action>
+  <action name="actionBrowseParameterBackups">
+   <property name="text">
+    <string>Browse Device Parameter Backups ...</string>
    </property>
   </action>
  </widget>

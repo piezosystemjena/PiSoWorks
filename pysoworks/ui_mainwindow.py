@@ -30,6 +30,8 @@ class Ui_MainWindow(object):
         self.actionSpiBoxView.setObjectName(u"actionSpiBoxView")
         self.actionTestView = QAction(MainWindow)
         self.actionTestView.setObjectName(u"actionTestView")
+        self.actionBrowseParameterBackups = QAction(MainWindow)
+        self.actionBrowseParameterBackups.setObjectName(u"actionBrowseParameterBackups")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_5 = QVBoxLayout(self.centralwidget)
@@ -44,11 +46,14 @@ class Ui_MainWindow(object):
         self.menuView.setObjectName(u"menuView")
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
+        self.menuFile = QMenu(self.menubar)
+        self.menuFile.setObjectName(u"menuFile")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menuView.addAction(self.actionNv200View)
@@ -64,7 +69,9 @@ class Ui_MainWindow(object):
         self.actionNv200View.setText(QCoreApplication.translate("MainWindow", u"Add NV200 View...", None))
         self.actionSpiBoxView.setText(QCoreApplication.translate("MainWindow", u"Add SpiBox View...", None))
         self.actionTestView.setText(QCoreApplication.translate("MainWindow", u"Add Test View", None))
+        self.actionBrowseParameterBackups.setText(QCoreApplication.translate("MainWindow", u"Browse Device Parameter Backups ...", None))
         self.menuView.setTitle(QCoreApplication.translate("MainWindow", u"View", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
+        self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 

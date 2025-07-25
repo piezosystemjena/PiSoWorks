@@ -15,7 +15,7 @@ from PySide6.QtCore import (
     QStandardPaths,
     QLocale
 )
-from PySide6.QtGui import QIcon, QGuiApplication
+from PySide6.QtGui import QIcon, QGuiApplication, QAction
 
 import qtinter
 from pathlib import Path
@@ -26,7 +26,9 @@ from rich.logging import RichHandler
 
 from pysoworks.nv200widget import NV200Widget
 from pysoworks.spiboxwidget import SpiBoxWidget
-from pysoworks.nv200_controller_widget import Nv200ControllerWidget
+from pysoworks.action_manager import ActionManager, MenuID, action_manager
+from pysoworks.style_manager import StyleManager, style_manager
+
 
 def qt_message_handler(mode, context, message):
     if mode == QtMsgType.QtDebugMsg:
@@ -64,6 +66,8 @@ class MainWindow(QMainWindow):
         ui = self.ui
         ui.setupUi(self)
 
+        self.init_action_manager() 
+
         # Create the dock manager. Because the parent parameter is a QMainWindow
         # the dock manager registers itself as the central widget.
         self.dock_manager = QtAds.CDockManager(self)
@@ -72,6 +76,36 @@ class MainWindow(QMainWindow):
         ui.actionSpiBoxView.triggered.connect(self.add_spibox_view)
         self.add_nv200_view()
         self.resize(1600, 900)  # Set initial size to 800x600
+
+        self.init_style_controls()
+
+
+    def init_action_manager(self):
+        """
+        Initializes the ActionManager and registers the main window.
+        This method should be called after the main window is set up.
+        """
+        action_manager.register_main_window(self)
+
+        # Register menus
+        action_manager.register_menu(MenuID.FILE, self.ui.menuFile)
+        action_manager.register_menu(MenuID.VIEW, self.ui.menuView)
+        action_manager.register_menu(MenuID.HELP, self.ui.menuHelp)
+        action_manager.add_action_to_menu(MenuID.FILE, QAction("Exit"))
+
+
+    def init_style_controls(self):
+        """
+        Initializes the style controls for the main window.
+        This method sets up the UI elements related to styling and appearance.
+        """
+        menu = self.ui.menuView
+        menu.addSeparator()
+        a = self.light_theme_action = QAction("Light Theme", self)
+        a.setCheckable(True)
+        a.setChecked(False)
+        menu.addAction(a)
+        
 
     def add_view(self, widget_class, title):
         """
@@ -129,21 +163,6 @@ def setup_logging():
     logging.getLogger("nv200.device_base").setLevel(logging.DEBUG)     
 
 
-def set_qtass_style(app: QApplication):
-    """
-    Applies the QtAss stylesheet with the 'dark_teal' theme to the given QApplication instance.
-    """
-    QApplication.setStyle('Fusion')
-    stylesheet = qtass.QtAdvancedStylesheet()
-    app_path = Path(__file__).resolve().parent
-    stylesheet.output_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation) + "/styles"
-    stylesheet.set_styles_dir_path(app_path / 'styles')
-    stylesheet.set_current_style("metro")
-    stylesheet.set_current_theme("piezosystem")
-    stylesheet.update_stylesheet()
-    app.setStyleSheet(stylesheet.stylesheet)
-
-
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller"""
     base_path = ''
@@ -176,7 +195,7 @@ def main():
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
-    set_qtass_style(app)
+    style_manager.apply_stylesheet(app)
 
     widget = MainWindow()
     widget.show()
