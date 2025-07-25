@@ -14,6 +14,18 @@ from qt_material_icons import MaterialIcon
 from pysoworks.ui_helpers import get_icon
 
 
+def mpl_color(color: QColor) -> tuple[float, float, float, float]:
+    """
+    Converts a QColor to a tuple of floats in the range 0.0–1.0.
+    """
+    return (
+        color.redF(),   # R in 0.0–1.0
+        color.greenF(),
+        color.blueF(),
+        color.alphaF()
+    )
+
+
 class MplCanvas(FigureCanvas):
     '''
     Class to represent the FigureCanvas widget for integration of Matplotlib with Qt.
@@ -218,6 +230,7 @@ class MplCanvas(FigureCanvas):
             return qcolor
         else:
             raise IndexError("Line index out of range.")
+        
 
 
     def set_line_color(self, line_index: int, color: QColor, axis : int = 0):
@@ -289,6 +302,40 @@ class MplCanvas(FigureCanvas):
         self.remove_all_axes_lines(1)
 
 
+    def set_dark_mode(self, dark_mode: bool):
+        """
+        Sets the dark mode for the canvas.
+        
+        Args:
+            dark_mode (bool): If True, sets the canvas to dark mode; otherwise, sets it to light mode.
+        """
+        # Define colors
+        bg_color = 'black' if dark_mode else 'white'
+        fg_color = 'darkgray'  # Used for ticks, labels, spines, and grid
+        text_color = mpl_color(self.palette().color(QPalette.ColorRole.WindowText))
+
+        # Update figure background
+        self._fig.patch.set_facecolor(bg_color)
+
+        # Update all axes in axes_list
+        for ax in self.axes_list:
+            ax.set_facecolor(bg_color)
+            ax.tick_params(colors=fg_color)
+            ax.xaxis.label.set_color(text_color)
+            ax.yaxis.label.set_color(text_color)
+            ax.title.set_color(text_color)
+
+            # Update axes spines
+            for spine in ax.spines.values():
+                spine.set_color(fg_color)
+
+            # Update tick label colors
+            for label in ax.get_xticklabels() + ax.get_yticklabels():
+                label.set_color(text_color)
+
+        self._fig.canvas.draw_idle()  # Redraw the canvas
+
+
 
 
 
@@ -341,6 +388,15 @@ class LightIconToolbar(NavigationToolbar2QT):
                 icon = get_icon(icon_path, size=24, fill=False, color=QPalette.ColorRole.WindowText)
                 action.setIcon(icon)
 
+    def set_dark_mode(self, dark_mode: bool):
+        """
+        Sets the dark mode for the toolbar.
+        
+        Args:
+            dark_mode (bool): If True, sets the toolbar to dark mode; otherwise, sets it to light mode.
+        """
+        self._initialize_icons() 
+
 
 class MplWidget(QWidget):
     '''
@@ -375,6 +431,17 @@ class MplWidget(QWidget):
         action = QAction(self)
         action.setSeparator(True)
         self.toolbar.add_custom_action(action)
+
+
+    def set_dark_mode(self, dark_mode: bool):
+        """
+        Sets the dark mode for the canvas and toolbar.
+        
+        Args:
+            dark_mode (bool): If True, sets the canvas and toolbar to dark mode; otherwise, sets them to light mode.
+        """
+        self.canvas.set_dark_mode(dark_mode)
+        self.toolbar.set_dark_mode(dark_mode)
 
 
     

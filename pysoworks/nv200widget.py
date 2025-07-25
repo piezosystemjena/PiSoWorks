@@ -273,6 +273,8 @@ class NV200Widget(QWidget):
             (lambda checked: ui.closedLoopCheckBox.setText("Closed Loop" if checked else "Open Loop"))
         )
 
+        style_manager.style.dark_mode_changed.connect(ui.easyModePlot.set_dark_mode)
+
 
 
     def init_console_ui(self):
@@ -429,6 +431,9 @@ class NV200Widget(QWidget):
         ax.set_ylabel(rec_ui.recsrc2ComboBox.currentData())
         plot.set_plot_title("Hysteresis")
 
+        style_manager.style.dark_mode_changed.connect(ui.waveformPlot.mpl_widget.set_dark_mode)
+        style_manager.style.dark_mode_changed.connect(ui.hysteresisPlot.set_dark_mode)
+
 
     def update_waveform_run_controls(self, dirty: bool = False):
         """
@@ -468,6 +473,8 @@ class NV200Widget(QWidget):
 
         ax = ui.impulsePlot.canvas.ax1
         ax.set_title("Impulse Response")
+        style_manager.style.dark_mode_changed.connect(ui.impulsePlot.set_dark_mode)
+        style_manager.style.dark_mode_changed.connect(ui.resonancePlot.set_dark_mode)
 
     
     def init_spimonitor_combobox(self):

@@ -19,6 +19,7 @@ class DataRecorderWidget(QFrame):
         self.recsrc_combo_boxes = [self.ui.recsrc1ComboBox, self.ui.recsrc2ComboBox]
         ui.mplWidget.setStyleSheet("") # clear designer stylesheet
         self.canvas = ui.mplWidget.canvas # forward the canvas object
+        self.mpl_widget = ui.mplWidget
 
         ui.mplWidget.add_toolbar_separator()
         self.clear_plot_action = a = QAction("Clear Plot", parent=self, icon=get_icon("delete", size=24, fill=False, color=QPalette.ColorRole.WindowText))
