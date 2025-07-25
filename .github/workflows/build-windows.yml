@@ -93,6 +93,9 @@ jobs:
           name: PySoWorks_Setup.exe
           path: dist/PySoWorks_Setup.exe
 
+      - name: Rename executable
+        run: mv dist/PySoWorks_Setup.exe dist/PySoWorks_Setup_${{ github.ref_name }}.exe
+
       - name: Upload to GitHub Release (if applicable)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
