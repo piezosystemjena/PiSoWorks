@@ -39,22 +39,22 @@ class InputWidgetChangeTracker(QObject):
         QDoubleSpinBox: (
             "valueChanged",
             lambda w: w.value(),
-            lambda w, v: w.setValue(v),
+            lambda w, v: w.setValue(float(v)),
         ),
         QSpinBox: (
             "valueChanged",
             lambda w: w.value(),
-            lambda w, v: w.setValue(v),
+            lambda w, v: w.setValue(int(v)),
         ),
         QCheckBox: (
             "stateChanged",
             lambda w: w.isChecked(),
-            lambda w, v: w.setChecked(v),
+            lambda w, v: w.setChecked(bool(v)),
         ),
         QComboBox: (
             "currentIndexChanged",
             lambda w: w.currentIndex(),
-            lambda w, v: w.setCurrentIndex(v),
+            lambda w, v: w.setCurrentIndex(int(v)),
         ),
     }
 
@@ -180,6 +180,20 @@ class InputWidgetChangeTracker(QObject):
             TypeError: If the widget type is not supported.
         """
         return self._get_value(widget)
+    
+
+    def set_value_of_widget(self, widget: QWidget, value: Any) -> None:
+        """
+        Set the value of the given widget if supported.
+
+        Args:
+            widget: The widget to update.
+            value: The value to set.
+
+        Raises:
+            TypeError: If the widget type is not supported.
+        """
+        self._set_value(widget, value)
     
 
     def get_initial_value_of_widget(self, widget: QWidget) -> Any:

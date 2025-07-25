@@ -371,8 +371,14 @@
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Apply Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Send the currently edited parameters to the device to update its configuration.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
                    <property name="text">
                     <string>Apply Parameters</string>
+                   </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
                    </property>
                   </widget>
                  </item>
@@ -383,6 +389,9 @@
                    </property>
                    <property name="text">
                     <string>Retrieve Parameters</string>
+                   </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
                    </property>
                   </widget>
                  </item>
@@ -410,6 +419,9 @@
                    <property name="text">
                     <string>Restore Previous Parameters</string>
                    </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -420,6 +432,9 @@
                    <property name="text">
                     <string>Restore Initial Parameters</string>
                    </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -429,6 +444,9 @@
                    </property>
                    <property name="text">
                     <string>Restore Original Parameters</string>
+                   </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
                    </property>
                   </widget>
                  </item>
@@ -452,6 +470,19 @@
                   <widget class="QPushButton" name="exportSettingsButton">
                    <property name="text">
                     <string>Export Parameters</string>
+                   </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="loadSettingsButton">
+                   <property name="text">
+                    <string>Load Parameters</string>
+                   </property>
+                   <property name="text-align" stdset="0">
+                    <string>left</string>
                    </property>
                   </widget>
                  </item>

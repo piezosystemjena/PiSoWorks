@@ -208,6 +208,7 @@ class Ui_NV200Widget(object):
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.applyButton = QPushButton(self.settingsTab)
         self.applyButton.setObjectName(u"applyButton")
+        self.applyButton.setStyleSheet(u"")
 
         self.verticalLayout_8.addWidget(self.applyButton)
 
@@ -243,6 +244,11 @@ class Ui_NV200Widget(object):
         self.exportSettingsButton.setObjectName(u"exportSettingsButton")
 
         self.verticalLayout_8.addWidget(self.exportSettingsButton)
+
+        self.loadSettingsButton = QPushButton(self.settingsTab)
+        self.loadSettingsButton.setObjectName(u"loadSettingsButton")
+
+        self.verticalLayout_8.addWidget(self.loadSettingsButton)
 
         self.verticalSpacer_2 = QSpacerItem(20, 654, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -687,23 +693,31 @@ class Ui_NV200Widget(object):
         self.applyButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Apply Parameters</span></p><p>Send the currently edited parameters to the device to update its configuration.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.applyButton.setText(QCoreApplication.translate("NV200Widget", u"Apply Parameters", None))
+        self.applyButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
 #if QT_CONFIG(tooltip)
         self.retrieveButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Retrieve Parameters</span></p><p>Read the current parameters from the device and update the local view in case you modified the parameters from outside or via a terminal program.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.retrieveButton.setText(QCoreApplication.translate("NV200Widget", u"Retrieve Parameters", None))
+        self.retrieveButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
 #if QT_CONFIG(tooltip)
         self.restorePrevButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Previous Parameters</span></p><p>Reverts parameters to their values before the last time you clicked &quot;Apply Parameters&quot;.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.restorePrevButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Previous Parameters", None))
+        self.restorePrevButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
 #if QT_CONFIG(tooltip)
         self.restoreInitialButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Initial Parameters</span></p><p>Load the parameters as they were when the device was first connected this session.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.restoreInitialButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Initial Parameters", None))
+        self.restoreInitialButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
 #if QT_CONFIG(tooltip)
         self.restoreDefaultButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Restore Original Parameters</span></p><p>Restore the parameters that were backed up when this device was first connected.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.restoreDefaultButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Original Parameters", None))
+        self.restoreDefaultButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
         self.exportSettingsButton.setText(QCoreApplication.translate("NV200Widget", u"Export Parameters", None))
+        self.exportSettingsButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
+        self.loadSettingsButton.setText(QCoreApplication.translate("NV200Widget", u"Load Parameters", None))
+        self.loadSettingsButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))
         self.waveformGroupBox.setTitle(QCoreApplication.translate("NV200Widget", u"Waveform Settings", None))
         self.wavefomLabel.setText(QCoreApplication.translate("NV200Widget", u"Waveform", None))

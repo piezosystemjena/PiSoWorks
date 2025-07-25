@@ -281,6 +281,10 @@ class NV200Widget(QWidget):
         ui.exportSettingsButton.setIcon(get_icon("save", size=24, fill=True))
         ui.exportSettingsButton.clicked.connect(qtinter.asyncslot(self.export_controller_param))
 
+        ui.loadSettingsButton.setIconSize(QSize(24, 24))
+        ui.loadSettingsButton.setIcon(get_icon("folder_open", size=24, fill=True))
+        ui.loadSettingsButton.clicked.connect(qtinter.asyncslot(self.load_controller_param))
+
         ui.restoreDefaultButton.setIconSize(QSize(24, 24))
         ui.restoreDefaultButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
         ui.restoreDefaultButton.clicked.connect(qtinter.asyncslot(self.restore_default_settings))
@@ -290,7 +294,7 @@ class NV200Widget(QWidget):
         self.init_waveform_combobox()
 
         InputWidgetChangeTracker.register_widget_handler(
-            SvgCycleWidget, "currentIndexChanged", lambda w: w.get_current_index(), lambda w, v: w.set_current_index(v))
+            SvgCycleWidget, "currentIndexChanged", lambda w: w.get_current_index(), lambda w, v: w.set_current_index(int(v)))
         tracker = self.settings_widget_change_tracker
         for widget_type in InputWidgetChangeTracker.supported_widget_types():
             for widget in ui.controllerStructureWidget.findChildren(widget_type):
@@ -316,6 +320,21 @@ class NV200Widget(QWidget):
         
         cui.pcfaSpinBox.setProperty(prop_name, "pcf")
         cui.pcfaSpinBox.export_func = lambda: f"{cui.pcfxSpinBox.value()},{cui.pcfvSpinBox.value()},{cui.pcfaSpinBox.value()}"
+
+        
+        def restore_pcf_func(s):
+            """
+            Small helper function to restore the pcf values from a string.
+            """
+            try:
+                values = [float(v) for v in s.split(",")]
+                cui.pcfxSpinBox.setValue(int(values[0]))
+                cui.pcfvSpinBox.setValue(int(values[1]))
+                cui.pcfaSpinBox.setValue(int(values[2]))
+            except (ValueError, IndexError) as e:
+                print(f"Restore failed: {e}")
+
+        cui.pcfaSpinBox.restore_func = restore_pcf_func
 
         cui.clToggleWidget.setProperty(prop_name, "cl")
         cui.modsrcToggleWidget.setProperty(prop_name, "modsrc")
@@ -734,7 +753,6 @@ class NV200Widget(QWidget):
         cui.kpSpinBox.setSpecialValueText(cui.kpSpinBox.prefix() + "0.0 (disabled)")
         cui.kpSpinBox.setValue(pidgains.kp)
         cui.kpSpinBox.applyfunc = lambda value: pid_controller.set_pid_gains(kp=value)
-        #cui.kpSpinBox.restorefunc = lambda: cui.kpSpinBox.setValue(float(self._prev_controller_settings['kp']))
 
         cui.kiSpinBox.setMinimum(0.0)
         cui.kiSpinBox.setMaximum(10000.0)
@@ -762,7 +780,7 @@ class NV200Widget(QWidget):
         cui.pcfvSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(velocity=value)
 
         cui.pcfxSpinBox.setMinimum(0.0)
-        cui.pcfxSpinBox.setMaximum(10000.0)
+        cui.pcfxSpinBox.setMaximum(1)
         cui.pcfxSpinBox.setSpecialValueText(cui.pcfxSpinBox.prefix() + "0.0 (disabled)")
         cui.pcfxSpinBox.setValue(pcfgains.position)
         cui.pcfxSpinBox.applyfunc = lambda value: pid_controller.set_pcf_gains(position=value)
@@ -1429,7 +1447,15 @@ class NV200Widget(QWidget):
         This method is called to reset the device settings to their factory defaults saved
         on first connection.
         """
-        pass
+        try:
+            backup_path = await self.actuator_backup_filepath()
+            print(f"Backup path: {backup_path}")
+            if not backup_path.exists():
+                print("Backup already exists. Skipping backup.")
+                raise FileNotFoundError(f"Backup file not found: {backup_path}")
+            await self.load_controller_param_file(str(backup_path))
+        except Exception as e:
+            self.status_message.emit(f"Error restoring default settings: {e}", 2000)
 
 
     async def export_controller_param(self):
@@ -1449,7 +1475,6 @@ class NV200Widget(QWidget):
 
             if isinstance(result, bool):
                 result = int(result)
-            print(f"Exporting {cmd}: {result}")
             params[cmd] = str(result)
         
         path = (await self.actuator_backup_filepath()).parent
@@ -1457,7 +1482,7 @@ class NV200Widget(QWidget):
             self.parent(),
             "Export Controller Parameters",
             str(path),
-            "Device Paramezter Files (*.ini)"
+            "Device Parameter Files (*.ini)"
         )
         if not filename:
             return
@@ -1468,3 +1493,46 @@ class NV200Widget(QWidget):
         except Exception as e:
             status_message = f"Error exporting controller parameters: {e}"
             self.status_message.emit(status_message, 4000)
+
+
+    async def load_controller_param_file(self, filename: str):  
+        """
+        Loads controller parameters from a specified file.
+        Reads the parameters from the file and updates the corresponding widgets in the UI with the loaded values.
+        If an error occurs during file reading, a status message is emitted.
+        """
+        try:
+            file = DeviceParamFile.read(Path(filename))
+            for cmd, value in file.parameters.items():
+                if cmd in self._controller_param_widgets:
+                    print(f"Loading {cmd}: {value}")
+                    widget = self._controller_param_widgets[cmd]
+                    if hasattr(widget, "restore_func") and callable(widget.restore_func):
+                        widget.restore_func(value)
+                    else:
+                        self.settings_widget_change_tracker.set_value_of_widget(widget, value)
+                else:
+                    print(f"Unknown command: {cmd}")
+        except Exception as e:
+            status_message = f"Error loading controller parameters: {e}"
+            self.status_message.emit(status_message, 4000)  
+    
+    
+    async def load_controller_param(self):
+        """
+        Asynchronously loads controller parameters from a file.
+        Opens a file dialog to select a parameter file, reads the parameters from the file,
+        and updates the corresponding widgets in the UI with the loaded values.
+        If an error occurs during file reading, a status message is emitted.
+        """
+        path = (await self.actuator_backup_filepath()).parent
+        filename, _ = QFileDialog.getOpenFileName(
+            self.parent(),
+            "Load Controller Parameters",
+            str(path),
+            "Device Parameter Files (*.ini)"
+        )
+        if not filename:
+            return
+        
+        await self.load_controller_param_file(filename)

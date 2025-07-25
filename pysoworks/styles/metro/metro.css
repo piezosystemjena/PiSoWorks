@@ -3013,3 +3013,10 @@ SvgCycleWidget[dirty="true"]
 {
     qproperty-color: #ff9300;
 }
+
+
+QPushButton[text-align="left"]
+{
+    text-align: left;
+    padding-left: 10px;
+}
