@@ -105,6 +105,7 @@ class MainWindow(QMainWindow):
         a.setCheckable(True)
         a.setChecked(False)
         menu.addAction(a)
+        a.triggered.connect(style_manager.set_light_theme)
         
 
     def add_view(self, widget_class, title):

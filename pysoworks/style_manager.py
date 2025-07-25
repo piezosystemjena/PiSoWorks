@@ -18,7 +18,7 @@ class StyleManager:
         style.output_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation) + "/styles"
         style.set_styles_dir_path(app_path / 'styles')
         style.set_current_style("metro")
-        style.set_current_theme("piezosystem")
+        self.set_light_theme(False)
 
 
     def apply_stylesheet(self, app: QApplication) -> None:
@@ -32,6 +32,23 @@ class StyleManager:
         style.update_stylesheet()
         app.setStyleSheet(self.style.stylesheet)
 
+
+    def set_light_theme(self, light: bool) -> None:
+        """
+        Sets the light theme for the application.
+
+        Args:
+            light (bool): If True, sets the light theme; otherwise, sets the dark theme.
+        """
+        print(f"Setting light theme: {light}")
+        if light:
+            self.style.set_current_theme("piezosystem_light")
+        else:
+            self.style.set_current_theme("piezosystem")
+        self.style.update_stylesheet()
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            app.setStyleSheet(self.style.stylesheet)
 
 # Global instance of the StyleManager   
 style_manager = StyleManager()
