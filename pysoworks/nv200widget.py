@@ -11,6 +11,7 @@ from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths, Q
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap, QDesktopServices
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
 import qtinter
+import qtass
 
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.widgets import Cursor
@@ -40,6 +41,7 @@ from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
 from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
+from pysoworks.style_manager import StyleManager, style_manager
 
 
 # Important:
@@ -113,12 +115,31 @@ class NV200Widget(QWidget):
         self.init_recorder_ui()
         self.init_resonance_ui()
 
-        base_dir = Path(__file__).parent
-        image_path = base_dir / "assets" / "images" / "piezosystem_logo_white@2x.png"
-        ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
-
         self.set_ui_connected(False)
         self.register_main_menu_actions()
+        self.set_piezosystem_logo(style_manager.style.is_current_theme_dark())
+        style_manager.style.dark_mode_changed.connect(self.set_piezosystem_logo)
+
+
+    def set_piezosystem_logo(self, dark_theme : bool):
+        """
+        Sets the piezosystem logo on the UI based on the selected theme.
+
+        Args:
+            dark_theme (bool): If True, sets the logo for dark theme; otherwise, sets the logo for light theme.
+
+        Side Effects:
+            Updates the pixmap of the piezoIconLabel in the UI to display the appropriate logo image.
+        """
+        print(f"Setting piezosystem logo for dark theme: {dark_theme}")
+        ui = self.ui
+        base_dir = Path(__file__).parent
+        if dark_theme:
+            image_file = "piezosystem_logo_white@2x.png"
+        else:
+            image_file = "piezosystem_logo@2x.png"
+        image_path = base_dir / "assets" / "images" / image_file
+        ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
 
 
     def register_main_menu_actions(self):

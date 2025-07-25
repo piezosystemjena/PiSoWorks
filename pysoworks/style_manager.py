@@ -42,9 +42,9 @@ class StyleManager:
         """
         print(f"Setting light theme: {light}")
         if light:
-            self.style.set_current_theme("piezosystem_light")
+            self.style.set_current_theme("light_piezosystem")
         else:
-            self.style.set_current_theme("piezosystem")
+            self.style.set_current_theme("dark_piezosystem")
         self.style.update_stylesheet()
         app = QApplication.instance()
         if isinstance(app, QApplication):

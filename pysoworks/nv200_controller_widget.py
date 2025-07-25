@@ -2,8 +2,11 @@ from pathlib import Path
 from PySide6.QtWidgets import QFrame
 from PySide6.QtGui import QPainter, QPixmap
 from PySide6.QtCore import QSize, Signal
+import qtass
 
 from pysoworks.ui_nv200_controller_widget import Ui_nv200ControllerWidget
+from pysoworks.style_manager import style_manager
+import pysoworks.ui_helpers
 
 
 class Nv200ControllerWidget(QFrame):
@@ -26,13 +29,12 @@ class Nv200ControllerWidget(QFrame):
         self.ui = Ui_nv200ControllerWidget()
         ui = self.ui
         ui.setupUi(self)
-        base_dir = Path(__file__).parent
-        images_path = base_dir / "assets" / "images"
-        self.init_png_background(images_path)
-        self.init_svg_toggle_widgets(images_path)
+        self.init_png_background(style_manager.style.is_current_theme_dark())
+        self.init_svg_toggle_widgets()
+        style_manager.style.dark_mode_changed.connect(self.init_png_background)
 
 
-    def init_svg_toggle_widgets(self, images_path):
+    def init_svg_toggle_widgets(self):
         """
         Initializes the SVG toggle widgets with paths to the SVG files.
 
@@ -43,6 +45,7 @@ class Nv200ControllerWidget(QFrame):
         Args:
             images_path (Path): The directory path containing the SVG image files.
         """
+        images_path = pysoworks.ui_helpers.images_path()
         svg_paths = [ (images_path / f"modsrc_toggle0{i}.svg").resolve() for i in range(1, 5) ]
         self.ui.modsrcToggleWidget.set_svg_paths(svg_paths)
         self.ui.modsrcToggleWidget.setStyleSheet("")
@@ -52,13 +55,19 @@ class Nv200ControllerWidget(QFrame):
         self.ui.clToggleWidget.setStyleSheet("")
 
 
-    def init_png_background(self, images_path):
+    def init_png_background(self, dark_theme: bool = False):
         """
         Initializes the PNG background for the controller widget.
         """
-        png_path = images_path / "nv200_controller_structure@2x.png"
+        images_path = pysoworks.ui_helpers.images_path()
+        if dark_theme:
+            image_file = "nv200_controller_structure@2x.png"
+        else:
+            image_file = "nv200_controller_structure_dark@2x.png"
+        png_path = images_path / image_file
         self.setStyleSheet("")
         self.background_pixmap = QPixmap(str(png_path))
+        self.update()
 
 
     def paintEvent(self, event):
@@ -89,3 +98,4 @@ class Nv200ControllerWidget(QFrame):
 
     def minimumSizeHint(self):
         return QSize(10, 10)
+

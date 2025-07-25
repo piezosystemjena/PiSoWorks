@@ -1,5 +1,5 @@
 from typing import Any
-
+from pathlib import Path
 from qt_material_icons import MaterialIcon
 from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QComboBox
@@ -33,3 +33,13 @@ def set_combobox_index_by_value(combo: QComboBox, value: Any) -> None:
         combo.setCurrentIndex(index)
     else:
         raise ValueError(f"Value {value!r} not found in QComboBox.")
+    
+
+def images_path() -> Path:
+    """
+    Returns the absolute path to the images directory within the current module.
+
+    This function constructs the path based on the location of this file and returns it as a Path object.
+    """
+    base_dir = Path(__file__).parent
+    return base_dir / "assets" / "images"
