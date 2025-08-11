@@ -312,8 +312,8 @@ class MplCanvas(FigureCanvas):
         # Define colors
         bg_color = 'black' if dark_mode else 'white'
         fg_color = 'darkgray'  # Used for ticks, labels, spines, and grid
-        text_color = mpl_color(self.palette().color(QPalette.ColorRole.WindowText))
-
+        text_color = mpl_color(QPalette().color(QPalette.ColorRole.WindowText))
+  
         # Update figure background
         self._fig.patch.set_facecolor(bg_color)
 
@@ -404,7 +404,7 @@ class MplWidget(QWidget):
     '''
     def __init__(self, parent = None):
         QWidget.__init__(self, parent)
-        self.canvas = MplCanvas()
+        self.canvas = MplCanvas(self)
         # Create the navigation toolbar linked to the canvas
         self.toolbar = LightIconToolbar(self.canvas, self)
         self.vbl = QVBoxLayout()
