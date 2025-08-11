@@ -185,15 +185,15 @@ class Ui_SpiBoxWidget(object):
         self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
-        self.mplCanvasWidget = MplWidget(SpiBoxWidget)
-        self.mplCanvasWidget.setObjectName(u"mplCanvasWidget")
+        self.waveformPlot = MplWidget(SpiBoxWidget)
+        self.waveformPlot.setObjectName(u"waveformPlot")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.mplCanvasWidget.sizePolicy().hasHeightForWidth())
-        self.mplCanvasWidget.setSizePolicy(sizePolicy2)
+        sizePolicy2.setHeightForWidth(self.waveformPlot.sizePolicy().hasHeightForWidth())
+        self.waveformPlot.setSizePolicy(sizePolicy2)
 
-        self.verticalLayout_4.addWidget(self.mplCanvasWidget)
+        self.verticalLayout_4.addWidget(self.waveformPlot)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_4)

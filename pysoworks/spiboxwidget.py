@@ -15,6 +15,7 @@ from nv200.shared_types import DetectedDevice, DiscoverFlags
 from nv200.device_discovery import discover_devices
 from nv200.spibox_device import SpiBoxDevice
 from nv200.connection_utils import connect_to_detected_device
+from pysoworks.style_manager import StyleManager, style_manager
 
 
 # Important:
@@ -60,10 +61,9 @@ class SpiBoxWidget(QWidget):
         ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
         ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
         ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
-        ui.moveProgressBar.set_duration(5000)
-        ui.moveProgressBar.set_update_interval(20)
         ui.singleDatasetGroupBox.setEnabled(False)
         ui.sendSingleButton.clicked.connect(qtinter.asyncslot(self.send_single_dataset))
+        style_manager.style.dark_mode_changed.connect(ui.waveformPlot.set_dark_mode)
 
 
     async def search_devices(self):

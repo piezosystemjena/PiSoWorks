@@ -28,6 +28,7 @@ from pysoworks.nv200widget import NV200Widget
 from pysoworks.spiboxwidget import SpiBoxWidget
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
+from pysoworks.settings_manager import SettingsContext
 
 
 def qt_message_handler(mode, context, message):
@@ -103,7 +104,7 @@ class MainWindow(QMainWindow):
         menu.addSeparator()
         a = self.light_theme_action = QAction("Light Theme", self)
         a.setCheckable(True)
-        a.setChecked(False)
+        a.setChecked(not style_manager.style.is_current_theme_dark())
         menu.addAction(a)
         a.triggered.connect(style_manager.set_light_theme)
         
@@ -196,10 +197,13 @@ def main():
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
-    style_manager.apply_stylesheet(app)
+    style_manager.load_theme_from_settings()
 
     widget = MainWindow()
     widget.show()
     widget.setWindowTitle('PySoWorks')
+
+    style_manager.notify_application()
+
     with qtinter.using_asyncio_from_qt():
         app.exec()
