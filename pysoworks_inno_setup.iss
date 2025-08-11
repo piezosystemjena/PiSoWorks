@@ -2,7 +2,7 @@
 
 [Setup]
 AppName={#APP_NAME}
-AppVersion=1.0
+AppVersion=1.0.0
 DefaultDirName={userappdata}\Programs\{#APP_NAME}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
