@@ -33,7 +33,7 @@ jobs:
       - name: Install Poetry
         uses: abatilo/actions-poetry@v3
         with:
-          poetry-version: '1.8.2'
+          poetry-version: '2.1.2'
 
       - name: Configure Poetry
         run: |
@@ -41,7 +41,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install --no-interaction --with dev
+          poetry install --no-interaction --without dev
 
       - name: Install PyInstaller
         run: |
