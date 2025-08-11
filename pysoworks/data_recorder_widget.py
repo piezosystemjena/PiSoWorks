@@ -5,6 +5,7 @@ from nv200.data_recorder import DataRecorder, DataRecorderSource
 
 from pysoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
 from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
+from pysoworks.style_manager import style_manager
 
 
 class DataRecorderWidget(QFrame):
@@ -37,6 +38,8 @@ class DataRecorderWidget(QFrame):
         self.init_recording_source_combobox(ui.recsrc1ComboBox, DataRecorderSource.PIEZO_VOLTAGE)
         self.init_recording_source_combobox(ui.recsrc2ComboBox, DataRecorderSource.PIEZO_POSITION)
         self.update_sampling_period()
+
+        style_manager.style.dark_mode_changed.connect(self.set_dark_mode)
 
     
     def init_recording_source_combobox(self, cb : QComboBox, default_value : DataRecorderSource):
@@ -94,4 +97,11 @@ class DataRecorderWidget(QFrame):
             source (DataRecorderSource): The recording source to set.
         """
         set_combobox_index_by_value(self.recsrc_combo_boxes[channel], source)
+
+
+    def set_dark_mode(self, dark_mode: bool):
+        """
+        Updates the UI if dark mode is enabled or disabled.
+        """
+        self.clear_plot_action.setIcon(get_icon("delete", size=24, fill=False, color=QPalette.ColorRole.WindowText))
 
