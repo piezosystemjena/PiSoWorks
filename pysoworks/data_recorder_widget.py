@@ -22,6 +22,7 @@ class DataRecorderWidget(QFrame):
         self.canvas = ui.mplWidget.canvas # forward the canvas object
         self.mpl_widget = ui.mplWidget
 
+        ui.mplWidget.show_export_action()
         ui.mplWidget.add_toolbar_separator()
         self.clear_plot_action = a = QAction("Clear Plot", parent=self, icon=get_icon("delete", size=24, fill=False, color=QPalette.ColorRole.WindowText))
         ui.mplWidget.add_toolbar_action(a)

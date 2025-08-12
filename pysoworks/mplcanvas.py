@@ -1,16 +1,18 @@
 from typing import Sequence, Union
+from matplotlib import lines
 import numpy as np
+import csv
+import pandas as pd
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib.colors import to_rgba
 from matplotlib.axes import Axes
-from matplotlib.backend_tools import ToolBase, ToolToggleBase
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+from PySide6.QtCore import QStandardPaths
 from PySide6.QtGui import QPalette, QColor, QAction
-from PySide6.QtWidgets import QVBoxLayout, QWidget, QApplication
+from PySide6.QtWidgets import QVBoxLayout, QWidget, QFileDialog
 from nv200.data_recorder import DataRecorder
-from qt_material_icons import MaterialIcon
 from pysoworks.ui_helpers import get_icon
 
 
@@ -232,7 +234,6 @@ class MplCanvas(FigureCanvas):
             raise IndexError("Line index out of range.")
         
 
-
     def set_line_color(self, line_index: int, color: QColor, axis : int = 0):
         """
         Sets the color of a specific line in the plot.
@@ -335,8 +336,179 @@ class MplCanvas(FigureCanvas):
 
         self._fig.canvas.draw_idle()  # Redraw the canvas
 
+    
+    def create_export_data(self) -> pd.DataFrame | None:
+        ax = self.axes_list[0]
+        lines = ax.get_lines()
 
+        if not lines:
+            print("No data to export.")
+            return
 
+        # Gather all lines' lengths and X data
+        lengths = [len(line.get_xdata()) for line in lines]
+        all_lengths_equal = all(length == lengths[0] for length in lengths)
+
+        # Check if all lines have identical X data arrays (if lengths equal)
+        if all_lengths_equal:
+            base_x = lines[0].get_xdata()
+            all_x_same = all(np.array_equal(line.get_xdata(), base_x) for line in lines)
+        else:
+            all_x_same = False
+
+        if all_lengths_equal and all_x_same:
+            # Simple export: all share same x and same length
+            x_data = lines[0].get_xdata()
+            data = {ax.get_xlabel(): x_data}
+            for i, line in enumerate(lines, start=1):
+                label = line.get_label()
+                if not label or label.startswith("_"):
+                    label = f"y{i}"
+                data[label] = line.get_ydata()
+
+            df = pd.DataFrame(data)
+        else:
+            # More complicated: shared full X from first line, partial Y data per line
+            
+            # Create union of all X data points from all lines
+            all_x_values = set()
+            for line in lines:
+                all_x_values.update(line.get_xdata())
+            full_x = np.array(sorted(all_x_values))
+
+            x_to_index = {x_val: idx for idx, x_val in enumerate(full_x)}
+            data = {ax.get_xlabel(): full_x}
+
+            for i, line in enumerate(lines, start=1):
+                line_x = line.get_xdata()
+                line_y = line.get_ydata()
+                label = line.get_label()
+                if not label or label.startswith("_"):
+                    label = f"y{i}"
+
+                y_full = np.full_like(full_x, fill_value=np.nan, dtype=float)
+
+                for lx, ly in zip(line_x, line_y):
+                    idx = x_to_index.get(lx)
+                    if idx is not None:
+                        y_full[idx] = ly
+                    else:
+                        print(f"Warning: x value {lx} in line '{label}' not found in full X data")
+
+                data[label] = y_full
+
+            df = pd.DataFrame(data)
+            # Forward-fill missing Y values down each column except 'x'
+            df.loc[:, df.columns != "x"] = df.loc[:, df.columns != "x"].ffill()
+            return df
+    
+    def export_plot_data(self) -> None:
+        """
+        Export the data from the first Matplotlib Axes in the widget's canvas to CSV or Excel.
+
+        This function:
+        - Assumes the widget has an attribute `canvas` (a Matplotlib FigureCanvas).
+        - Retrieves all Line2D objects from the first axes in the figure.
+        - Exports the X values and each line's Y values into a DataFrame.
+        - Prompts the user to select a save location and format (*.csv or *.xlsx).
+        - Automatically saves in the chosen format, defaulting to CSV if no extension is given.
+
+        File format behavior:
+        - *.csv   → saved with `DataFrame.to_csv(index=False)`
+        - *.xlsx  → saved with `DataFrame.to_excel(index=False)` (requires openpyxl)
+
+        Dependencies:
+        pip install pandas openpyxl
+
+        Raises:
+        AttributeError: If `self.canvas` is missing or is not a Matplotlib FigureCanvas.
+        """
+        ax = self.axes_list[0]
+        lines = ax.get_lines()
+
+        if not lines:
+            print("No data to export.")
+            return
+
+        # Gather all lines' lengths and X data
+        lengths = [len(line.get_xdata()) for line in lines]
+        all_lengths_equal = all(length == lengths[0] for length in lengths)
+
+        # Check if all lines have identical X data arrays (if lengths equal)
+        if all_lengths_equal:
+            base_x = lines[0].get_xdata()
+            all_x_same = all(np.array_equal(line.get_xdata(), base_x) for line in lines)
+        else:
+            all_x_same = False
+
+        if all_lengths_equal and all_x_same:
+            # Simple export: all share same x and same length
+            x_data = lines[0].get_xdata()
+            data = {ax.get_xlabel(): x_data}
+            for i, line in enumerate(lines, start=1):
+                label = line.get_label()
+                if not label or label.startswith("_"):
+                    label = f"y{i}"
+                data[label] = line.get_ydata()
+
+            df = pd.DataFrame(data)
+        else:
+            # More complicated: shared full X from first line, partial Y data per line
+            
+            # Create union of all X data points from all lines
+            all_x_values = set()
+            for line in lines:
+                all_x_values.update(line.get_xdata())
+            full_x = np.array(sorted(all_x_values))
+
+            x_to_index = {x_val: idx for idx, x_val in enumerate(full_x)}
+            data = {ax.get_xlabel(): full_x}
+
+            for i, line in enumerate(lines, start=1):
+                line_x = line.get_xdata()
+                line_y = line.get_ydata()
+                label = line.get_label()
+                if not label or label.startswith("_"):
+                    label = f"y{i}"
+
+                y_full = np.full_like(full_x, fill_value=np.nan, dtype=float)
+
+                for lx, ly in zip(line_x, line_y):
+                    idx = x_to_index.get(lx)
+                    if idx is not None:
+                        y_full[idx] = ly
+                    else:
+                        print(f"Warning: x value {lx} in line '{label}' not found in full X data")
+
+                data[label] = y_full
+
+            df = pd.DataFrame(data)
+            # Forward-fill missing Y values down each column except 'x'
+            df.loc[:, df.columns != "x"] = df.loc[:, df.columns != "x"].ffill()
+
+        home_dir = QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
+        file_path, selected_filter = QFileDialog.getSaveFileName(
+            self,
+            "Save Data",
+            home_dir,
+            "CSV Files (*.csv);;Excel Files (*.xlsx)",
+            "Excel Files (*.xlsx)"
+        )
+
+        if not file_path:
+            return
+
+        if "csv" in selected_filter.lower():
+            if not file_path.lower().endswith(".csv"):
+                file_path += ".csv"
+            df.to_csv(file_path, index=False)
+            print(f"Data exported to CSV: {file_path}")
+
+        elif "xlsx" in selected_filter.lower():
+            if not file_path.lower().endswith(".xlsx"):
+                file_path += ".xlsx"
+            df.to_excel(file_path, index=False)
+            print(f"Data exported to Excel: {file_path}")
 
 
 class LightIconToolbar(NavigationToolbar2QT):
@@ -407,6 +579,7 @@ class MplWidget(QWidget):
         self.canvas = MplCanvas(self)
         # Create the navigation toolbar linked to the canvas
         self.toolbar = LightIconToolbar(self.canvas, self)
+        self.export_action : QAction | None = None
         self.vbl = QVBoxLayout()
         self.vbl.addWidget(self.toolbar)
         self.vbl.addWidget(self.canvas)
@@ -423,6 +596,16 @@ class MplWidget(QWidget):
             action (QAction): The action to add to the toolbar.
         """
         self.toolbar.add_custom_action(action)
+
+    def show_export_action(self):
+        """
+        Shows the export to CSV action.
+        """
+        if self.export_action:
+            return
+        self.export_action = a = QAction(get_icon('export_notes', size=24, fill=False, color=QPalette.ColorRole.WindowText), "Export to Excel / CSV", self)
+        self.add_toolbar_action(a)
+        a.triggered.connect(self.canvas.export_plot_data)
 
     def add_toolbar_separator(self):
         """

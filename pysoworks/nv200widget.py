@@ -272,7 +272,7 @@ class NV200Widget(QWidget):
         ui.closedLoopCheckBox.toggled.connect(
             (lambda checked: ui.closedLoopCheckBox.setText("Closed Loop" if checked else "Open Loop"))
         )
-
+        ui.easyModePlot.show_export_action()
         style_manager.style.dark_mode_changed.connect(ui.easyModePlot.set_dark_mode)
 
 
