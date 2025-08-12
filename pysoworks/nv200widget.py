@@ -2,6 +2,7 @@
 from pathlib import Path
 import asyncio
 from enum import Enum
+import pandas as pd
 
 from typing import Any, cast, Dict, Tuple, List
 import math
@@ -1599,3 +1600,76 @@ class NV200Widget(QWidget):
         The dialog allows the user to select a backup file, which is then loaded into the device.
         """
         QDesktopServices.openUrl(QUrl.fromLocalFile(self.actuator_backup_path()))
+
+
+    def read_percentage_column_with_limit(self, file_path: str, max_values: int = 1024) -> List[float]:
+        """
+        Reads a single-column CSV or Excel file containing percentage values (0-100).
+
+        If the number of values exceeds max_values, asks the user whether to truncate
+        or resample the data to fit the max_values limit.
+
+        Args:
+            parent (QWidget): Parent widget for dialogs.
+            file_path (str): Path to CSV or Excel file.
+            max_values (int): Maximum allowed number of values (default 1024).
+
+        Returns:
+            List[float]: List of percentage values as floats.
+
+        Raises:
+            ValueError: For invalid data or unsupported file types.
+        """
+        # Load data
+        if file_path.lower().endswith('.csv'):
+            df = pd.read_csv(file_path)
+        elif file_path.lower().endswith(('.xls', '.xlsx')):
+            df = pd.read_excel(file_path)
+        else:
+            raise ValueError("Unsupported file type. Provide a .csv or Excel (.xls/.xlsx) file.")
+
+        if df.shape[1] != 1:
+            raise ValueError(f"Expected exactly one column, found {df.shape[1]} columns.")
+
+        col = df.iloc[:, 0]
+        col_numeric = pd.to_numeric(col, errors='coerce')
+
+        if col_numeric.isnull().any():
+            raise ValueError("Column contains non-numeric or invalid values.")
+
+        if not ((col_numeric >= 0) & (col_numeric <= 100)).all():
+            raise ValueError("Values must be in the range 0 to 100 inclusive.")
+
+        values = col_numeric.tolist()
+
+        # Check length limit
+        if len(values) > max_values:
+            # Ask user what to do
+            msg = QMessageBox(parent)
+            msg.setWindowTitle("Too many values")
+            msg.setText(f"The data has {len(values)} values, which exceeds the limit of {max_values}.")
+            msg.setInformativeText("Do you want to truncate the data or resample it?")
+            truncate_button = msg.addButton("Truncate", QMessageBox.ButtonRole.AcceptRole)
+            resample_button = msg.addButton("Resample", QMessageBox.ButtonRole.AcceptRole)
+            cancel_button = msg.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+            msg.setDefaultButton(truncate_button)
+            msg.exec()
+
+            clicked = msg.clickedButton()
+
+            if clicked == cancel_button:
+                raise ValueError("User cancelled operation due to too many values.")
+
+            elif clicked == truncate_button:
+                # Truncate list
+                values = values[:max_values]
+
+            elif clicked == resample_button:
+                # Resample by skipping values to reduce to max_values
+                factor = (len(values) + max_values - 1) // max_values  # ceiling division
+                values = values[::factor]
+
+                # Ensure result not longer than max_values (edge case)
+                values = values[:max_values]
+
+        return values
