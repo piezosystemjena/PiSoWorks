@@ -1,9 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import logging
-from typing import List, Dict
-import json
-import pkgutil
 import os
 
 
@@ -12,7 +9,6 @@ from PySide6.QtCore import (
     Qt,
     QtMsgType,
     qInstallMessageHandler,
-    QStandardPaths,
     QLocale
 )
 from PySide6.QtGui import QIcon, QGuiApplication, QAction
@@ -20,7 +16,6 @@ from PySide6.QtGui import QIcon, QGuiApplication, QAction
 import qtinter
 from pathlib import Path
 import PySide6QtAds as QtAds
-import qtass
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
 
@@ -29,6 +24,7 @@ from pysoworks.spiboxwidget import SpiBoxWidget
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
 from pysoworks.settings_manager import SettingsContext
+import pysoworks.ui_helpers as ui_helpers
 
 
 def qt_message_handler(mode, context, message):
@@ -176,6 +172,27 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+class ExceptionCatchingApplication(QApplication):
+    """
+    A custom QApplication subclass that catches all exceptions occurring during event notification.
+
+    Overrides the `notify` method to wrap event processing in a try-except block. If an exception is raised while processing an event, it is handled by `ui_helpers.default_exception_handler`, and the method returns False to indicate the event was not handled successfully.
+
+    This helps prevent unhandled exceptions from crashing the application and provides a centralized place for exception handling in the Qt event loop.
+
+    Methods
+    -------
+    notify(receiver, event)
+        Processes the event for the given receiver, catching and handling any exceptions that occur.
+    """
+    def notify(self, receiver, event):
+        try:
+            return super().notify(receiver, event)
+        except Exception as e:
+            ui_helpers.default_exception_handler(e)
+            return False
+
+
 def main():
     """
     Initializes and runs the main application window.
@@ -189,7 +206,7 @@ def main():
     QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateMenu, False)
     QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
 
-    app = QApplication(sys.argv)
+    app = ExceptionCatchingApplication(sys.argv)
     app.setApplicationName('PySoWorks')
     app.setApplicationDisplayName('PySoWorks')
     app.setOrganizationName('piezosystem jena')

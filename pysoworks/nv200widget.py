@@ -2,6 +2,7 @@
 from pathlib import Path
 import asyncio
 from enum import Enum
+
 from typing import Any, cast, Dict, Tuple, List
 import math
 import numpy as np
@@ -11,7 +12,6 @@ from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths, Q
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap, QDesktopServices
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
 import qtinter
-import qtass
 
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.widgets import Cursor
@@ -42,6 +42,7 @@ from pysoworks.mplcanvas import MplWidget, MplCanvas
 from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
+from pysoworks.ui_helpers import safe_asyncslot
 
 
 # Important:
@@ -49,7 +50,6 @@ from pysoworks.style_manager import StyleManager, style_manager
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from pysoworks.ui_nv200widget import Ui_NV200Widget
-
 
 
 
@@ -105,7 +105,7 @@ class NV200Widget(QWidget):
 
         ui.tabWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
         ui.stackedWidget.setCurrentIndex(TabWidgetTabs.EASY_MODE.value)
-        ui.tabWidget.currentChanged.connect(qtinter.asyncslot(self.on_current_tab_changed))
+        ui.tabWidget.currentChanged.connect(safe_asyncslot(self.on_current_tab_changed))
 
         self.init_device_search_ui()
         self.init_easy_mode_ui()
@@ -149,7 +149,7 @@ class NV200Widget(QWidget):
         """
         a = QAction("Browse Device Parameter Backups ...", self)
         action_manager.add_action_to_menu(MenuID.FILE, a)
-        a.triggered.connect(qtinter.asyncslot(self.browse_device_param_backups))
+        a.triggered.connect(safe_asyncslot(self.browse_device_param_backups))
 
 
     @property
@@ -222,7 +222,7 @@ class NV200Widget(QWidget):
         """
         ui = self.ui
         ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
-        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_all_devices))
+        ui.searchDevicesButton.clicked.connect(safe_asyncslot(self.search_all_devices))
 
         # Create the menu
         menu = QMenu(self)
@@ -234,8 +234,8 @@ class NV200Widget(QWidget):
         ethernet_action.setIcon(get_icon("lan"))
 
         # Connect actions to appropriate slots
-        serial_action.triggered.connect(qtinter.asyncslot(self.search_serial_devices))
-        ethernet_action.triggered.connect(qtinter.asyncslot(self.search_ethernet_devices))
+        serial_action.triggered.connect(safe_asyncslot(self.search_serial_devices))
+        ethernet_action.triggered.connect(safe_asyncslot(self.search_ethernet_devices))
 
         # Add actions to menu
         menu.addAction(serial_action)
@@ -247,7 +247,7 @@ class NV200Widget(QWidget):
         ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
         ui.connectButton.setEnabled(False)
         ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
-        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
+        ui.connectButton.clicked.connect(safe_asyncslot(self.connect_to_device))
 
 
     def init_easy_mode_ui(self):
@@ -255,7 +255,7 @@ class NV200Widget(QWidget):
         Initializes the easy mode UI components, including buttons and spin boxes for PID control and target position.
         """
         ui = self.ui
-        ui.closedLoopCheckBox.clicked.connect(qtinter.asyncslot(self.on_pid_mode_button_clicked))
+        ui.closedLoopCheckBox.clicked.connect(safe_asyncslot(self.on_pid_mode_button_clicked))
     
         ui.moveButton.setIcon(get_icon("play_arrow", size=24, fill=True))
         ui.moveButton.setStyleSheet("QPushButton { padding: 0px }")
@@ -286,7 +286,7 @@ class NV200Widget(QWidget):
         ui.consoleButton.setIconSize(QSize(24, 24))
         ui.consoleButton.clicked.connect(self.toggle_console_visibility)
         ui.consoleWidget.setVisible(False)
-        ui.console.command_entered.connect(qtinter.asyncslot(self.send_console_cmd))
+        ui.console.command_entered.connect(safe_asyncslot(self.send_console_cmd))
         ui.console.register_commands(NV200Device.help_dict())
 
 
@@ -297,31 +297,31 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.applyButton.setIconSize(QSize(24, 24))
         ui.applyButton.setIcon(get_icon("check", size=24, fill=True))
-        ui.applyButton.clicked.connect(qtinter.asyncslot(self.apply_controller_parameters))
+        ui.applyButton.clicked.connect(safe_asyncslot(self.apply_controller_parameters))
 
         ui.retrieveButton.setIconSize(QSize(24, 24))
         ui.retrieveButton.setIcon(get_icon("sync", size=24, fill=True))
-        ui.retrieveButton.clicked.connect(qtinter.asyncslot(self.update_controller_ui_from_device))
+        ui.retrieveButton.clicked.connect(safe_asyncslot(self.update_controller_ui_from_device))
 
         ui.restorePrevButton.setIconSize(QSize(24, 24))
         ui.restorePrevButton.setIcon(get_icon("arrow_back", size=24, fill=True))
-        ui.restorePrevButton.clicked.connect(qtinter.asyncslot(self.restore_previous_settings))
+        ui.restorePrevButton.clicked.connect(safe_asyncslot(self.restore_previous_settings))
 
         ui.restoreInitialButton.setIconSize(QSize(24, 24))
         ui.restoreInitialButton.setIcon(get_icon("replay", size=24, fill=True))
-        ui.restoreInitialButton.clicked.connect(qtinter.asyncslot(self.restore_initial_settings))
+        ui.restoreInitialButton.clicked.connect(safe_asyncslot(self.restore_initial_settings))
 
         ui.exportSettingsButton.setIconSize(QSize(24, 24))
         ui.exportSettingsButton.setIcon(get_icon("save", size=24, fill=True))
-        ui.exportSettingsButton.clicked.connect(qtinter.asyncslot(self.export_controller_param))
+        ui.exportSettingsButton.clicked.connect(safe_asyncslot(self.export_controller_param))
 
         ui.loadSettingsButton.setIconSize(QSize(24, 24))
         ui.loadSettingsButton.setIcon(get_icon("folder_open", size=24, fill=True))
-        ui.loadSettingsButton.clicked.connect(qtinter.asyncslot(self.load_controller_param))
+        ui.loadSettingsButton.clicked.connect(safe_asyncslot(self.load_controller_param))
 
         ui.restoreDefaultButton.setIconSize(QSize(24, 24))
         ui.restoreDefaultButton.setIcon(get_icon("settings_backup_restore", size=24, fill=True))
-        ui.restoreDefaultButton.clicked.connect(qtinter.asyncslot(self.restore_default_settings))
+        ui.restoreDefaultButton.clicked.connect(safe_asyncslot(self.restore_default_settings))
 
         self.init_monsrc_combobox()
         self.init_spimonitor_combobox()
@@ -397,11 +397,11 @@ class NV200Widget(QWidget):
         ui.uploadButton.clicked.connect(self.on_upload_waveform_button_clicked)
         ui.uploadButton.setIcon(get_icon("upload", size=24, fill=True))
         ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
-        ui.startWaveformButton.clicked.connect(qtinter.asyncslot(self.start_waveform_generator))
+        ui.startWaveformButton.clicked.connect(safe_asyncslot(self.start_waveform_generator))
         ui.stopWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
-        ui.stopWaveformButton.clicked.connect(qtinter.asyncslot(self.stop_waveform_generator))
+        ui.stopWaveformButton.clicked.connect(safe_asyncslot(self.stop_waveform_generator))
         ui.plotHysteresisButton.clicked.connect(self.plot_hysteresis)
-        ui.measureHysteresisButton.clicked.connect(qtinter.asyncslot(self.measure_hysteresis))
+        ui.measureHysteresisButton.clicked.connect(safe_asyncslot(self.measure_hysteresis))
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
@@ -430,6 +430,7 @@ class NV200Widget(QWidget):
         ax.set_xlabel(rec_ui.recsrc1ComboBox.currentData())
         ax.set_ylabel(rec_ui.recsrc2ComboBox.currentData())
         plot.set_plot_title("Hysteresis")
+        ui.hysteresisPlot.show_export_action()
 
         style_manager.style.dark_mode_changed.connect(ui.waveformPlot.mpl_widget.set_dark_mode)
         style_manager.style.dark_mode_changed.connect(ui.hysteresisPlot.set_dark_mode)
@@ -464,7 +465,7 @@ class NV200Widget(QWidget):
         ui = self.ui
         ui.resonanceButton.setIcon(get_icon("equalizer", size=24, fill=True))
         ui.resonanceButton.setIconSize(QSize(24, 24))
-        ui.resonanceButton.clicked.connect(qtinter.asyncslot(self.get_resonance_spectrum))
+        ui.resonanceButton.clicked.connect(safe_asyncslot(self.get_resonance_spectrum))
         ax = ui.resonancePlot.canvas.ax1
         ax.set_title("Resonance Spectrum")
         ax.set_xlabel('Frequency (Hz)')
@@ -475,6 +476,8 @@ class NV200Widget(QWidget):
         ax.set_title("Impulse Response")
         style_manager.style.dark_mode_changed.connect(ui.impulsePlot.set_dark_mode)
         style_manager.style.dark_mode_changed.connect(ui.resonancePlot.set_dark_mode)
+        ui.impulsePlot.show_export_action()
+        ui.resonancePlot.show_export_action()
 
     
     def init_spimonitor_combobox(self):
@@ -1384,7 +1387,7 @@ class NV200Widget(QWidget):
             return
 
         self._initialized = True
-        QTimer.singleShot(0, qtinter.asyncslot(self.search_serial_devices))
+        QTimer.singleShot(0, safe_asyncslot(self.search_serial_devices))
         ui = self.ui
         ui.scrollArea.setFixedWidth(ui.scrollArea.widget().sizeHint().width() + 40)  # +40 for scroll bar width
 

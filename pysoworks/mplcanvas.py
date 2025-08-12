@@ -338,6 +338,14 @@ class MplCanvas(FigureCanvas):
 
     
     def create_export_data(self) -> pd.DataFrame | None:
+        """
+        Exports the data from all lines in the first axes as a pandas DataFrame.
+        The method handles two cases:
+        1. If all lines have identical X data arrays and lengths, the DataFrame will have one X column and one column per line's Y data.
+        2. If lines have different X data arrays or lengths, the DataFrame will use the union of all X values, aligning Y data accordingly and filling missing values with NaN (then forward-filling).
+        Returns:
+            pd.DataFrame | None: The exported data as a DataFrame, or None if there are no lines to export.
+        """
         ax = self.axes_list[0]
         lines = ax.get_lines()
 
@@ -400,8 +408,10 @@ class MplCanvas(FigureCanvas):
             df = pd.DataFrame(data)
             # Forward-fill missing Y values down each column except 'x'
             df.loc[:, df.columns != "x"] = df.loc[:, df.columns != "x"].ffill()
-            return df
+        
+        return df
     
+   
     def export_plot_data(self) -> None:
         """
         Export the data from the first Matplotlib Axes in the widget's canvas to CSV or Excel.
@@ -423,68 +433,9 @@ class MplCanvas(FigureCanvas):
         Raises:
         AttributeError: If `self.canvas` is missing or is not a Matplotlib FigureCanvas.
         """
-        ax = self.axes_list[0]
-        lines = ax.get_lines()
-
-        if not lines:
-            print("No data to export.")
+        df = self.create_export_data()
+        if df is None:
             return
-
-        # Gather all lines' lengths and X data
-        lengths = [len(line.get_xdata()) for line in lines]
-        all_lengths_equal = all(length == lengths[0] for length in lengths)
-
-        # Check if all lines have identical X data arrays (if lengths equal)
-        if all_lengths_equal:
-            base_x = lines[0].get_xdata()
-            all_x_same = all(np.array_equal(line.get_xdata(), base_x) for line in lines)
-        else:
-            all_x_same = False
-
-        if all_lengths_equal and all_x_same:
-            # Simple export: all share same x and same length
-            x_data = lines[0].get_xdata()
-            data = {ax.get_xlabel(): x_data}
-            for i, line in enumerate(lines, start=1):
-                label = line.get_label()
-                if not label or label.startswith("_"):
-                    label = f"y{i}"
-                data[label] = line.get_ydata()
-
-            df = pd.DataFrame(data)
-        else:
-            # More complicated: shared full X from first line, partial Y data per line
-            
-            # Create union of all X data points from all lines
-            all_x_values = set()
-            for line in lines:
-                all_x_values.update(line.get_xdata())
-            full_x = np.array(sorted(all_x_values))
-
-            x_to_index = {x_val: idx for idx, x_val in enumerate(full_x)}
-            data = {ax.get_xlabel(): full_x}
-
-            for i, line in enumerate(lines, start=1):
-                line_x = line.get_xdata()
-                line_y = line.get_ydata()
-                label = line.get_label()
-                if not label or label.startswith("_"):
-                    label = f"y{i}"
-
-                y_full = np.full_like(full_x, fill_value=np.nan, dtype=float)
-
-                for lx, ly in zip(line_x, line_y):
-                    idx = x_to_index.get(lx)
-                    if idx is not None:
-                        y_full[idx] = ly
-                    else:
-                        print(f"Warning: x value {lx} in line '{label}' not found in full X data")
-
-                data[label] = y_full
-
-            df = pd.DataFrame(data)
-            # Forward-fill missing Y values down each column except 'x'
-            df.loc[:, df.columns != "x"] = df.loc[:, df.columns != "x"].ffill()
 
         home_dir = QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
         file_path, selected_filter = QFileDialog.getSaveFileName(

@@ -1,8 +1,11 @@
-from typing import Any
+import traceback
+from functools import wraps
+from typing import Any, Callable, Awaitable
 from pathlib import Path
 from qt_material_icons import MaterialIcon
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QComboBox, QMessageBox
+import qtinter
 
 
 def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
@@ -43,3 +46,39 @@ def images_path() -> Path:
     """
     base_dir = Path(__file__).parent
     return base_dir / "assets" / "images"
+
+
+def safe_asyncslot(coro_func: Callable[..., Awaitable], handler=None):
+    """
+    Wrap qtinter.asyncslot to catch exceptions from async slots.
+
+    Example:
+        >>> ui.searchDevicesButton.clicked.connect(safe_asyncslot(self.search_all_devices))
+    """
+    if handler is None:
+        handler = default_exception_handler
+
+    @wraps(coro_func)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await coro_func(*args, **kwargs)
+        except Exception as e:
+            handler(e)
+
+    return qtinter.asyncslot(wrapper)
+
+
+def default_exception_handler(exc: BaseException):
+    """
+    Handles uncaught exceptions by printing the traceback to the console and displaying a critical error message box.
+
+    Args:
+        exc (BaseException): The exception instance to handle.
+
+    Side Effects:
+        - Prints the full traceback of the exception to the standard output.
+        - Displays a critical QMessageBox with the exception message.
+    """
+    tb = ''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+    print("Unhandled Exception:\n", tb)
+    QMessageBox.critical(None, "Unhandled Exception", str(exc))
