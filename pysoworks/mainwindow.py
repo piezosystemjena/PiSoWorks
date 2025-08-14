@@ -185,12 +185,33 @@ class ExceptionCatchingApplication(QApplication):
     notify(receiver, event)
         Processes the event for the given receiver, catching and handling any exceptions that occur.
     """
+    def __init__(self, argv: list[str]) -> None:
+        """
+        Initialize the application and set the global exception hook.
+        """
+        super().__init__(argv)
+        sys.excepthook = self.handle_exception
+
+
     def notify(self, receiver, event):
+        """
+        Overrides QApplication.notify to catch exceptions during event delivery.
+        """
         try:
             return super().notify(receiver, event)
         except Exception as e:
             ui_helpers.default_exception_handler(e)
             return False
+        
+    def handle_exception(self, exc_type, exc_value, exc_traceback):
+        """
+        Central handler for uncaught exceptions.
+        """
+        ui_helpers.default_exception_handler(exc_value)
+        # Optional: also print the traceback
+        import traceback
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
+
 
 
 def main():

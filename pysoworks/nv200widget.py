@@ -1706,7 +1706,7 @@ class NV200Widget(QWidget):
             raise ValueError("Column contains non-numeric or invalid values.")
 
         if not ((col_numeric >= 0) & (col_numeric <= 100)).all():
-            raise ValueError("Values must be in the range 0 to 100 inclusive.")
+            raise ValueError("Waveform values are given in percent and must be in the range 0 to 100 inclusive.")
 
         values = col_numeric.tolist()
 
