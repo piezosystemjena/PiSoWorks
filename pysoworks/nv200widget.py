@@ -405,6 +405,7 @@ class NV200Widget(QWidget):
         ui.measureHysteresisButton.clicked.connect(safe_asyncslot(self.measure_hysteresis))
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
+        ui.waveSamplingPeriodSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
         ui.importButton.clicked.connect(self.import_custom_waveform)
         self.update_waveform_running_duration()
@@ -1329,7 +1330,6 @@ class NV200Widget(QWidget):
         Finally, recorder data is plotted.
         """
         ui = self.ui
-        rec_ui = ui.waveformPlot.ui
         plot = ui.waveformPlot.ui.mplWidget.canvas
         if ui.waveformPlot.history_checkbox.isChecked():
             for i in range(1, plot.get_line_count()):
@@ -1350,6 +1350,9 @@ class NV200Widget(QWidget):
                 return
             
             wg = self.waveform_generator
+            # If we use custom waveform, user may have modified the sampling period
+            if self.is_custom_waveform():
+                await wg.set_output_sampling_time(int(ui.waveSamplingPeriodSpinBox.value() * 1000))
             ui.mainProgressBar.start(5000, "start_waveform")
 
             recorder = await self.setup_data_recorder(
@@ -1471,9 +1474,13 @@ class NV200Widget(QWidget):
             value (int): The new running duration in milliseconds.
         """
         ui = self.ui
-        freq_hz = ui.freqSpinBox.value()
         cycles = ui.cyclesSpinBox.value()
-        duration_ms = 1000 * cycles / freq_hz if freq_hz > 0 else 0.0
+        if self.is_custom_waveform():
+            self._custom_waveform.sample_time_ms = ui.waveSamplingPeriodSpinBox.value()
+            duration_ms = self._custom_waveform.cycle_time_ms * cycles
+        else:
+            freq_hz = ui.freqSpinBox.value()
+            duration_ms = 1000 * cycles / freq_hz if freq_hz > 0 else 0.0
         ui.waveformDurationSpinBox.setValue(int(duration_ms))
         self.sync_waveform_recording_duration()
 
@@ -1750,9 +1757,10 @@ class NV200Widget(QWidget):
             self,
             "Import Waveform File",
             home_dir,
-            "CSV Files (*.csv);;Excel Files (*.xlsx)",
-            "Excel Files (*.xlsx)"  # default
+            "CSV and Excel Files (*.csv *.xlsx);;CSV Files (*.csv);;Excel Files (*.xlsx)",
+            "CSV and Excel Files (*.csv *.xlsx)"  # default
         )
         ui = self.ui
         self._custom_waveform = WaveformGenerator.WaveformData(self.read_percentage_column_with_limit(file_path), ui.waveSamplingPeriodSpinBox.value())
         self.update_waveform_plot()
+        self.update_waveform_running_duration()
