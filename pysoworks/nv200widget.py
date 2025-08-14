@@ -90,7 +90,7 @@ class NV200Widget(QWidget):
         self._last_waveform_freq_hz: float = 1.0
         self._hysteresis_rec_cycles: int = 1  # number of recorded cycles for hysteresis measurement
         self._controller_param_widgets: Dict[str, QWidget] = {}
-        self._custom_waveform: List[float] = []
+        self._custom_waveform: WaveformGenerator.WaveformData = WaveformGenerator.WaveformData() # empty list
    
         self.ui = Ui_NV200Widget()
 
@@ -1212,6 +1212,13 @@ class NV200Widget(QWidget):
         return line_count
 
 
+    def is_custom_waveform(self) -> bool:
+        """
+        Checks if the current waveform is a custom waveform.
+        """
+        return self.current_waveform_type() == -1
+    
+
     def generate_waveform_from_ui(self) -> WaveformGenerator.WaveformData:
         """
         Generates a waveform using the current UI settings.
@@ -1224,15 +1231,19 @@ class NV200Widget(QWidget):
             WaveformGenerator.WaveformData: The generated waveform data object.
         """
         ui = self.ui
-        waveform = WaveformGenerator.generate_waveform(
-                waveform_type=self.current_waveform_type(),
-                low_level=ui.lowLevelSpinBox.value(),
-                high_level=ui.highLevelSpinBox.value(),
-                freq_hz=ui.freqSpinBox.value(),
-                phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
-                duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
-        )
-        return waveform
+        if self.is_custom_waveform():
+            self._custom_waveform.sample_time_ms = ui.waveSamplingPeriodSpinBox.value()
+            return self._custom_waveform
+        else:
+            waveform = WaveformGenerator.generate_waveform(
+                    waveform_type=self.current_waveform_type(),
+                    low_level=ui.lowLevelSpinBox.value(),
+                    high_level=ui.highLevelSpinBox.value(),
+                    freq_hz=ui.freqSpinBox.value(),
+                    phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
+                    duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
+            )
+            return waveform
 
 
     def update_waveform_plot(self):
@@ -1244,18 +1255,13 @@ class NV200Widget(QWidget):
             return
         
         print("Updating waveform plot...")
-        is_custom = (self.current_waveform_type() == -1)
         plot = ui.waveformPlot.canvas
-        if is_custom:
-            n = len(self._custom_waveform)
-            time_values = np.arange(n) * ui.waveSamplingPeriodSpinBox.value()
-            self.plot_waveform(time_values, self._custom_waveform)
+        waveform = self.generate_waveform_from_ui()
+        line_count = self.plot_waveform(waveform.sample_times_ms, waveform.values)
+        if self.is_custom_waveform():
             plot.autoscale()
         else:
-            waveform = self.generate_waveform_from_ui()
             ui.waveSamplingPeriodSpinBox.setValue(waveform.sample_time_ms)
-            line_count =self.plot_waveform(waveform.sample_times_ms, waveform.values)
-
             # Adjust the plot axes based on the waveform data if it does not contain any history lines
             if line_count <= 1:
                 offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
@@ -1747,5 +1753,6 @@ class NV200Widget(QWidget):
             "CSV Files (*.csv);;Excel Files (*.xlsx)",
             "Excel Files (*.xlsx)"  # default
         )
-        self._custom_waveform = self.read_percentage_column_with_limit(file_path)
+        ui = self.ui
+        self._custom_waveform = WaveformGenerator.WaveformData(self.read_percentage_column_with_limit(file_path), ui.waveSamplingPeriodSpinBox.value())
         self.update_waveform_plot()
