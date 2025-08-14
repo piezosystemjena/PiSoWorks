@@ -194,6 +194,28 @@ class MplCanvas(FigureCanvas):
 
         # Redraw the canvas
         self.update_layout()
+
+
+    def autoscale(self, axis: int = 0):
+        """
+        Automatically adjusts the axis limits to fit the plotted data.
+        Parameters:
+            axis (int, optional): The index of the axis to autoscale. Defaults to 0.
+        This method enables autoscaling for the specified axis, resets the x and y axis limits,
+        recalculates the data limits, updates the view, and redraws the canvas to reflect the changes.
+        """
+        ax = self.get_axes(axis)
+        ax.set_autoscale_on(True)       # Turns autoscale mode back on
+        ax.set_xlim(auto=True)          # Reset x-axis limits
+        ax.set_ylim(auto=True)          # Reset y-axis limits
+
+        # Autoscale the axes after plotting the data
+        ax.relim()
+        ax.autoscale_view()
+
+        # Redraw the canvas
+        self.update_layout()
+
    
     def update_line(self, line_index: int, x_data: Sequence[float], y_data: Sequence[float], axis : int = 0):
         """

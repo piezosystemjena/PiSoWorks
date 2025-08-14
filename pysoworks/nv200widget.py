@@ -40,10 +40,9 @@ from nv200.utils import DeviceParamFile
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
+from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value, safe_asyncslot, repolish
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
-from pysoworks.ui_helpers import safe_asyncslot
 
 
 # Important:
@@ -91,6 +90,7 @@ class NV200Widget(QWidget):
         self._last_waveform_freq_hz: float = 1.0
         self._hysteresis_rec_cycles: int = 1  # number of recorded cycles for hysteresis measurement
         self._controller_param_widgets: Dict[str, QWidget] = {}
+        self._custom_waveform: List[float] = []
    
         self.ui = Ui_NV200Widget()
 
@@ -406,6 +406,7 @@ class NV200Widget(QWidget):
         ui.freqSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.cyclesSpinBox.valueChanged.connect(self.update_waveform_running_duration)
         ui.recSyncCheckBox.clicked.connect(self.sync_waveform_recording_duration)
+        ui.importButton.clicked.connect(self.import_custom_waveform)
         self.update_waveform_running_duration()
         self.sync_waveform_recording_duration()
 
@@ -520,6 +521,7 @@ class NV200Widget(QWidget):
         cb.addItem("Sine", WaveformType.SINE)
         cb.addItem("Triangle", WaveformType.TRIANGLE)
         cb.addItem("Square", WaveformType.SQUARE)
+        cb.addItem("Custom", -1)
         cb.currentIndexChanged.connect(self.on_waveform_type_changed)  # Show duty cycle only for square wave
         self.on_waveform_type_changed(cb.currentIndex())  # Initialize visibility based on the current selection
 
@@ -528,9 +530,26 @@ class NV200Widget(QWidget):
         """
         Handles the event when the waveform type combo box is changed.
         """
-        visible = (index == WaveformType.SQUARE.value)
-        self.ui.dutyCycleLabel.setVisible(visible)
-        self.ui.dutyCycleSpinBox.setVisible(visible)
+        ui = self.ui
+        duty_visible = (index == WaveformType.SQUARE.value)
+        ui.dutyCycleLabel.setVisible(duty_visible)
+        ui.dutyCycleSpinBox.setVisible(duty_visible)
+
+        is_custom = (index == (WaveformType.SQUARE.value + 1))
+        ui.customLabel.setVisible(is_custom)
+        ui.importButton.setVisible(is_custom)
+
+        ui.freqLabel.setVisible(not is_custom)
+        ui.freqSpinBox.setVisible(not is_custom)
+        ui.waveSamplingPeriodSpinBox.setReadOnly(not is_custom)
+        repolish(ui.waveSamplingPeriodSpinBox)
+        ui.phaseLabel.setVisible(not is_custom)
+        ui.phaseShiftSpinBox.setVisible(not is_custom)
+        ui.highLabel.setVisible(not is_custom)
+        ui.highLevelSpinBox.setVisible(not is_custom)
+        ui.lowLabel.setVisible(not is_custom)
+        ui.lowLevelSpinBox.setVisible(not is_custom)
+
         self.update_waveform_plot()
 
 
@@ -1166,6 +1185,54 @@ class NV200Widget(QWidget):
         """
         cb = self.ui.waveFormComboBox
         return cb.currentData(role=Qt.ItemDataRole.UserRole)   
+    
+
+    def plot_waveform(self, x_data, y_data) -> int:
+        """
+        Plots or updates a waveform on the UI plot canvas.
+
+        If no lines are currently plotted, this method creates a new plot with the provided x and y data,
+        labeling it as "Waveform" and using a specific color. If a line already exists, it updates the first line
+        with the new data.
+
+        Args:
+            x_data (array-like): The x-axis data points for the waveform.
+            y_data (array-like): The y-axis data points for the waveform.
+
+        Returns:
+            int: The number of lines present on the plot before plotting or updating.
+        """
+        ui = self.ui
+        plot = ui.waveformPlot.canvas
+        line_count = plot.get_line_count()
+        if line_count == 0:
+            plot.plot_data(x_data, y_data, "Waveform", QColor("#02cfff"))
+        else:
+            plot.update_line(0, x_data, y_data)
+        return line_count
+
+
+    def generate_waveform_from_ui(self) -> WaveformGenerator.WaveformData:
+        """
+        Generates a waveform using the current UI settings.
+
+        Retrieves waveform parameters from the UI elements, including waveform type,
+        low and high levels, frequency, phase shift, and duty cycle, then calls
+        WaveformGenerator.generate_waveform to create the waveform data.
+
+        Returns:
+            WaveformGenerator.WaveformData: The generated waveform data object.
+        """
+        ui = self.ui
+        waveform = WaveformGenerator.generate_waveform(
+                waveform_type=self.current_waveform_type(),
+                low_level=ui.lowLevelSpinBox.value(),
+                high_level=ui.highLevelSpinBox.value(),
+                freq_hz=ui.freqSpinBox.value(),
+                phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
+                duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
+        )
+        return waveform
 
 
     def update_waveform_plot(self):
@@ -1177,27 +1244,22 @@ class NV200Widget(QWidget):
             return
         
         print("Updating waveform plot...")
-        waveform = WaveformGenerator.generate_waveform(
-            waveform_type=self.current_waveform_type(),
-            low_level=ui.lowLevelSpinBox.value(),
-            high_level=ui.highLevelSpinBox.value(),
-            freq_hz=ui.freqSpinBox.value(),
-            phase_shift_rad=math.radians(ui.phaseShiftSpinBox.value()),
-            duty_cycle=ui.dutyCycleSpinBox.value() / 100.0
-        )
-        ui.waveSamplingPeriodSpinBox.setValue(waveform.sample_time_ms)
+        is_custom = (self.current_waveform_type() == -1)
         plot = ui.waveformPlot.canvas
-        line_count = plot.get_line_count()
-        if line_count == 0:
-            plot.plot_data(waveform.sample_times_ms, waveform.values, "Waveform", QColor("#02cfff"))
+        if is_custom:
+            n = len(self._custom_waveform)
+            time_values = np.arange(n) * ui.waveSamplingPeriodSpinBox.value()
+            self.plot_waveform(time_values, self._custom_waveform)
+            plot.autoscale()
         else:
-            plot.update_line(0, waveform.sample_times_ms, waveform.values)
+            waveform = self.generate_waveform_from_ui()
+            ui.waveSamplingPeriodSpinBox.setValue(waveform.sample_time_ms)
+            line_count =self.plot_waveform(waveform.sample_times_ms, waveform.values)
 
-        # Adjust the plot axes based on the waveform data if it does not contain any history lines
-        if line_count <= 1:
-            offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
-            plot.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
-
+            # Adjust the plot axes based on the waveform data if it does not contain any history lines
+            if line_count <= 1:
+                offset = (ui.highLevelSpinBox.value() - ui.lowLevelSpinBox.value()) * 0.01
+                plot.scale_axes(0, 1000, ui.lowLevelSpinBox.minimum() - offset, ui.highLevelSpinBox.maximum() + offset)
 
 
     async def upload_waveform(self):
@@ -1206,14 +1268,7 @@ class NV200Widget(QWidget):
         """
         try:
             wg = self.waveform_generator
-            waveform = WaveformGenerator.generate_waveform(
-                waveform_type=self.current_waveform_type(),
-                low_level=self.ui.lowLevelSpinBox.value(),
-                high_level=self.ui.highLevelSpinBox.value(),
-                freq_hz=self.ui.freqSpinBox.value(),
-                phase_shift_rad=math.radians(self.ui.phaseShiftSpinBox.value()),
-                duty_cycle=self.ui.dutyCycleSpinBox.value() / 100.0
-            )
+            waveform = self.generate_waveform_from_ui()
             self.setCursor(Qt.CursorShape.WaitCursor)
             unit = WaveformUnit.POSITION if self.ui.closedLoopCheckBox.isChecked() else WaveformUnit.VOLTAGE
             await wg.set_waveform(waveform, unit=unit, on_progress=self.report_progress)
@@ -1645,7 +1700,7 @@ class NV200Widget(QWidget):
         # Check length limit
         if len(values) > max_values:
             # Ask user what to do
-            msg = QMessageBox(parent)
+            msg = QMessageBox(self)
             msg.setWindowTitle("Too many values")
             msg.setText(f"The data has {len(values)} values, which exceeds the limit of {max_values}.")
             msg.setInformativeText("Do you want to truncate the data or resample it?")
@@ -1673,3 +1728,24 @@ class NV200Widget(QWidget):
                 values = values[:max_values]
 
         return values
+    
+
+    def import_custom_waveform(self):
+        """
+        Opens a file dialog for the user to select a waveform file (CSV or Excel),
+        reads the percentage column with a limit from the selected file, and updates
+        the waveform plot with the imported data.
+
+        The default file type is Excel (*.xlsx). The imported data is stored in
+        self._custom_waveform.
+        """
+        home_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.HomeLocation)
+        file_path, selected_filter = QFileDialog.getOpenFileName(
+            self,
+            "Import Waveform File",
+            home_dir,
+            "CSV Files (*.csv);;Excel Files (*.xlsx)",
+            "Excel Files (*.xlsx)"  # default
+        )
+        self._custom_waveform = self.read_percentage_column_with_limit(file_path)
+        self.update_waveform_plot()

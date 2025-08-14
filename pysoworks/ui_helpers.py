@@ -4,7 +4,7 @@ from typing import Any, Callable, Awaitable
 from pathlib import Path
 from qt_material_icons import MaterialIcon
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QComboBox, QMessageBox
+from PySide6.QtWidgets import QComboBox, QMessageBox, QStyle, QWidget
 import qtinter
 
 
@@ -82,3 +82,12 @@ def default_exception_handler(exc: BaseException):
     tb = ''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
     print("Unhandled Exception:\n", tb)
     QMessageBox.critical(None, "Unhandled Exception", str(exc))
+
+
+def repolish(w : QWidget):
+    """
+    Calls unpolish() / polish for the style of the given widget to update
+    stylesheet if a property changes
+    """
+    w.style().unpolish(w)
+    w.style().polish(w)
