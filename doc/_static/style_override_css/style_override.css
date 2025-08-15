@@ -1,0 +1,365 @@
+@font-face {
+    font-family: 'pathway_extreme';
+    src: url('fonts/pathway-extreme-latin-400-normal.woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display:swap;
+  }
+
+  @font-face {
+    font-family: 'pathway_extreme_bold';
+    src: url('fonts/pathway-extreme-condensed.woff');
+    font-weight: 200;
+    font-style: normal;
+    font-feature-settings: "lnum", "pnum";
+  }
+
+  body {
+    font-style: normal;
+    font-variant-caps: normal;
+    font-weight: 200;
+    font-stretch: normal;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: "pathway_extreme";
+    font-size-adjust: none;
+    font-kerning: auto;
+    font-optical-sizing: auto;
+    font-variant-alternates: normal;
+    font-variant-east-asian: normal;
+    font-variant-ligatures: normal;
+    font-variant-numeric: normal;
+    font-variant-position: normal;
+    font-language-override: normal;
+    font-feature-settings: "lnum", "pnum";
+    font-variation-settings: normal;   
+  }
+  
+
+.wy-table-responsive table td {
+    white-space: normal !important;
+}
+
+/* Switch order of project name and logo in sidebar */
+body > div > nav > div > div.wy-side-nav-search > a {
+    display: flex !important;
+    justify-content: center !important;
+    flex-direction: column-reverse !important;
+}
+
+a.icon-home {
+  font-family: "pathway_extreme_bold";
+  font-size: 24px;
+}
+
+/* Smaller logo, adjust margins after reordering with project name */
+body > div.wy-grid-for-nav > nav > div > div.wy-side-nav-search > a > img {
+    width: 85% !important;
+    margin-bottom: 0.85em !important;
+    margin-top: 0 !important;
+}
+
+/* Remove home icon in sidebar */
+body > div.wy-grid-for-nav > nav > div > div.wy-side-nav-search > a::before {
+    content: "" !important;
+}
+
+/* Change style of search form in sidebar */
+.wy-side-nav-search input[type="text"] {
+    width: 90% !important;
+    border: 0 !important;
+    border-radius: 3px !important;
+}
+
+.wy-side-nav-search .wy-dropdown > a, .wy-side-nav-search > a {
+  font-weight: 200;
+}
+
+/* Use text font for headings */
+h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
+    font-family: "pathway_extreme_bold";
+    line-height: 1;
+    margin-top: 21px;
+}
+
+
+.rst-content h1 {
+  font-size: 42px;
+  margin-bottom: 0.5em;
+}
+
+.rst-content h2 {
+  font-size: 32px;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.rst-content h3 {
+  font-size: 26px;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.rst-content h4 {
+  font-family: 'pathway_extreme';
+  font-size: 19px;
+  margin-bottom: 0.5em;
+}
+
+.rst-content h5 {
+  font-family: 'pathway_extreme';
+  font-size: 17px;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.rst-content h6 {
+  font-family: 'pathway_extreme';
+  font-size: 15px;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.rst-content li {
+  margin-bottom: 8px;
+}
+
+html:not([data-theme='dark']) .rst-content h1, 
+html:not([data-theme='dark']) .rst-content h2, 
+html:not([data-theme='dark']) .rst-content h3, 
+html:not([data-theme='dark']) .rst-content h4, 
+html:not([data-theme='dark']) .rst-content h5, 
+html:not([data-theme='dark']) .rst-content h6 {
+  color: #04204c;
+}
+
+/* Use "Brand light green" for ToC heading */
+body > div.wy-grid-for-nav > nav > div > div.wy-menu.wy-menu-vertical > p > span {
+    color: #68B27e !important;
+}
+
+body > div.wy-grid-for-nav > nav > div > div.wy-menu.wy-menu-vertical code {
+  font-family: "pathway_extreme";
+  font-size: 11.5px;
+}
+
+/* Use "Brand dark green" for top of sidebar */
+.wy-side-nav-search {
+    background-color: #298043 !important;
+}
+
+/* Use lighter colour derived from "Brand dark blue" for sidebar background */
+.wy-nav-side {
+    /*background-color: #1B465C !important;*/
+    background: linear-gradient(180deg, #1B465C 0%, #0A2334 100%);
+}
+
+
+.wy-nav-top {
+    background-color: #298043;
+    /*border-bottom: 4px solid red;*/
+  }
+
+
+.wy-nav-top a {
+  /*color: #000;*/
+  font-family: "pathway_extreme_bold";
+  font-weight: 200;
+  font-size: 32px;
+}
+
+.wy-menu-vertical a {
+  font-size: 85%;
+  line-height: 14px;
+  color: white;
+}
+
+/*.wy-form input[type=text] {
+  border: 2px solid #0000ff;
+  border-color: red;
+}*/
+
+
+/* Customize for CETONI Documentation*/
+.rst-content .guilabel {
+  background:#e7f2fa;
+  border:1px solid #6ab0de;
+  padding: 4px 8px 4px 8px;
+}
+
+/*rtd theme does not render menuselection, so let's apply guilabel settings to it*/
+.rst-content .menuselection {
+    background:#e7f2fa;
+    font-size: 80%;
+    border:1px solid #6ab0de;
+    font-weight:700;
+    border-radius:4px;
+    margin:auto 2px;
+    padding: 4px 8px 4px 8px;
+   }
+
+html[data-theme='dark'] .rst-content .guilabel {
+    background:#2d2d2d;
+    border:1px solid #505050;
+}
+
+html[data-theme='dark'] .rst-content .menuselection {
+    background:#2d2d2d;
+    border:1px solid #505050;
+}
+
+   /* creates a border and background with shadow that looks like a key */
+.rst-content .kbd {
+    font-family: "Source Code Pro",monospace;
+    padding: .2rem .4rem;
+    border-radius: .2rem;
+    font-size: 80%;
+    font-weight: 600;
+    /*color: #212121;*/
+    background-color: #f2f2f2;
+    border: 1px solid #cbcbcb;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2),inset 0 0 0 2px #fff;
+}
+
+.rst-content th {
+  background-color: #6ab0de4f;
+}
+
+html[data-theme='dark'] .rst-content .kbd {
+    font-family: "Source Code Pro",monospace;
+    padding: .2rem .4rem;
+    border-radius: .2rem;
+    font-size: 80%;
+    font-weight: 600;
+    /*color: #212121;*/
+    background-color: #383838;
+    border: 1px solid #000000;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,1),inset 0 0 0 2px rgba(255,255,255,0.1);
+}
+
+.guinum {
+    color: #dd0000;
+    font-family: "Lato", "proxima-nova", "Helvetica Neue", "Arial", "sans-serif";
+    font-size: 120%;
+    font-weight:500;
+    line-height: 14px;
+}
+
+.step {
+  font-family: 'pathway_extreme';
+  font-size: 19px;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+/* center all images */
+.rst-content img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 48px;
+  margin-top: 48px;
+}
+
+.rst-content section > img {
+  margin-bottom: 48px;
+  margin-top: 48px; 
+}
+
+
+/* give images in text some more space */
+.rst-content td img {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.rst-content .admonition {
+  margin-bottom: 48px !important;
+  margin-top: 48px !important;  
+}
+
+.inlineimg img {
+  display: inline;
+  margin-right: 10px;
+  margin-bottom: 0px;
+  margin-top: 0px;  
+}
+
+.wy-nav-content {
+  /*max-width: none;*/
+  max-width: 1024px !important;
+}
+
+
+.rst-content p.rubric {
+  margin-bottom: 10px;
+  font-size: 105%;
+  font-weight: 900;
+}
+
+
+.steps > li::marker {
+  content: "(" counter(list, decimal) ")\a0";
+  padding-left: 0px;
+  font-weight: 900;
+}
+
+.steps > li {
+  counter-increment: list;
+  margin-left: 30px !important;
+  margin-top: 1.2em;
+}
+
+
+.guinums {
+    padding: 0;
+    counter-reset: li-counter
+}
+
+.guinums>li {
+    list-style: none;
+    position: relative;
+    padding-left: 3.875rem;
+    padding-top: 1.2875rem;
+    border-radius: .25rem;
+    list-style: none !important;
+    margin-bottom: 0px !important;
+    margin-left: 0px !important;
+}
+
+
+.guinums>li *:last-child {
+    margin-bottom: 0
+}
+
+.guinums>li:before {
+    font-size: 1.1rem;
+    display: block;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    height: 1.6em;
+    width: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+    background-color: #dd0000;
+    color: #fff;
+    border-radius: 50%;
+    content: counter(li-counter, decimal);
+    counter-increment: li-counter;
+    font-weight: bold;
+    font-family: 'arial';
+}
+
+.py.class {
+  border-top: 2px solid #68B27e;
+  margin-top: 80px;
+}
+
+.rst-content p {
+
+  font-size: 16px;
+  line-height: 1.4;
+  font-stretch: normal;
+}
+

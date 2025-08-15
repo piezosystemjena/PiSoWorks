@@ -1,0 +1,142 @@
+/*
+ * CSS hacks and small modification for my Sphinx website
+ * :copyright: Copyright 2013-2016 Lilian Besson
+ * :license: GPLv3, see LICENSE for details.
+ */
+
+
+/* Colors and text decoration.
+ For example, :black:`text in black` or :blink:`text blinking` in rST. */
+
+.black {
+    color: black;
+}
+
+.gray {
+    color: gray;
+}
+
+.grey {
+    color: gray;
+}
+
+.silver {
+    color: silver;
+}
+
+.white {
+    color: white;
+}
+
+.maroon {
+    color: maroon;
+}
+
+.red {
+    color: red;
+}
+
+.magenta {
+    color: magenta;
+}
+
+.fuchsia {
+    color: fuchsia;
+}
+
+.pink {
+    color: pink;
+}
+
+.orange {
+    color: orange;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.lime {
+    color: lime;
+}
+
+.green {
+    color: green;
+}
+
+.olive {
+    color: olive;
+}
+
+.teal {
+    color: teal;
+}
+
+.cyan {
+    color: cyan;
+}
+
+.aqua {
+    color: aqua;
+}
+
+.blue {
+    color: blue;
+}
+
+.navy {
+    color: navy;
+}
+
+.purple {
+    color: purple;
+}
+
+.red-bg {
+    background-color: #ff00006f;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.yellow-bg {
+    background-color: #ffff006f;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.blue-bg {
+    background-color: #0000ff6f;
+    padding: 4px;
+    font-weight: bold;
+}
+
+
+.yellow-marker {
+    background-color: #ffc000;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.green-marker {
+    background-color: #92d050;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.blue-marker {
+    background-color: #00b0f0;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.pink-marker {
+    background-color: #ff6699;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.red-marker {
+    background-color: #eb5627;
+    padding: 4px;
+    font-weight: bold;
+}
