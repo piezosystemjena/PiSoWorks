@@ -206,3 +206,19 @@ pyinstaller --clean --log-level=DEBUG pysoworks.spec
 
 The resulting executable will be located in the `dist/` directory.
 
+## Building the documentation
+
+Documentation is generated using [Sphinx](https://www.sphinx-doc.org/), located in the `doc/` folder.
+
+### With Poetry
+
+```shell
+poetry run sphinx-build -b html doc/ doc/_build/
+```
+
+### With Make
+
+```shell
+cd doc
+make html
+```
