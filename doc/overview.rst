@@ -28,3 +28,4 @@ piezo actuator by specifying a target voltage (open loop) or a target position (
 This means you first need to decide whether you want to operate in closed loop or in open loop mode.
 
 .. image:: images/easy_mode_numbered.png
+
