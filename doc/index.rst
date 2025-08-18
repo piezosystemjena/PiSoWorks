@@ -45,3 +45,4 @@ your navigation through this document:
    :glob:
 
    overview.rst
+   waveform.rst
