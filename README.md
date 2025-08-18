@@ -4,6 +4,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)](https://pypi.org/project/pysoworks/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)](https://pypi.org/project/pysoworks/)
+[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PySoWorks/)
 [![Windows Binary](https://img.shields.io/github/v/release/piezosystemjena/PySoWorks?label=EXE)](https://github.com/piezosystemjena/PySoWorks/releases/latest/)
 [![Publish Python Package](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml)
 [![Build Windows Executable](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml)

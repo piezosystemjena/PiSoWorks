@@ -2,6 +2,7 @@
 
 ![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)
+[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PySoWorks/)
 
 PySoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), 
 from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the 
