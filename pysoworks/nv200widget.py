@@ -150,7 +150,7 @@ class NV200Widget(QWidget):
         """
         a = QAction("Browse Device Parameter Backups ...", self)
         action_manager.add_action_to_menu(MenuID.FILE, a)
-        a.triggered.connect(safe_asyncslot(self.browse_device_param_backups))
+        a.triggered.connect(self.browse_device_param_backups)
 
 
     @property
