@@ -191,6 +191,43 @@ then adjust the PID Gains **kp**, **ki** and **kd** :guinum:`❷`.
    If the system begins to oscillate, switch to open loop mode immediately, then reset to stable values again.
 
 
+Slew Rate
+---------------------------
+
+For filtering the set point, a slew rate limiter is implemented, which can be changed via the :guilabel:`Slew Rate`
+edit field. The slew rate is defined in %/ms. 
+
+For example, a value of 1 %/ms yields that a jump off the full motion 
+range (100 %) is converted into a ramp with 100 ms duration. Independent from the slew rate value set in 
+the controller, the limitation given by the high voltage amplifier cannot be exceeded, since the piezo 
+voltage slew rate is limited by the amplifiers maximum output current and the actuators capacity.
+
+
+Filters
+---------------------------
+
+As shown in the control block diagram, the NV200 device includes several configurable filters to improve system stability and performance:
+
+.. image:: images/nv200_block_diagram_filters.png
+
+These filters can be accessed and configured individually via the settings panel:
+
+A **1st-order low-pass filter** on the **position sensor input** :guinum:`❶`
+   The setpoint low-pass filter :guilabel:`setlpf` smooths the commanded input signal to avoid abrupt changes and reduce noise.
+
+A **4th-order low-pass filter** on the **setpoint input** :guinum:`❷` 
+   The position low-pass filter :guilabel:`poslpf` filters noise from the position sensor before it enters the control loop.
+
+A **notch filter** applied to the **control output** :guinum:`❸` 
+   The notch filter is used to suppress specific resonant frequencies in the system, often caused by
+   mechanical resonances. It is defined by its center frequency :guilabel:`notchf` and bandwidth :guilabel:`notchb`.
+
+
+.. note::
+
+   Filters can be enabled or disabled independently and should be tuned according to the dynamics and noise characteristics of your system.
+
+
 .. |home| image:: images/icon_home.svg
    :width: 40
 
