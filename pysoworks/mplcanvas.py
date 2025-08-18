@@ -9,7 +9,7 @@ from matplotlib.colors import to_rgba
 from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from PySide6.QtCore import QStandardPaths
+from PySide6.QtCore import QStandardPaths, QTimer
 from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QFileDialog
 from nv200.data_recorder import DataRecorder
@@ -49,6 +49,10 @@ class MplCanvas(FigureCanvas):
 
         self.ax2 : Axes | None = None  # Secondary axis for two-line plots
         super().__init__(self._fig)
+
+        self._resize_timer = QTimer(self)
+        self._resize_timer.setSingleShot(True)
+        self._resize_timer.timeout.connect(self.update_layout)
 
 
     def init_axes_object(self, ax : Axes):
@@ -109,7 +113,7 @@ class MplCanvas(FigureCanvas):
             event (QResizeEvent): The resize event containing the new size information.
         """
         super().resizeEvent(event)
-        self.update_layout()  # Update layout on resize to ensure proper spacing
+        self._resize_timer.start(100)  # 250 ms after last resize event
 
 
     def update_layout(self):
@@ -117,8 +121,10 @@ class MplCanvas(FigureCanvas):
         Updates the layout of the figure to ensure proper spacing and alignment.
         This method is useful after adding or modifying elements in the figure.
         """
-        self._fig.tight_layout()
-        self.draw()
+        new_size = self.size()
+        if new_size.width() > 0 and new_size.height() > 0:  # avoid singular matrix
+            self._fig.tight_layout()
+            self.draw()
 
 
     def set_plot_title(self, title: str):
