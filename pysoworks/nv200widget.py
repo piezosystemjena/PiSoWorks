@@ -543,6 +543,10 @@ class NV200Widget(QWidget):
         ui.freqLabel.setVisible(not is_custom)
         ui.freqSpinBox.setVisible(not is_custom)
         ui.waveSamplingPeriodSpinBox.setReadOnly(not is_custom)
+        if ui.waveSamplingPeriodSpinBox.isReadOnly():
+            ui.waveSamplingPeriodSpinBox.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
+        else:
+            ui.waveSamplingPeriodSpinBox.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         repolish(ui.waveSamplingPeriodSpinBox)
         ui.phaseLabel.setVisible(not is_custom)
         ui.phaseShiftSpinBox.setVisible(not is_custom)

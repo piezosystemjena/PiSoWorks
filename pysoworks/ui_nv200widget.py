@@ -656,7 +656,7 @@ class Ui_NV200Widget(object):
 
         self.retranslateUi(NV200Widget)
 
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(1)
         self.stackedWidget.setCurrentIndex(2)
 
 
@@ -726,8 +726,14 @@ class Ui_NV200Widget(object):
 #endif // QT_CONFIG(tooltip)
         self.restoreDefaultButton.setText(QCoreApplication.translate("NV200Widget", u"Restore Original Parameters", None))
         self.restoreDefaultButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
+#if QT_CONFIG(tooltip)
+        self.exportSettingsButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Export Parameters</span></p><p>Exports the current parameters into a parameters *.ini file.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.exportSettingsButton.setText(QCoreApplication.translate("NV200Widget", u"Export Parameters", None))
         self.exportSettingsButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
+#if QT_CONFIG(tooltip)
+        self.loadSettingsButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Load Parameters</span></p><p>Loads the parameters from a previously exported *.ini file.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.loadSettingsButton.setText(QCoreApplication.translate("NV200Widget", u"Load Parameters", None))
         self.loadSettingsButton.setProperty(u"text-align", QCoreApplication.translate("NV200Widget", u"left", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settingsTab), QCoreApplication.translate("NV200Widget", u"Settings", None))

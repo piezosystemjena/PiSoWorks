@@ -180,7 +180,7 @@
                 <enum>QTabWidget::TabPosition::West</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="easyModeTab">
                 <attribute name="title">
@@ -468,6 +468,9 @@
                  </item>
                  <item>
                   <widget class="QPushButton" name="exportSettingsButton">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Export Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Exports the current parameters into a parameters *.ini file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
                    <property name="text">
                     <string>Export Parameters</string>
                    </property>
@@ -478,6 +481,9 @@
                  </item>
                  <item>
                   <widget class="QPushButton" name="loadSettingsButton">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Load Parameters&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Loads the parameters from a previously exported *.ini file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
                    <property name="text">
                     <string>Load Parameters</string>
                    </property>
