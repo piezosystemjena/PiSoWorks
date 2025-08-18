@@ -41,7 +41,7 @@ your navigation through this document:
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   :hidden:
    :numbered: 3
+   :glob:
 
    overview.rst
