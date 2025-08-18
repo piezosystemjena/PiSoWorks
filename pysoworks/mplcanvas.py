@@ -523,15 +523,25 @@ class LightIconToolbar(NavigationToolbar2QT):
             'pan': 'pan_tool',
             'zoom': 'zoom_in',
             'save_figure': 'file_save',
-            'configure_subplots': 'line_axis',
+            #'configure_subplots': 'line_axis',
+            'configure_subplots': '-',
             'edit_parameters': 'tune',
         }
 
         for action_name, icon_path in icon_paths.items():
             action = self._actions.get(action_name)
             if action:
-                icon = get_icon(icon_path, size=24, fill=False, color=QPalette.ColorRole.WindowText)
-                action.setIcon(icon)
+                if icon_path == "-":
+                    # Remove action if icon path is "-"
+                    self.removeAction(action)
+                else:
+                    icon = get_icon(
+                        icon_path,
+                        size=24,
+                        fill=False,
+                        color=QPalette.ColorRole.WindowText
+                    )
+                    action.setIcon(icon)
 
     def set_dark_mode(self, dark_mode: bool):
         """

@@ -9,9 +9,10 @@ from PySide6.QtCore import (
     Qt,
     QtMsgType,
     qInstallMessageHandler,
-    QLocale
+    QLocale,
+    QUrl
 )
-from PySide6.QtGui import QIcon, QGuiApplication, QAction
+from PySide6.QtGui import QIcon, QGuiApplication, QAction, QDesktopServices
 
 import qtinter
 from pathlib import Path
@@ -88,7 +89,11 @@ class MainWindow(QMainWindow):
         action_manager.register_menu(MenuID.FILE, self.ui.menuFile)
         action_manager.register_menu(MenuID.VIEW, self.ui.menuView)
         action_manager.register_menu(MenuID.HELP, self.ui.menuHelp)
-        action_manager.add_action_to_menu(MenuID.FILE, QAction("Exit"))
+
+        help_action = QAction("Online Manual...", parent=self)
+        help_action.triggered.connect(self.show_online_manual)
+        help_action.setIcon(ui_helpers.get_icon("language", size=24, fill=False))
+        action_manager.add_action_to_menu(MenuID.HELP, help_action)
 
 
     def init_style_controls(self):
@@ -141,6 +146,13 @@ class MainWindow(QMainWindow):
         else:
             self.statusBar().setStyleSheet("")
         self.statusBar().showMessage(message, timeout)
+
+
+    def show_online_manual(self):
+        """
+        Opens the online manual in the default web browser.
+        """
+        QDesktopServices.openUrl(QUrl("https://piezosystemjena.github.io/PySoWorks"))
 
    
 def setup_logging():
