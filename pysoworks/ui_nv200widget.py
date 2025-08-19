@@ -778,7 +778,13 @@ class Ui_NV200Widget(object):
         self.impulseBaseVoltageSpinBox.setSuffix(QCoreApplication.translate("NV200Widget", u" V", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.resonanceTab), QCoreApplication.translate("NV200Widget", u"Impulse Response", None))
         self.piezoIconLabel.setText(QCoreApplication.translate("NV200Widget", u"piezosystemjena Icon", None))
+#if QT_CONFIG(tooltip)
+        self.consoleButton.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Show / Hide Command Console</span></p><p>Toggle the command console display.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.consoleButton.setText(QCoreApplication.translate("NV200Widget", u"Console", None))
         self.consoleLabel.setText(QCoreApplication.translate("NV200Widget", u"Command Line Interface", None))
+#if QT_CONFIG(tooltip)
+        self.console.setToolTip(QCoreApplication.translate("NV200Widget", u"<html><head/><body><p><span style=\" font-weight:700;\">Command Console</span></p><p>Enter NV200 commands or help to show all commands</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 
