@@ -47,3 +47,5 @@ your navigation through this document:
    overview.rst
    settings.rst
    waveform.rst
+   hysteresis.rst
+   impulse_response.rst

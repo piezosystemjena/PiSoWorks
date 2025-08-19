@@ -98,3 +98,5 @@ In the **Data Recorder** section, you can configure which data should be recorde
 2. Configure the recording duration. If the :guilabel:`Sync Rec. Duration` switch is activated in the **Generator Control** section, 
    the recording duration will be synchronized automatically with the waveform duration.
 3. The sampling period is updated accordingly. Longer recording durations lead to a lower sampling rate because the internal device data recorder is limited to 6144 data points.
+
+
