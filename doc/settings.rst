@@ -142,6 +142,7 @@ A **notch filter** applied to the **control output** :guinum:`❸`
    mechanical resonances. It is defined by its center frequency :guilabel:`notchf` and bandwidth :guilabel:`notchb`.
 
 
-.. note::
-
+.. admonition:: Important
+   :class: note
+   
    Filters can be enabled or disabled independently and should be tuned according to the dynamics and noise characteristics of your system.
