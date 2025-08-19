@@ -49,3 +49,4 @@ your navigation through this document:
    waveform.rst
    hysteresis.rst
    impulse_response.rst
+   console.rst
