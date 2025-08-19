@@ -131,13 +131,13 @@ As shown in the control block diagram, the NV200 device includes several configu
 
 These filters can be accessed and configured individually via the settings panel:
 
-A **1st-order low-pass filter** on the **position sensor input** :guinum:`❶`
+1st-order low-pass filter on the position sensor input :guinum:`❶`
    The setpoint low-pass filter :guilabel:`setlpf` smooths the commanded input signal to avoid abrupt changes and reduce noise.
 
-A **4th-order low-pass filter** on the **setpoint input** :guinum:`❷` 
+4th-order low-pass filter on the setpoint input :guinum:`❷` 
    The position low-pass filter :guilabel:`poslpf` filters noise from the position sensor before it enters the control loop.
 
-A **notch filter** applied to the **control output** :guinum:`❸` 
+Notch filter applied to the control output :guinum:`❸` 
    The notch filter is used to suppress specific resonant frequencies in the system, often caused by
    mechanical resonances. It is defined by its center frequency :guilabel:`notchf` and bandwidth :guilabel:`notchb`.
 
