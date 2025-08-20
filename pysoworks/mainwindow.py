@@ -12,7 +12,7 @@ from PySide6.QtCore import (
     QLocale,
     QUrl
 )
-from PySide6.QtGui import QIcon, QGuiApplication, QAction, QDesktopServices
+from PySide6.QtGui import QIcon, QGuiApplication, QAction, QDesktopServices, QPalette
 
 import qtinter
 from pathlib import Path
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
 
         help_action = QAction("Online Manual...", parent=self)
         help_action.triggered.connect(self.show_online_manual)
-        help_action.setIcon(ui_helpers.get_icon("language", size=24, fill=False))
+        help_action.setIcon(ui_helpers.get_icon_for_menu("language", size=24, fill=False))
         action_manager.add_action_to_menu(MenuID.HELP, help_action)
 
 

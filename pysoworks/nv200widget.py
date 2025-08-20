@@ -40,7 +40,7 @@ from nv200.utils import DeviceParamFile
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value, safe_asyncslot, repolish
+from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
 
@@ -230,7 +230,7 @@ class NV200Widget(QWidget):
 
         # Create actions
         serial_action = QAction("USB Devices", ui.searchDevicesButton)
-        serial_action.setIcon(get_icon("usb"))
+        serial_action.setIcon(get_icon_for_menu("usb"))
         ethernet_action = QAction("Ethernet Devices", ui.searchDevicesButton)
         ethernet_action.setIcon(get_icon("lan"))
 

@@ -3,7 +3,7 @@ from functools import wraps
 from typing import Any, Callable, Awaitable
 from pathlib import Path
 from qt_material_icons import MaterialIcon
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QPalette, QIcon
 from PySide6.QtWidgets import QComboBox, QMessageBox, QStyle, QWidget
 import qtinter
 
@@ -20,6 +20,21 @@ def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette
     """
     icon = MaterialIcon(icon_name, size=size, fill=fill)
     icon.set_color(QPalette().color(color))
+    return icon
+
+
+def get_icon_for_menu(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
+    """
+    Returns the icon of the given QMenu, if it has one.
+
+    Args:
+        menu (QMenu): The QMenu instance to retrieve the icon from.
+
+    Returns:
+        QIcon | None: The icon of the menu, or None if not set.
+    """
+    icon = get_icon(icon_name, size=size, fill=fill, color=color)
+    icon.set_color(QPalette().color(QPalette.ColorRole.Window), QIcon.Mode.Active)
     return icon
 
 
