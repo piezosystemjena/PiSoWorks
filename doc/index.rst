@@ -50,3 +50,4 @@ your navigation through this document:
    hysteresis.rst
    impulse_response.rst
    console.rst
+   themes.rst

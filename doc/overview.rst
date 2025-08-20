@@ -1,6 +1,9 @@
 Getting Started
 =====================
 
+Quick Start
+-----------------------
+
 Before starting the software, your NV200 should be connected to the PC and powered on.
 Follow these steps:
 
@@ -18,6 +21,23 @@ via Ethernet, you must click the :guilabel:`Search Devices` button :guinum:`❷`
 searches for USB devices. Once you have selected your device in the device list, click 
 the :guilabel:`Connect` button :guinum:`❸`.
 
+
+Device Search
+-----------------------
+
+The software supports device discovery, allowing users to easily find and connect to compatible devices. The software can search
+for devices connected via USB or Ethernet. While searching for USB devices is fast and is done automatically on startup, Ethernet device
+discovery may take longer and requires the user to click the :guilabel:`Search Devices` button :guinum:`❷` in the UI.
+
+If you just click the button, then the software will search for **all** devices connected via USB or Ethernet. If you want to search for
+device connected to a specific interface, you can select the desired interface from the dropdown menu next to the button. Just click
+the small arrow on the right side of the button to expand the menu and choose the interface you want to use for the search.
+
+.. image:: images/device_usb_search.png
+
+.. tip::
+   Searching for USB devices is a lot faster than searching for Ethernet devices, so if you know your device is connected via USB, 
+   it's best to search only for USB devices.
 
 Easy Mode
 =====================
@@ -76,6 +96,8 @@ The following tools are available for plot interaction:
 | |export|               | Export data to Excel or CSV   | Opens a file dialog to export the plot`s underlying data. Choose the location, filename, and format (Excel .xlsx or CSV). Click       |
 |                        |                               | “Save” to export the data for further analysis or reporting.                                                                          |
 +------------------------+-------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+
+
 
 
 .. |home| image:: images/icon_home.svg
