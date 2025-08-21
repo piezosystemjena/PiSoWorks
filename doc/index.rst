@@ -51,3 +51,4 @@ your navigation through this document:
    impulse_response.rst
    console.rst
    themes.rst
+   multiple_devices.rst

@@ -47,7 +47,8 @@ extensions = [
    'sphinx_fontawesome',
    'sphinx_togglebutton',
    'sphinx.ext.autosectionlabel', 
-   'sphinx.ext.napoleon'
+   'sphinx.ext.napoleon',
+   "rst2pdf.pdfbuilder"
 ]
 
 # user starts in, light mode

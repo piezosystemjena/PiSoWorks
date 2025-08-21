@@ -213,8 +213,16 @@ Documentation is generated using [Sphinx](https://www.sphinx-doc.org/), located 
 
 ### With Poetry
 
+HTML Documentation:
+
 ```shell
 poetry run sphinx-build -b html doc/ doc/_build/
+```
+
+PDF Documentation
+
+```shell
+poetry run sphinx-build -b pdf doc build/pdf
 ```
 
 ### With Make
