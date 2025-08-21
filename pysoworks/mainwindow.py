@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
         a.triggered.connect(style_manager.set_light_theme)
         
 
-    def add_view(self, widget_class, title):
+    def add_view(self, widget_class, title) -> QtAds.CDockWidget:
         """
         Adds a new view to the main window.
         :param widget_class: The class of the widget to be added.
@@ -119,15 +119,18 @@ class MainWindow(QMainWindow):
         widget = widget_class(self)
         dock_widget = QtAds.CDockWidget(title)
         dock_widget.setWidget(widget)
+        dock_widget.setFeature(QtAds.CDockWidget.DockWidgetDeleteOnClose, True)
         self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
         widget.status_message.connect(self.show_status_message)
+        dock_widget.closed.connect(widget.cleanup)
+        return dock_widget
 
 
     def add_nv200_view(self):
         """
         Adds a new NV200 view to the main window.
         """
-        self.add_view(NV200Widget, "NV200")
+        dock_widget = self.add_view(NV200Widget, "NV200")
 
     def add_spibox_view(self):
         """

@@ -73,6 +73,7 @@ class NV200Widget(QWidget):
 
     status_message = Signal(str, int)  # message text, timeout in ms
     DEFAULT_RECORDING_DURATION_MS : int = 120  # Default recording duration in milliseconds
+    browse_dev_param_action : QAction | None = None
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -122,6 +123,15 @@ class NV200Widget(QWidget):
         style_manager.style.dark_mode_changed.connect(self.set_piezosystem_logo)
 
 
+    def cleanup(self):
+        """
+        Cleans up resources by initiating an asynchronous disconnection from the device.
+        This function needs to get called, before the widget is deleted
+        """
+        result = asyncio.create_task(self.disconnect_from_device())
+
+
+
     def set_piezosystem_logo(self, dark_theme : bool):
         """
         Sets the piezosystem logo on the UI based on the selected theme.
@@ -148,7 +158,10 @@ class NV200Widget(QWidget):
         Registers the main menu actions with the ActionManager.
         This method should be called after the main window is initialized.
         """
-        a = QAction("Browse Device Parameter Backups ...", self)
+        if NV200Widget.browse_dev_param_action is not None:
+            return
+
+        NV200Widget.browse_dev_param_action = a = QAction("Browse Device Parameter Backups ...", self.parentWidget())
         action_manager.add_action_to_menu(MenuID.FILE, a)
         a.triggered.connect(self.browse_device_param_backups)
 
@@ -882,7 +895,6 @@ class NV200Widget(QWidget):
         self._recorder = None
         self._waveform_generator = None
         self._analyzer = None  
-        self.set_ui_connected(False)
             
 
 
@@ -896,6 +908,7 @@ class NV200Widget(QWidget):
         print(f"Connecting to {detected_device.identifier}...")
         try:
             await self.disconnect_from_device()
+            self.set_ui_connected(False)
             self._device = cast(NV200Device, await connect_to_detected_device(detected_device))
             await self.backup_actuator_config()
             self.ui.easyModeGroupBox.setEnabled(True)
