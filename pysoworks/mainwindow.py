@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
         dock_widget = QtAds.CDockWidget(title)
         dock_widget.setWidget(widget)
         dock_widget.setFeature(QtAds.CDockWidget.DockWidgetDeleteOnClose, True)
-        self.dock_manager.addDockWidget(QtAds.RightDockWidgetArea, dock_widget)
+        self.dock_manager.addDockWidgetTab(QtAds.CenterDockWidgetArea, dock_widget)
         widget.status_message.connect(self.show_status_message)
         dock_widget.closed.connect(widget.cleanup)
         return dock_widget
