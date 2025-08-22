@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] - 2025-08-22
+
+- improved documentation
+- fixed a number of minor bugs
+
 ## [1.0.1] - 2025-08-11
 
 - First stable version with core functionality.

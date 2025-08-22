@@ -198,7 +198,7 @@ pip install pyinstaller
 Build the executable using the provided spec file:
 
 ```shell
-pyinstaller --clean --log-level=DEBUG pysoworks.spec
+poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
 ```
 
 - `--clean` clears any temporary PyInstaller files before building.
@@ -230,4 +230,14 @@ poetry run sphinx-build -b pdf doc build/pdf
 ```shell
 cd doc
 make html
+```
+
+### Building the installer
+
+The project uses [Inno Setup](https://jrsoftware.org/isinfo.php) for building the Windows installer. Ensure that
+you have installed Inno Setup and that is is in the path variable. To build the installer execute the
+following command:
+
+```shell
+iscc .\pysoworks_inno_setup.iss
 ```
