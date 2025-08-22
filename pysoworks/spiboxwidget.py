@@ -25,21 +25,6 @@ from pysoworks.style_manager import StyleManager, style_manager
 from pysoworks.ui_spiboxwidget import Ui_SpiBoxWidget
 
 
-def get_icon(icon_name: str, size: int = 24, fill: bool = True, color : QPalette.ColorRole = QPalette.ColorRole.Highlight) -> MaterialIcon:
-    """
-    Creates and returns a MaterialIcon object with the specified icon name, size, fill style, and color.
-
-    Args:
-        icon_name (str): The name of the icon to retrieve.
-        size (int, optional): The size of the icon in pixels. Defaults to 24.
-        fill (bool, optional): Whether the icon should be filled or outlined. Defaults to True.
-        color (QPalette.ColorRole, optional): The color role to use for the icon. Defaults to QPalette.ColorRole.Highlight.
-    """
-    icon = MaterialIcon(icon_name, size=size, fill=fill)
-    #icon.set_color(QColor.fromString(os.environ.get("QTMATERIAL_PRIMARYCOLOR", "")))
-    icon.set_color(QPalette().color(color))
-    return icon
-
 
 
 class SpiBoxWidget(QWidget):
@@ -64,6 +49,13 @@ class SpiBoxWidget(QWidget):
         ui.singleDatasetGroupBox.setEnabled(False)
         ui.sendSingleButton.clicked.connect(qtinter.asyncslot(self.send_single_dataset))
         style_manager.style.dark_mode_changed.connect(ui.waveformPlot.set_dark_mode)
+
+    def cleanup(self):
+        """
+        Cleans up resources by initiating an asynchronous disconnection from the device.
+        This function needs to get called, before the widget is deleted
+        """
+        result = asyncio.create_task(self.disconnect_from_device())
 
 
     async def search_devices(self):

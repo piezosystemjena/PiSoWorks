@@ -92,16 +92,20 @@ class MainWindow(QMainWindow):
         action_manager.register_menu(MenuID.VIEW, self.ui.menuView)
         action_manager.register_menu(MenuID.HELP, self.ui.menuHelp)
 
+        manual_action = QAction("Manual...", parent=self)
+        manual_action.triggered.connect(self.show_manual)
+        manual_action.setIcon(ui_helpers.get_icon_for_menu("book_2", size=24, fill=False))
+        action_manager.add_action_to_menu(MenuID.HELP, manual_action)
+
         help_action = QAction("Online Manual...", parent=self)
         help_action.triggered.connect(self.show_online_manual)
         help_action.setIcon(ui_helpers.get_icon_for_menu("language", size=24, fill=False))
         action_manager.add_action_to_menu(MenuID.HELP, help_action)
 
-
     def init_style_controls(self):
         """
         Initializes the style controls for the main window.
-        This method sets up the UI elements related to styling and appearance.
+        This method sets up the UI elements related to styling and appearance.  
         """
         menu = self.ui.menuView
         menu.addSeparator()
@@ -158,6 +162,25 @@ class MainWindow(QMainWindow):
         Opens the online manual in the default web browser.
         """
         QDesktopServices.openUrl(QUrl("https://piezosystemjena.github.io/PySoWorks"))
+
+    def show_manual(self):
+        """
+        Attempts to open the user manual in the default web browser.
+
+        The method first tries to locate the manual in the 'doc/index.html' directory
+        relative to the application's executable path. If unsuccessful, it attempts to
+        open the manual from 'doc/_build/index.html' relative to the source code location.
+
+        Status messages are displayed with the resolved manual path for debugging purposes.
+        """
+        base_path = os.path.dirname(sys.executable)
+        manual_path = os.path.join(base_path, "doc/index.html")
+        if QDesktopServices.openUrl(QUrl.fromLocalFile(manual_path)):
+            return
+        base_path = Path(__file__).resolve().parent.parent
+        manual_path = base_path / "doc/_build/index.html"
+        QDesktopServices.openUrl(QUrl.fromLocalFile(manual_path))
+        
 
    
 def setup_logging():
