@@ -68,6 +68,8 @@ class MainWindow(QMainWindow):
 
         # Create the dock manager. Because the parent parameter is a QMainWindow
         # the dock manager registers itself as the central widget.
+        #QtAds.CDockManager.setConfigFlag(QtAds.CDockManager.FocusHighlighting, True)
+        QtAds.CDockManager.setAutoHideConfigFlags(QtAds.CDockManager.DefaultAutoHideConfig)
         self.dock_manager = QtAds.CDockManager(self)
         self.dock_manager.setStyleSheet("")
         ui.actionNv200View.triggered.connect(self.add_nv200_view)
