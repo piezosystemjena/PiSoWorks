@@ -66,6 +66,10 @@ jobs:
         with:
           files: dist/PySoWorks_${{ github.ref_name }}.exe
 
+      - name: Build documentation
+        run: |
+          poetry run sphinx-build -b html doc/ doc/_build/
+
 
   build-installer:
     name: Build Installer with Inno Setup
