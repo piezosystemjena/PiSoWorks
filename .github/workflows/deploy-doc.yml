@@ -1,31 +1,51 @@
 name: Publish Documentation
 
+# -----------------------------------------------------
+# Workflow Triggers
+# -----------------------------------------------------
 on:
   push:
     branches:
-      - main
+      - main         # Run workflow when code is pushed to the main branch
     tags:
-      - 'v*'
-  workflow_dispatch:
+      - 'v*'         # Run workflow when a tag starting with 'v' is pushed (semantic versioning)
+  workflow_dispatch:  # Allows manual triggering of the workflow from GitHub Actions UI
 
+# -----------------------------------------------------
+# Permissions
+# -----------------------------------------------------
 permissions:
-  contents: write
+  contents: write    # Required to push documentation to gh-pages branch
 
+# -----------------------------------------------------
+# Jobs
+# -----------------------------------------------------
 jobs:
   publish:
     name: Publish documentation
+    # Only run on main branch or when manually triggered
     if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+
     steps:
+      # Checkout the repository code to make it available to the workflow
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Set up Python 3.12 and enable pip caching for faster builds
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
+      # Install Poetry and project dependencies
+      # - Upgrade pip to the latest version
+      # - Install Poetry package manager
+      # - Install dynamic versioning plugin for Poetry
+      # - Add plugin to Poetry self-management
+      # - Disable virtual environment creation (install dependencies globally in the runner)
+      # - Install dependencies without installing the project itself
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
@@ -35,12 +55,19 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-root
 
+      # Build HTML documentation using Sphinx
+      # - Source files located in doc/
+      # - Output built documentation to doc/_build/
+      # - Create a .nojekyll file to ensure GitHub Pages does not ignore files starting with underscores
       - name: Build documentation
         run: |
           poetry run sphinx-build -b html doc/ doc/_build/
           touch doc/_build/.nojekyll
 
-
+      # Deploy the built documentation to GitHub Pages
+      # - Only runs if previous steps succeeded
+      # - Pushes the contents of doc/_build/ to the gh-pages branch
+      # - Uses GITHUB_TOKEN secret for authentication
       - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v4

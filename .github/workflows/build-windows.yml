@@ -1,123 +1,161 @@
 name: Build Windows Executable
 
+# -----------------------------------------------------
+# Triggers - when this workflow should run
+# -----------------------------------------------------
 on:
   push:
-    branches: [main]
+    branches: [main]          # Run automatically when code is pushed to "main"
   pull_request:
-    branches: [main]
+    branches: [main]          # Run when a pull request is opened or updated against "main"
   release:
-    types: [published]  # Run this when a release is published
-  workflow_dispatch:
+    types: [published]        # Run when a GitHub Release is published
+  workflow_dispatch:          # Allow manual trigger from the Actions tab
 
+# -----------------------------------------------------
+# Permissions required for this workflow
+# -----------------------------------------------------
 permissions:
-  contents: write  # Required to upload to releases
-  actions: read    # Required for artifact sharing across jobs
+  contents: write  # Needed to upload build artifacts to GitHub Releases
+  actions: read    # Needed to share build artifacts between jobs
 
+# -----------------------------------------------------
+# Job: Build the Windows Executable with PyInstaller
+# -----------------------------------------------------
 jobs:
   build-exe:
     name: Build Windows Executable
-    runs-on: windows-latest
+    runs-on: windows-latest   # Run this job on the latest Windows runner
 
     outputs:
-      artifact-name: PySoWorks.exe
+      artifact-name: PySoWorks.exe  # Pass artifact name to other jobs
 
     steps:
+      # Pull down the repository source code into the runner so it can be built
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Installs and configures Python 3.12 so Poetry and PyInstaller can run
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      # Installs Poetry (a Python dependency manager) at the specified version
       - name: Install Poetry
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: '2.1.2'
 
+      # Configures Poetry to create the virtual environment inside the project folder,
+      # ensuring consistency between developer machines and CI
       - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.in-project true
+        run: poetry config virtualenvs.in-project true
 
+      # Installs only the production dependencies defined in pyproject.toml,
+      # skipping development dependencies since they are not needed for building the executable
       - name: Install dependencies
-        run: |
-          poetry install --no-interaction --without dev
+        run: poetry install --no-interaction --without dev
 
+      # Installs PyInstaller inside the Poetry-managed environment.
+      # PyInstaller is the tool that converts Python scripts into standalone executables
       - name: Install PyInstaller
-        run: |
-          poetry run pip install pyinstaller
+        run: poetry run pip install pyinstaller
 
+      # Uses the PyInstaller spec file (pysoworks.spec) to build the executable.
+      # --clean removes old build files, and DEBUG log level provides detailed output
       - name: Build executable with PyInstaller
-        run: |
-          poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
+        run: poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
 
+      # Uploads the built executable as a workflow artifact,
+      # making it available for later jobs and manual download
       - name: Upload executable as artifact
         uses: actions/upload-artifact@v4
         with:
           name: PySoWorks.exe
           path: dist/PySoWorks.exe
 
+      # Renames the executable to include the branch or release name,
+      # so artifacts from different builds don’t overwrite each other
       - name: Rename executable
         run: mv dist/PySoWorks.exe dist/PySoWorks_${{ github.ref_name }}.exe
 
+      # If this workflow was triggered by a Release event,
+      # the executable is uploaded directly as an asset to the GitHub Release
       - name: Upload to GitHub Release (if applicable)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: dist/PySoWorks_${{ github.ref_name }}.exe
 
-
+# -----------------------------------------------------
+# Job: Build the Windows Installer with Inno Setup
+# -----------------------------------------------------
   build-installer:
     name: Build Installer with Inno Setup
     runs-on: windows-latest
-    needs: build-exe  # <-- makes this job wait until exe is built
+    needs: build-exe  # Ensure installer is built only after the executable job finishes
 
     steps:
+      # Pull down the repository source code into the Windows runner
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Set up Python 3.12 for consistency with the first job
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      # Install Poetry just like in the previous job
       - name: Install Poetry
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: '2.1.2'
 
+      # Use in-project virtual environments for consistency
       - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.in-project true
+        run: poetry config virtualenvs.in-project true
 
+      # Install only development dependencies,
+      # because this job builds documentation and packages the installer
       - name: Install dependencies
-        run: |
-          poetry install --only dev
+        run: poetry install --only dev
 
+      # Build the project documentation using Sphinx,
+      # generating HTML files inside doc/_build/
       - name: Build documentation
-        run: |
-          poetry run sphinx-build -b html doc/ doc/_build/
+        run: poetry run sphinx-build -b html doc/ doc/_build/
 
+      # Download the executable artifact built in the first job,
+      # placing it inside the "dist" folder for packaging
       - name: Download executable artifact
         uses: actions/download-artifact@v4
         with:
           name: PySoWorks.exe
           path: dist
 
+      # Compile the Windows installer using Inno Setup (.iss script)
       - name: Compile Inno Setup Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: pysoworks_inno_setup.iss
 
+      # Upload the installer as a workflow artifact,
+      # so it can be downloaded from the Actions run
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: PySoWorks_Setup.exe
           path: dist/PySoWorks_Setup.exe
 
+      # Rename the installer file to include the branch or release name,
+      # ensuring unique file names across builds
       - name: Rename executable
         run: mv dist/PySoWorks_Setup.exe dist/PySoWorks_Setup_${{ github.ref_name }}.exe
 
+      # If this workflow was triggered by a Release event,
+      # the installer is uploaded directly as an asset to the GitHub Release
       - name: Upload to GitHub Release (if applicable)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2

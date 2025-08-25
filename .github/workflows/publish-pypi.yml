@@ -1,28 +1,46 @@
 name: Publish Python Package
 
+# -----------------------------------------------------
+# Workflow Triggers
+# -----------------------------------------------------
 on:
   push:
     branches:
-      - main
+      - main         # Run workflow when code is pushed to the main branch
     tags:
-      - 'v*'
-  workflow_dispatch:
+      - 'v*'         # Run workflow when a tag starting with 'v' is pushed (semantic versioning)
+  workflow_dispatch:  # Allows manual triggering of the workflow from GitHub Actions UI
 
+# -----------------------------------------------------
+# Jobs
+# -----------------------------------------------------
 jobs:
+  # Job for publishing the package to TestPyPI
   publish-testpypi:
     name: Publish to TestPyPI
+    # Run only on main branch or if manually triggered
     if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+
     steps:
+      # Checkout the repository code to make it available to the workflow
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Set up Python 3.12 and enable pip caching for faster builds
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
+      # Install Poetry and project dependencies
+      # - Upgrade pip to the latest version
+      # - Install Poetry package manager
+      # - Install dynamic versioning plugin for Poetry
+      # - Add plugin to Poetry self-management
+      # - Disable virtual environment creation (install dependencies globally in the runner)
+      # - Install project dependencies without installing the project itself
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
@@ -32,6 +50,10 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-root
 
+      # Publish the package to TestPyPI
+      # - Uses TEST_PYPI_TOKEN secret for authentication
+      # - Configures Poetry to point to TestPyPI repository
+      # - Publishes the package with build
       - name: Publish to TestPyPI
         env:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -40,20 +62,32 @@ jobs:
           poetry config pypi-token.test-pypi $TEST_PYPI_TOKEN
           poetry publish -r test-pypi --build
 
+  # Job for publishing the package to PyPI (official)
   publish-pypi:
     name: Publish to PyPI
+    # Run only if the workflow is triggered by a tag (release) or manually
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+
     steps:
+      # Checkout the repository code to make it available to the workflow
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Set up Python 3.12 and enable pip caching for faster builds
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
+      # Install Poetry and project dependencies
+      # - Upgrade pip to the latest version
+      # - Install Poetry package manager
+      # - Install dynamic versioning plugin for Poetry
+      # - Add plugin to Poetry self-management
+      # - Disable virtual environment creation (install dependencies globally in the runner)
+      # - Install project dependencies without installing the project itself
       - name: Install Poetry and dependencies
         run: |
           pip install --upgrade pip
@@ -63,6 +97,10 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-root
 
+      # Publish the package to PyPI (official)
+      # - Uses PYPI_TOKEN secret for authentication
+      # - Configures Poetry to point to the official PyPI repository
+      # - Publishes the package with build
       - name: Publish to PyPI
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
@@ -70,4 +108,3 @@ jobs:
           poetry config repositories.pypi https://upload.pypi.org/legacy/
           poetry config pypi-token.pypi $PYPI_TOKEN
           poetry publish -r pypi --build
-
