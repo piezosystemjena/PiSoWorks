@@ -272,6 +272,7 @@ def main():
     app.setApplicationDisplayName('PySoWorks')
     app.setOrganizationName('piezosystem jena')
     app.setOrganizationDomain('piezosystem.com')
+    app.setApplicationVersion('1.0.4')
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))

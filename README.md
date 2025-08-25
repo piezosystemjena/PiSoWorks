@@ -251,3 +251,20 @@ following command:
 ```shell
 iscc .\pysoworks_inno_setup.iss
 ```
+
+## Creating a release
+
+Do the following steps, to create a release:
+
+1. Update dependencies - i.e. if you modified `NV200` library, then update it via `poetry update nv200`
+2. Update the `CHANGELOG.md` file with the new release number i.e. 1.0.4
+3. Update the version number in `pysoworks_inno_setup.iss` to match the one in `CHANGELOG.md`
+4. Update the version number in `mainwindow.py` to match the one in `CHANGELOG.md` - `app.setApplicationVersion('1.0.4')`
+5. Commit the changes and push them to GitHub
+6. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
+7. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
+8. Check if puplishing to TestPyPi works - that means that action is successful
+9. Create a new git tag i.e. `v1.0.4` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
+10. GitHub should now create and publish the new version to PyPi - check if it works properly
+11. Create a new Release in GitHub named the same as the Tag and use the create tag
+12. Now GitHub workflow should create a new EXE and Installer suffixed with the new tag
