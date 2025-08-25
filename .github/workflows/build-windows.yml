@@ -66,10 +66,6 @@ jobs:
         with:
           files: dist/PySoWorks_${{ github.ref_name }}.exe
 
-      - name: Build documentation
-        run: |
-          poetry run sphinx-build -b html doc/ doc/_build/
-
 
   build-installer:
     name: Build Installer with Inno Setup
@@ -79,6 +75,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: '2.1.2'
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.in-project true
+
+      - name: Install dependencies
+        run: |
+          poetry install --only dev
+
+      - name: Build documentation
+        run: |
+          poetry run sphinx-build -b html doc/ doc/_build/
 
       - name: Download executable artifact
         uses: actions/download-artifact@v4
