@@ -140,6 +140,16 @@ poetry install --extras "extra1 extra2"
 poetry install -E extra1 -E extra2
 ```
 
+### Updating dependencies
+
+PySoWorks uses the `nv200` library for NV200 device control. Whenever you update the release of the
+NV200 library, you should also update the version used for PySoWorks:
+
+```shell
+poetry update nv200
+```
+
+
 ## Building and Publishing
 
 ### Build the Wheel

@@ -963,14 +963,14 @@ files = [
 
 [[package]]
 name = "nv200"
-version = "1.5.0"
+version = "1.5.1"
 description = "Python library for piezosystem NV200 device"
 optional = false
 python-versions = "<3.14,>=3.12"
 groups = ["main"]
 files = [
-    {file = "nv200-1.5.0-py3-none-any.whl", hash = "sha256:290c796aa11044d2fe0cd88615c79c263997e46d9baab5069aa568a042721796"},
-    {file = "nv200-1.5.0.tar.gz", hash = "sha256:6ef98937664d82d6865149495d4ae9cb133ceb36c21b0d5e76396d74f567cfcf"},
+    {file = "nv200-1.5.1-py3-none-any.whl", hash = "sha256:02c77629f760719db9c7d48d6b06bf1c091f7997d9c5623ae311c5cc7892f508"},
+    {file = "nv200-1.5.1.tar.gz", hash = "sha256:879e90a024cf3de87d5fa8966fa88f75ba82f61521b3653ac889c86258335f1b"},
 ]
 
 [package.dependencies]
@@ -2257,4 +2257,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12,<3.14"
-content-hash = "d34edb89bbb77d98f81504d44d7d52578f5890ad1499f8741e9ef9770dc35153"
+content-hash = "9e7829edb4b6c667a894cd1cd7b73b3866272dae25264abd7b3e0e54207f62f5"
