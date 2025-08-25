@@ -266,5 +266,10 @@ Do the following steps, to create a release:
 8. Check if puplishing to TestPyPi works - that means that action is successful
 9. Create a new git tag i.e. `v1.0.4` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
 10. GitHub should now create and publish the new version to PyPi - check if it works properly
-11. Create a new Release in GitHub named the same as the Tag and use the create tag
-12. Now GitHub workflow should create a new EXE and Installer suffixed with the new tag
+11. Got to `Releases` section in GitHub and select `Draft a new release`
+12. Create a new Release in GitHub named the same as the Tag (2) and use the created tag (1)
+13. Copy the information in the `CHANGELOG.md` in the editor (3) and click `Publish release` button (4)
+
+![Create Release](doc/images/create_release.png)
+
+14. Now GitHub workflow should create a new EXE and Installer suffixed with the new tag
