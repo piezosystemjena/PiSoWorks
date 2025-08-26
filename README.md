@@ -199,11 +199,8 @@ poetry publish -r test-pypi
 
 You can create a standalone executable of PySoWorks using PyInstaller.
 
-Make sure PyInstaller is installed in your environment:
-
-```shell
-pip install pyinstaller
-```
+Make sure PyInstaller is installed in your environment, normally this
+is done by `poetry install` as a dev dpendency.
 
 Build the executable using the provided spec file:
 
