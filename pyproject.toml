@@ -32,7 +32,12 @@ Documentation = "https://piezosystemjena.github.io/PySoWorks"
 [tool.poetry.scripts]
 # This section defines the entry points for the package, allowing users to run the application
 # from the command line. The `pysoworks` script will execute the `main` function
-# from the `main` module within the `pysoworks` package.
+# from the `main` module within the `pysoworks` package. That means, a user that installs
+# the PySoWorks library from pip can do the following:
+#
+# pip install pysoworks
+# pysoworks
+#
 pysoworks = "pysoworks.__main__:main"
 
 
