@@ -57,6 +57,11 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --without dev
 
+      # Generate version information from git tags and commit history and write it
+      # into VERSION file for later use
+      - name: Extract version information
+        run: python generate_version.py
+
       # Installs PyInstaller inside the Poetry-managed environment.
       # PyInstaller is the tool that converts Python scripts into standalone executables
       - name: Install PyInstaller
@@ -121,6 +126,11 @@ jobs:
       # because this job builds documentation and packages the installer
       - name: Install dependencies
         run: poetry install --only dev
+
+      # Generate version information from git tags and commit history and write it
+      # into VERSION file for later use
+      - name: Extract version information
+        run: python generate_version.py
 
       # Build the project documentation using Sphinx,
       # generating HTML files inside doc/_build/

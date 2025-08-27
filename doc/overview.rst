@@ -73,12 +73,12 @@ The following tools are available for plot interaction:
 +------------------------+-------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
 | Button                 | Function / Action             | Detailed Description / User Instructions                                                                                              |
 +========================+===============================+=======================================================================================================================================+
-| |home|                 | Resets the plot view.         | Returns the plot to its original view. Use this to undo any zoom or pan operations.                                                   |
+| |home_action|          | Resets the plot view.         | Returns the plot to its original view. Use this to undo any zoom or pan operations.                                                   |
 +------------------------+-------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
 | |back|                 | Step back in navigation       | Moves back to the previous view in the navigation history. Useful if you want to revert a recent zoom or pan.                         |
 |                        | history.                      |                                                                                                                                       |
 +------------------------+-------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| |forward|              | Step forward in navigation    | Moves forward to the next view in the navigation history. Works only after using “Back”.                                              |
+| |forward_action|       | Step forward in navigation    | Moves forward to the next view in the navigation history. Works only after using “Back”.                                              |
 |                        | history.                      |                                                                                                                                       |
 +------------------------+-------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
 | |pan|                  | Activate pan mode.            | Click the button to enable panning. Then click and drag on the plot to move it horizontally or vertically. Click the button again     |
@@ -100,13 +100,13 @@ The following tools are available for plot interaction:
 
 
 
-.. |home| image:: images/icon_home.svg
+.. |home_action| image:: images/icon_home.svg
    :width: 40
 
 .. |back| image:: images/icon_arrow_back.svg
    :width: 40
 
-.. |forward| image:: images/icon_arrow_forward.svg
+.. |forward_action| image:: images/icon_arrow_forward.svg
    :width: 40
 
 .. |pan| image:: images/icon_pan_tool.svg

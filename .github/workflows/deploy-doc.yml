@@ -58,8 +58,7 @@ jobs:
       # Generate version information from git tags and commit history and write it
       # into VERSION file for later use
       - name: Extract version information
-        run: |
-          python generate_version.py
+        run: python generate_version.py
 
       # Build HTML documentation using Sphinx
       # - Source files located in doc/
