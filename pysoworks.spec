@@ -12,7 +12,8 @@ hidden_imports = (
 
 datas = (
     collect_data_files('pysoworks.assets') +
-    collect_data_files('pysoworks.styles')
+    collect_data_files('pysoworks.styles') + 
+     [('VERSION', '.')]
 )
 
 a = Analysis(

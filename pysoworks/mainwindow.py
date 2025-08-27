@@ -269,10 +269,12 @@ def main():
 
     app = ExceptionCatchingApplication(sys.argv)
     app.setApplicationName('PySoWorks')
-    app.setApplicationDisplayName('PySoWorks')
     app.setOrganizationName('piezosystem jena')
     app.setOrganizationDomain('piezosystem.com')
-    app.setApplicationVersion('1.0.4')
+    version = Path(resource_path("VERSION")).read_text(encoding="utf-8").strip()
+    app.setApplicationVersion(version)
+    print(f"PySoWorks Version: {version}")
+    app.setApplicationDisplayName(f'PySoWorks {version}')
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
     app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
@@ -280,7 +282,7 @@ def main():
 
     widget = MainWindow()
     widget.show()
-    widget.setWindowTitle('PySoWorks')
+    widget.setWindowTitle(app.applicationDisplayName())
 
     style_manager.notify_application()
 

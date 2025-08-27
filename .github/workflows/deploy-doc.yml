@@ -55,6 +55,12 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-root
 
+      # Generate version information from git tags and commit history and write it
+      # into VERSION file for later use
+      - name: Extract version information
+        run: |
+          python generate_version.py
+
       # Build HTML documentation using Sphinx
       # - Source files located in doc/
       # - Output built documentation to doc/_build/

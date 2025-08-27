@@ -149,6 +149,30 @@ NV200 library, you should also update the version used for PySoWorks:
 poetry update nv200
 ```
 
+## Building the documentation
+
+Documentation is generated using [Sphinx](https://www.sphinx-doc.org/), located in the `doc/` folder.
+
+### With Poetry
+
+HTML Documentation:
+
+```shell
+poetry run sphinx-build -b html doc/ doc/_build/
+```
+
+PDF Documentation
+
+```shell
+poetry run sphinx-build -b pdf doc build/pdf
+```
+
+### With Make
+
+```shell
+cd doc
+make html
+```
 
 ## Building and Publishing
 
@@ -162,7 +186,7 @@ poetry build
 
 This creates a `.whl` and `.tar.gz` file in the `dist/` directory.
 
-### Publishing 
+### Publishing the Wheel
 
 #### To TestPyPI
 
@@ -194,15 +218,18 @@ poetry config pypi-token.pypi your-token-here
 poetry publish -r test-pypi
 ```
 
-
 ### Building a Standalone Executable with PyInstaller
+
+Before you build the executable or the installer you need to update the `VERSION` file that
+contains the version information that is extracted from Git and used by the application
+and by the installer. To update the `VERSION` file you need to run the `generate_version`
 
 You can create a standalone executable of PySoWorks using PyInstaller.
 
 Make sure PyInstaller is installed in your environment, normally this
-is done by `poetry install` as a dev dpendency.
+is done by `poetry install` as a dev dependency.
 
-Build the executable using the provided spec file:
+Build the executable using the provided spec file using this command.
 
 ```shell
 poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
@@ -213,31 +240,6 @@ poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
 - `--log-level=DEBUG` enables detailed logging to help diagnose any build issues.
 
 The resulting executable will be located in the `dist/` directory.
-
-## Building the documentation
-
-Documentation is generated using [Sphinx](https://www.sphinx-doc.org/), located in the `doc/` folder.
-
-### With Poetry
-
-HTML Documentation:
-
-```shell
-poetry run sphinx-build -b html doc/ doc/_build/
-```
-
-PDF Documentation
-
-```shell
-poetry run sphinx-build -b pdf doc build/pdf
-```
-
-### With Make
-
-```shell
-cd doc
-make html
-```
 
 ### Building the installer
 

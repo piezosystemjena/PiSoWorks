@@ -6,6 +6,15 @@
 
 ; Define application name (used throughout the script for consistency)
 #define APP_NAME "PySoWorks"
+#define COMPANY "piezosystem jena GmbH"
+#define VerFile FileOpen("VERSION")
+
+; Read the product version from version file - it can be something like 1.0.4 for a release or 1.0.5.dev3 for a pre-release
+#define PRODUCT_VERSION FileRead(VerFile)
+
+; Find first non-digit/dot and make a version like 1.0.5.dev3 to 1.0.5 - this is required for VersionInfoVersion
+#define FILE_VERSION Copy(PRODUCT_VERSION, 1, Pos("d", PRODUCT_VERSION) - 1)
+
 
 ;------------------------------------------------------------
 ; Setup Section: Installer configuration
@@ -16,7 +25,7 @@
 AppName={#APP_NAME}
 
 ; Application version
-AppVersion=1.0.4
+AppVersion={#PRODUCT_VERSION}
 
 ; Default install directory (user-space, no admin rights required)
 DefaultDirName={userappdata}\Programs\{#APP_NAME}
@@ -54,6 +63,13 @@ SetupIconFile=pysoworks\assets\app_icon.ico
 ; Use modern wizard UI style
 WizardStyle=modern
 
+; The version information to show if you right click on the setup file and go to details tab
+VersionInfoVersion={#FILE_VERSION} 
+VersionInfoCompany={#COMPANY}
+VersionInfoDescription=PySoWorks Setup
+VersionInfoCopyright=© 2025 {#COMPANY}
+
+
 ;------------------------------------------------------------
 ; Files Section: Files to be installed
 ;------------------------------------------------------------
@@ -84,8 +100,9 @@ Name: "{userdesktop}\PySoWorks"; Filename: "{app}\PySoWorks.exe"; Tasks: desktop
 ;------------------------------------------------------------
 [Tasks]
 
-; Task for creating a desktop shortcut (unchecked by default)
-Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; Flags: unchecked
+; Task for creating a desktop shortcut (checked by default)
+Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"
+
 
 ;------------------------------------------------------------
 ; Run Section: Post-install actions

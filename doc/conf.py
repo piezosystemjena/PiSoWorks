@@ -8,16 +8,14 @@
 
 
 
-import sphinx_rtd_theme
-import sphinx_fontawesome
 import os
 import sys
+from pathlib import Path
 from sphinx.roles import MenuSelection
 from docutils import nodes
 from docutils.parsers.rst import roles
 
 sys.path.insert(0, os.path.abspath('..'))
-#sys.path.insert(0, os.path.abspath('../nv200'))
 
 def styled_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     # Create a span element with a custom CSS class
@@ -30,13 +28,17 @@ def setup(app):
 
 
 # -- Project information -----------------------------------------------------
-project = 'PySoWorks'
 copyright = '2025, piezosystem Jena'
 author = 'piezosystem Jena'
-release = '1.0.0'
+release = Path("../VERSION").read_text().strip()
+version = release
+# If you would like to add the version to the project name, you can do it this way:
+# project = f"PySoWorks {release}"
+project = 'PySoWorks'
 html_show_copyright = True
 html_show_sphinx = True
 html_show_sourcelink = False
+
 
 
 # -- General configuration ---------------------------------------------------
@@ -92,8 +94,6 @@ html_theme_options = {
     # 'includehidden': True,
     # canonical_url: This will specify a canonical URL meta link element to tell search engines which URL should be ranked as the primary URL for your documentation. This is important if you have multiple URLs that your documentation is available through. The URL points to the root path of the documentation and requires a trailing slash.
     #'canonical_url': 'https://docs.qgis.org/latest/en/',
-    # display_version: If True, the version number is shown at the top of the sidebar. Default: True,
-    #'display_version': True,
     # logo_only: Only display the logo image, do not display the project name at the top of the sidebar. Default: False,
     'logo_only': False,
     # prev_next_buttons_location': Location to display Next and Previous buttons. This can be either bottom, top, both , or None. Default: 'bottom',

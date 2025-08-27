@@ -49,7 +49,8 @@ body > div > nav > div > div.wy-side-nav-search > a {
 
 a.icon-home {
   font-family: "pathway_extreme_bold";
-  font-size: 24px;
+  font-size: 26px;
+  letter-spacing: 0.02em; /* 2% of the font size */
 }
 
 /* Smaller logo, adjust margins after reordering with project name */
@@ -80,6 +81,7 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
     font-family: "pathway_extreme_bold";
     line-height: 1;
     margin-top: 21px;
+    letter-spacing: 0.02em; /* 2% of the font size */
 }
 
 
