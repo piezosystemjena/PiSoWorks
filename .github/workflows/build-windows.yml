@@ -46,6 +46,7 @@ jobs:
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: '2.1.2'
+          poetry-plugins: 'poetry-dynamic-versioning[plugin]'
 
       # Configures Poetry to create the virtual environment inside the project folder,
       # ensuring consistency between developer machines and CI
@@ -117,6 +118,7 @@ jobs:
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: '2.1.2'
+          poetry-plugins: 'poetry-dynamic-versioning[plugin]'
 
       # Use in-project virtual environments for consistency
       - name: Configure Poetry
