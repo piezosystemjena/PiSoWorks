@@ -286,18 +286,16 @@ Do the following steps, to create a release:
 
 1. Update dependencies - i.e. if you modified `NV200` library, then update it via `poetry update nv200`
 2. Update the `CHANGELOG.md` file with the new release number i.e. 1.0.4
-3. Update the version number in `pysoworks_inno_setup.iss` to match the one in `CHANGELOG.md`
-4. Update the version number in `mainwindow.py` to match the one in `CHANGELOG.md` - `app.setApplicationVersion('1.0.4')`
-5. Commit the changes and push them to GitHub
-6. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
-7. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
-8. Check if puplishing to TestPyPi works - that means that action is successful
-9. Create a new git tag i.e. `v1.0.4` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
-10. GitHub should now create and publish the new version to PyPi - check if it works properly
-11. Got to `Releases` section in GitHub and select `Draft a new release`
-12. Create a new Release in GitHub named the same as the Tag (2) and use the created tag (1)
-13. Copy the information in the `CHANGELOG.md` in the editor (3) and click `Publish release` button (4)
+3. Commit the changes and push them to GitHub
+4. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
+5. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
+6. Check if puplishing to TestPyPi works - that means that action is successful
+7. Create a new git tag i.e. `v1.0.5` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
+8.  GitHub should now create and publish the new version to PyPi - check if it works properly
+9.  Got to `Releases` section in GitHub and select `Draft a new release`
+10. Create a new Release in GitHub named the same as the Tag (2) and use the created tag (1)
+11. Copy the information in the `CHANGELOG.md` in the editor (3) and click `Publish release` button (4)
 
 ![Create Release](doc/images/create_release.png)
 
-14. Now GitHub workflow should create a new EXE and Installer suffixed with the new tag
+12. Now GitHub workflow should create a new EXE and Installer suffixed with the new tag
