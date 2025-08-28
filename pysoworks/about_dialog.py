@@ -47,7 +47,7 @@ class AboutDialog(QDialog):
         ui = self.ui
         ui.urlLabel.setTextFormat(Qt.TextFormat.RichText)
         ui.urlLabel.setOpenExternalLinks(True)
-        ui.urlLabel.linkActivated.connect(lambda: print("URL clicked"))
+
 
     def _setup_default_logos(self) -> None:
         """Set the default application and organization logos."""

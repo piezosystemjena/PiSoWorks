@@ -1166,6 +1166,7 @@ class NV200Widget(QWidget):
             self.status_message.emit("Move operation started.", 0)
             await self.plot_recorder_data(ui.easyModePlot)
             ui.mainProgressBar.stop(success=True, context="start_move")
+            self.status_message.emit("", 0)
         except Exception as e:
             self.status_message.emit(f"Error during move operation: {e}", 4000)
             ui.mainProgressBar.reset()
@@ -1173,7 +1174,7 @@ class NV200Widget(QWidget):
             return
         finally:
             ui.easyModeGroupBox.setEnabled(True)
-            self.status_message.emit("", 0)
+            
 
     async def on_current_tab_changed(self, index: int):
         """
