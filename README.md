@@ -284,17 +284,18 @@ iscc .\pysoworks_inno_setup.iss
 
 Do the following steps, to create a release:
 
-1. Update dependencies - i.e. if you modified `NV200` library, then update it via `poetry update nv200`
-2. Update the `CHANGELOG.md` file with the new release number i.e. 1.0.4
-3. Commit the changes and push them to GitHub
-4. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
-5. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
-6. Check if puplishing to TestPyPi works - that means that action is successful
-7. Create a new git tag i.e. `v1.0.5` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
-8.  GitHub should now create and publish the new version to PyPi - check if it works properly
-9.  Got to `Releases` section in GitHub and select `Draft a new release`
-10. Create a new Release in GitHub named the same as the Tag (2) and use the created tag (1)
-11. Copy the information in the `CHANGELOG.md` in the editor (3) and click `Publish release` button (4)
+1. Check the version of the nv200 library used in the lock file `poetry show nv200`
+2. Update dependencies - i.e. if you modified `NV200` library, then update it via `poetry update nv200`
+3. Update the `CHANGELOG.md` file with the new release number i.e. 1.0.4
+4. Commit the changes and push them to GitHub
+5. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
+6. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
+7. Check if puplishing to TestPyPi works - that means that action is successful
+8. Create a new git tag i.e. `v1.0.5` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
+9.  GitHub should now create and publish the new version to PyPi - check if it works properly
+10. Got to `Releases` section in GitHub and select `Draft a new release`
+11. Create a new Release in GitHub named the same as the Tag (2) and use the created tag (1)
+12. Copy the information in the `CHANGELOG.md` in the editor (3) and click `Publish release` button (4)
 
 ![Create Release](doc/images/create_release.png)
 
