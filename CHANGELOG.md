@@ -3,10 +3,27 @@
 All notable changes to this project will be documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.5] - 2025-08-28
+
+### Added
+
+- **About Dialog** Displays version information and link to homepage
+- **Version Information** Software version is now shown in titlebar
+
+### Improved
+
+- **Icons** Added some missing icons to menu entries
+
+### Fixed
+
+- **SPI Box** Fixed some basic problems in SPI Box View
+ 
+
 ## [1.0.4] - 2025-08-25
 
 - improved documentation
 - fixed a number of minor bugs
+- 
 
 ## [1.0.1] - 2025-08-11
 
