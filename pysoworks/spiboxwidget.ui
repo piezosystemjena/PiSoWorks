@@ -30,7 +30,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="searchDevicesButton">
+      <widget class="QToolButton" name="searchDevicesButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -39,6 +39,18 @@
        </property>
        <property name="text">
         <string>Search Devices ...</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::ToolButtonPopupMode::MenuButtonPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="style" stdset="0">
+        <string>pushButton</string>
+       </property>
+       <property name="alignedWithEdit" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -308,8 +320,11 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>5</height>
+       <height>3</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QProgressBar { background: transparent;}</string>
      </property>
      <property name="value">
       <number>0</number>

@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
     QFrame, QGridLayout, QGroupBox, QHBoxLayout,
     QLabel, QPushButton, QSizePolicy, QSpacerItem,
-    QVBoxLayout, QWidget)
+    QToolButton, QVBoxLayout, QWidget)
 
 from pysoworks.mplcanvas import MplWidget
 from pysoworks.timed_progress_bar import TimedProgressBar
@@ -43,13 +43,16 @@ class Ui_SpiBoxWidget(object):
 
         self.horizontalLayout.addWidget(self.devicesComboBox)
 
-        self.searchDevicesButton = QPushButton(SpiBoxWidget)
+        self.searchDevicesButton = QToolButton(SpiBoxWidget)
         self.searchDevicesButton.setObjectName(u"searchDevicesButton")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.searchDevicesButton.sizePolicy().hasHeightForWidth())
         self.searchDevicesButton.setSizePolicy(sizePolicy1)
+        self.searchDevicesButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        self.searchDevicesButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.searchDevicesButton.setProperty(u"alignedWithEdit", True)
 
         self.horizontalLayout.addWidget(self.searchDevicesButton)
 
@@ -203,7 +206,8 @@ class Ui_SpiBoxWidget(object):
 
         self.moveProgressBar = TimedProgressBar(SpiBoxWidget)
         self.moveProgressBar.setObjectName(u"moveProgressBar")
-        self.moveProgressBar.setMaximumSize(QSize(16777215, 5))
+        self.moveProgressBar.setMaximumSize(QSize(16777215, 3))
+        self.moveProgressBar.setStyleSheet(u"QProgressBar { background: transparent;}")
         self.moveProgressBar.setValue(0)
         self.moveProgressBar.setTextVisible(False)
 
@@ -218,6 +222,7 @@ class Ui_SpiBoxWidget(object):
     def retranslateUi(self, SpiBoxWidget):
         SpiBoxWidget.setWindowTitle(QCoreApplication.translate("SpiBoxWidget", u"Form", None))
         self.searchDevicesButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Search Devices ...", None))
+        self.searchDevicesButton.setProperty(u"style", QCoreApplication.translate("SpiBoxWidget", u"pushButton", None))
         self.connectButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Connect", None))
         self.singleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Single Dataset", None))
         self.singleDatasetSendCh1SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))

@@ -4,9 +4,9 @@ import asyncio
 import logging
 import os
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QWidget, QMenu
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QPalette, QIcon, QAction
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
 from qt_material_icons import MaterialIcon
@@ -16,7 +16,7 @@ from nv200.device_discovery import discover_devices
 from nv200.spibox_device import SpiBoxDevice
 from nv200.connection_utils import connect_to_detected_device
 from pysoworks.style_manager import StyleManager, style_manager
-
+from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -40,22 +40,75 @@ class SpiBoxWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self.ui = Ui_SpiBoxWidget()
         ui = self.ui
         ui.setupUi(self)
-        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
-        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
-        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
+        self.init_device_search_ui()
         ui.singleDatasetGroupBox.setEnabled(False)
         ui.sendSingleButton.clicked.connect(qtinter.asyncslot(self.send_single_dataset))
         style_manager.style.dark_mode_changed.connect(ui.waveformPlot.set_dark_mode)
 
-    def cleanup(self):
+
+    def init_device_search_ui(self):
         """
-        Cleans up resources by initiating an asynchronous disconnection from the device.
-        This function needs to get called, before the widget is deleted
+        Initializes the device search UI components, including buttons and combo boxes for device selection.
         """
-        result = asyncio.create_task(self.disconnect_from_device())
+        ui = self.ui
+        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
+        ui.searchDevicesButton.clicked.connect(safe_asyncslot(self.search_all_devices))
+
+        # Create the menu
+        menu = QMenu(self)
+
+        # Create actions
+        serial_action = QAction("USB Devices", ui.searchDevicesButton)
+        serial_action.setIcon(get_icon_for_menu("usb"))
+        ethernet_action = QAction("Ethernet Devices", ui.searchDevicesButton)
+        ethernet_action.setIcon(get_icon("lan"))
+
+        # Connect actions to appropriate slots
+        serial_action.triggered.connect(safe_asyncslot(self.search_serial_devices))
+        ethernet_action.triggered.connect(safe_asyncslot(self.search_ethernet_devices))
+
+        # Add actions to menu
+        menu.addAction(serial_action)
+        menu.addAction(ethernet_action)
+
+        # Set the menu to the button
+        ui.searchDevicesButton.setMenu(menu)
+                                       
+        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
+        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
+        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
+        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
+
+
+    async def search_all_devices(self):
+        """
+        Asynchronously searches for all available devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.ALL
+        await self.search_devices()
+
+
+    async def search_serial_devices(self):
+        """
+        Asynchronously searches for serial devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.DETECT_SERIAL
+        await self.search_devices()
+
+    async def search_ethernet_devices(self):
+        """
+        Asynchronously searches for Ethernet devices and updates the UI accordingly.
+        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        """
+        self._discover_flags = DiscoverFlags.DETECT_ETHERNET
+        await self.search_devices()
 
 
     async def search_devices(self):
@@ -74,10 +127,10 @@ class SpiBoxWidget(QWidget):
             self._device = None
         
         print("Searching...")
-        ui.moveProgressBar.start(5000, "search_devices")
+        ui.moveProgressBar.start(300)
         try:
             print("Discovering devices...")
-            devices = await discover_devices(flags=DiscoverFlags.ALL | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=SpiBoxDevice)    
+            devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=SpiBoxDevice)    
             
             if not devices:
                 print("No devices found.")
@@ -178,3 +231,10 @@ class SpiBoxWidget(QWidget):
         self.ui.singleDatasetReceiveCh1SpinBox.setValue(rxdata[0])
         self.ui.singleDatasetReceiveCh2SpinBox.setValue(rxdata[1])
         self.ui.singleDatasetReceiveCh3SpinBox.setValue(rxdata[2])
+
+    def cleanup(self):
+        """
+        Cleans up resources by initiating an asynchronous disconnection from the device.
+        This function needs to get called, before the widget is deleted
+        """
+        result = asyncio.create_task(self.disconnect_from_device())
