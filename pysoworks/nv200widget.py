@@ -41,7 +41,7 @@ from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
 from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
-import ui_helpers
+import pysoworks.ui_helpers as ui_helpers
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
 
