@@ -3020,3 +3020,34 @@ QPushButton[text-align="left"]
     text-align: left;
     padding-left: 10px;
 }
+
+
+AboutDialog QFrame#contentFrame
+{
+    background: {{backgroundDarker}};
+}
+
+AboutDialog QLabel#applicationLabel
+{
+    font-size: 17px;
+    font-weight: normal;
+    color: {{accentColor}};
+}
+
+AboutDialog QLabel#urlLabel
+{
+    color: {{accentColor}};
+    text-decoration: underline;
+}
+
+
+AboutDialog QLabel#organizationLogoLabel
+{
+    padding-top: 40px;;
+}
+
+
+AboutDialog QLabel#applicationLogoLabel
+{
+    padding-right: 40px;
+}

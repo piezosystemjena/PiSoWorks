@@ -3,7 +3,8 @@ from functools import wraps
 from typing import Any, Callable, Awaitable
 from pathlib import Path
 from qt_material_icons import MaterialIcon
-from PySide6.QtGui import QPalette, QIcon
+from PySide6.QtCore import QObject
+from PySide6.QtGui import QPalette, QIcon, QPixmap, QAction
 from PySide6.QtWidgets import QComboBox, QMessageBox, QStyle, QWidget
 import qtinter
 
@@ -106,3 +107,33 @@ def repolish(w : QWidget):
     """
     w.style().unpolish(w)
     w.style().polish(w)
+
+
+def company_logo_pixmap(dark_theme : bool) -> QPixmap :
+    """
+    Returns a QPixmap object containing the company logo image, selecting the appropriate version for dark or light themes.
+
+    Args:
+        dark_theme (bool): If True, returns the logo suitable for dark themes; otherwise, returns the logo for light themes.
+
+    Returns:
+        QPixmap: The pixmap containing the company logo image.
+    """
+    if dark_theme:
+        image_file = "piezosystem_logo_white@2x.png"
+    else:
+        image_file = "piezosystem_logo@2x.png"
+    image_path = images_path() / image_file
+    return QPixmap(str(image_path))
+
+
+def menu_separator(parent : QObject | None) -> QAction:
+    """
+    Creates and returns a QAction that serves as a separator in menus.
+
+    Returns:
+        QAction: A QAction configured as a separator.
+    """
+    sep = QAction(parent)
+    sep.setSeparator(True)
+    return sep

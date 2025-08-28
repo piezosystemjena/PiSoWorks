@@ -25,6 +25,7 @@ from pysoworks.spiboxwidget import SpiBoxWidget
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
 from pysoworks.settings_manager import SettingsContext
+from pysoworks.about_dialog import AboutDialog
 import pysoworks.ui_helpers as ui_helpers
 
 
@@ -73,7 +74,9 @@ class MainWindow(QMainWindow):
         self.dock_manager = QtAds.CDockManager(self)
         self.dock_manager.setStyleSheet("")
         ui.actionNv200View.triggered.connect(self.add_nv200_view)
+        ui.actionNv200View.setIcon(ui_helpers.get_icon_for_menu("add", size=24, fill=False))
         ui.actionSpiBoxView.triggered.connect(self.add_spibox_view)
+        ui.actionSpiBoxView.setIcon(ui_helpers.get_icon_for_menu("add", size=24, fill=False))
         self.add_nv200_view()
         self.resize(1600, 900)  # Set initial size to 800x600
 
@@ -101,6 +104,13 @@ class MainWindow(QMainWindow):
         help_action.triggered.connect(self.show_online_manual)
         help_action.setIcon(ui_helpers.get_icon_for_menu("language", size=24, fill=False))
         action_manager.add_action_to_menu(MenuID.HELP, help_action)
+
+        action_manager.add_action_to_menu(MenuID.HELP, ui_helpers.menu_separator(self))
+
+        show_about_dlg_action = QAction("About PySoWorks", parent=self)
+        show_about_dlg_action.triggered.connect(self.show_about_dialog)
+        show_about_dlg_action.setIcon(QIcon(str(ui_helpers.images_path() / "app_icon.svg")))
+        action_manager.add_action_to_menu(MenuID.HELP, show_about_dlg_action)
 
     def init_style_controls(self):
         """
@@ -180,7 +190,14 @@ class MainWindow(QMainWindow):
         base_path = Path(__file__).resolve().parent.parent
         manual_path = base_path / "doc/_build/index.html"
         QDesktopServices.openUrl(QUrl.fromLocalFile(manual_path))
-        
+
+
+    def show_about_dialog(self):
+        """
+        Displays the About dialog.
+        """
+        dialog = AboutDialog(self)
+        dialog.exec_()
 
    
 def setup_logging():
@@ -270,7 +287,7 @@ def main():
     app = ExceptionCatchingApplication(sys.argv)
     app.setApplicationName('PySoWorks')
     app.setOrganizationName('piezosystem jena')
-    app.setOrganizationDomain('piezosystem.com')
+    app.setOrganizationDomain('https://www.piezosystem.com/')
     version = Path(resource_path("VERSION")).read_text(encoding="utf-8").strip()
     app.setApplicationVersion(version)
     print(f"PySoWorks Version: {version}")

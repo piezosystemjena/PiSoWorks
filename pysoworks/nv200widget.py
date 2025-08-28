@@ -40,7 +40,8 @@ from nv200.utils import DeviceParamFile
 from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
 from pysoworks.svg_cycle_widget import SvgCycleWidget
 from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish
+from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
+import ui_helpers
 from pysoworks.action_manager import ActionManager, MenuID, action_manager
 from pysoworks.style_manager import StyleManager, style_manager
 
@@ -142,15 +143,7 @@ class NV200Widget(QWidget):
         Side Effects:
             Updates the pixmap of the piezoIconLabel in the UI to display the appropriate logo image.
         """
-        print(f"Setting piezosystem logo for dark theme: {dark_theme}")
-        ui = self.ui
-        base_dir = Path(__file__).parent
-        if dark_theme:
-            image_file = "piezosystem_logo_white@2x.png"
-        else:
-            image_file = "piezosystem_logo@2x.png"
-        image_path = base_dir / "assets" / "images" / image_file
-        ui.piezoIconLabel.setPixmap(QPixmap(str(image_path)))
+        self.ui.piezoIconLabel.setPixmap(ui_helpers.company_logo_pixmap(dark_theme))
 
 
     def register_main_menu_actions(self):
@@ -162,6 +155,7 @@ class NV200Widget(QWidget):
             return
 
         NV200Widget.browse_dev_param_action = a = QAction("Browse Device Parameter Backups ...", self.parentWidget())
+        a.setIcon(ui_helpers.get_icon_for_menu("folder", size=24, fill=False))
         action_manager.add_action_to_menu(MenuID.FILE, a)
         a.triggered.connect(self.browse_device_param_backups)
 
