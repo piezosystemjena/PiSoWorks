@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.6] - 2025-08-29
+
+- fixed a small bug that caused missing error status message for easy mode
+
 ## [1.0.5] - 2025-08-28
 
 ### Added
