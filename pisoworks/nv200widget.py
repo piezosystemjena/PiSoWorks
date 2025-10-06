@@ -653,20 +653,35 @@ class NV200Widget(QWidget):
         in the UI based on the setpoint range retrieved from the device.
         """
         print("Updating target position spin boxes...")
-        ui = self.ui
         dev = self.device
-
         setpoint_range = await dev.get_setpoint_range()
+        unit = await dev.get_setpoint_unit()
+        self.update_target_pos_edits_easy(unit, setpoint_range)
+        self.update_target_pos_edits_wave(unit, setpoint_range)
+    
+
+    def update_target_pos_edits_easy(self, unit, setpoint_range):
+        """
+        Updates the minimum and maximum values for the target position spin boxes
+        in the Easy Mode UI based on the specified unit and setpoint range.
+        """
+        ui = self.ui
         ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox.setValue(setpoint_range[1]) # Default to high end
         ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox_2.setValue(setpoint_range[0])  # Default to low end
-        unit = await dev.get_setpoint_unit()
         ui.targetPosSpinBox.setSuffix(f" {unit}")
         ui.targetPosSpinBox_2.setSuffix(f" {unit}")
         ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
-        
         ui.rangeLabel.setText(f"{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}")
+
+
+    def update_target_pos_edits_wave(self, unit, setpoint_range):
+        """
+        Updates the minimum and maximum values for the target position spin boxes
+        in the Easy Mode UI based on the specified unit and setpoint range.
+        """
+        ui = self.ui
         ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.lowLevelSpinBox.setValue(setpoint_range[0])
         ui.lowLevelSpinBox.setSuffix(f" {unit}")
@@ -687,11 +702,21 @@ class NV200Widget(QWidget):
         try:
             await self.device.pid.set_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
-            await self.update_target_pos_edits()
+            await self.update_pid_mode_ui()
         except Exception as e:
             print(f"Error setting PID mode: {e}")
             self.status_message.emit(f"Error setting PID mode: {e}", 2000)
             return
+
+
+    async def update_pid_mode_ui(self):
+        await self.update_target_pos_edits()
+        await self.update_pid_mode_selector()
+
+
+    async def update_pid_mode_selector(self):
+        pid_mode = await self.device.pid.get_mode()
+        self.ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         
        
     async def apply_controller_parameters(self):
@@ -707,6 +732,8 @@ class NV200Widget(QWidget):
                 print(f"Applying changes from widget: {widget}")
                 await widget.applyfunc(tracker.get_value_of_widget(widget))
                 tracker.reset_widget(widget)
+            
+            await self.update_pid_mode_ui()
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -726,10 +753,7 @@ class NV200Widget(QWidget):
         Asynchronously initializes the UI elements for easy mode UI.
         """
         print("Initializing UI from device...")
-        dev = self.device
-        ui = self.ui
-        pid_mode = await dev.pid.get_mode()
-        ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
+        await self.update_pid_mode_ui()
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
         self.settings_widget_change_tracker.backup_current_values("initial")
