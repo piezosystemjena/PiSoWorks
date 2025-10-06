@@ -1048,12 +1048,25 @@ class NV200Widget(QWidget):
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
         rec_data0 = await recorder.read_recorded_data_of_channel(0)
+
         if clear_plot:
             plot.clear_plot()
+
+        # If using secondary axes for plotting, use correct labels
+        if second_axes_index == 1:
+            ax1 = plot.get_axes(0)
+            ax2 = plot.get_axes(1)
+
+            ax1.set_xlabel('Time (ms)')
+            ax1.set_ylabel('Piezo Voltage (V)')
+            ax2.set_xlabel('Time (ms)')
+            ax2.set_ylabel('Piezo Position (μm or mrad)')
+
         plot.add_recorder_data_line(rec_data0, QColor('orange'), 0)
         rec_data1 = await recorder.read_recorded_data_of_channel(1)
         plot.add_recorder_data_line(rec_data1, QColor(0, 255, 0), second_axes_index)
         self.status_message.emit("", 0)
+
         return rec_data0, rec_data1
 
 
@@ -1188,7 +1201,7 @@ class NV200Widget(QWidget):
             print("Starting move operation...")
             await dev.move(spinbox.value())
             self.status_message.emit("Move operation started.", 0)
-            await self.plot_recorder_data(ui.easyModePlot)
+            await self.plot_recorder_data(ui.easyModePlot, second_axes_index = 1)
             ui.mainProgressBar.stop(success=True, context="start_move")
             self.status_message.emit("", 0)
         except Exception as e:
