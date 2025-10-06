@@ -81,10 +81,19 @@ jobs:
           name: PiSoWorks.exe
           path: dist/PiSoWorks.exe
 
+      # To prevent errors because of slashs in the ref_name, '/' should be replaced with '_'
+      - name: Compute safe ref name
+        id: vars
+        shell: bash
+        run: |
+          ref="${{ github.head_ref || github.ref_name }}"
+          ref="${ref//\//_}"
+          echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
+
       # Renames the executable to include the branch or release name,
       # so artifacts from different builds don’t overwrite each other
       - name: Rename executable
-        run: mv dist/PiSoWorks.exe dist/PiSoWorks_${{ github.ref_name }}.exe
+        run: mv dist/PiSoWorks.exe dist/PiSoWorks_${{ steps.vars.outputs.safe_ref_name }}.exe
 
       # If this workflow was triggered by a Release event,
       # the executable is uploaded directly as an asset to the GitHub Release
@@ -92,7 +101,7 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PiSoWorks_${{ github.ref_name }}.exe
+          files: dist/PiSoWorks_${{ steps.vars.outputs.safe_ref_name }}.exe
 
 # -----------------------------------------------------
 # Job: Build the Windows Installer with Inno Setup
@@ -161,10 +170,19 @@ jobs:
           name: PiSoWorks_Setup.exe
           path: dist/PiSoWorks_Setup.exe
 
+      # To prevent errors because of slashs in the ref_name, '/' should be replaced with '_'
+      - name: Compute safe ref name
+        id: vars
+        shell: bash
+        run: |
+          ref="${{ github.head_ref || github.ref_name }}"
+          ref="${ref//\//_}"
+          echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
+
       # Rename the installer file to include the branch or release name,
       # ensuring unique file names across builds
       - name: Rename executable
-        run: mv dist/PiSoWorks_Setup.exe dist/PiSoWorks_Setup_${{ github.ref_name }}.exe
+        run: mv dist/PiSoWorks_Setup.exe dist/PiSoWorks_Setup_${{ steps.vars.outputs.safe_ref_name }}.exe
 
       # If this workflow was triggered by a Release event,
       # the installer is uploaded directly as an asset to the GitHub Release
@@ -172,4 +190,4 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PiSoWorks_Setup_${{ github.ref_name }}.exe
+          files: dist/PiSoWorks_Setup_${{ steps.vars.outputs.safe_ref_name }}.exe
