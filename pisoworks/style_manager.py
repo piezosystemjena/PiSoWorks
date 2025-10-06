@@ -3,7 +3,7 @@ from typing import cast
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QStandardPaths
-from pysoworks.settings_manager import SettingsContext
+from pisoworks.settings_manager import SettingsContext
 
 class StyleManager:
     """

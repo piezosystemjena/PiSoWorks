@@ -6,12 +6,12 @@
 # - `authors`: A list of authors or maintainers of the package.
 # - `readme`: The file containing the long description of the package, typically displayed on package repositories.
 # - `include`: Specifies additional files or directories to include in the package distribution. In this case, all files in the "examples" directory and its subdirectories are included
-name = "pysoworks"
-version = "0.1.0"
+name = "pisoworks"
+version = "2.0.0"
 description = "PySide6-based application for controlling NV200 devices."
 authors = ["piezosystem jena GmbH"]
 readme = "README_PYPI.md"
-packages = [{ include = "pysoworks" }]
+packages = [{ include = "pisoworks" }]
 classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
@@ -31,14 +31,14 @@ Documentation = "https://piezosystemjena.github.io/PySoWorks"
 
 [tool.poetry.scripts]
 # This section defines the entry points for the package, allowing users to run the application
-# from the command line. The `pysoworks` script will execute the `main` function
-# from the `main` module within the `pysoworks` package. That means, a user that installs
-# the PySoWorks library from pip can do the following:
+# from the command line. The `pisoworks` script will execute the `main` function
+# from the `main` module within the `pisoworks` package. That means, a user that installs
+# the PiSoWorks library from pip can do the following:
 #
-# pip install pysoworks
-# pysoworks
+# pip install pisoworks
+# pisoworks
 #
-pysoworks = "pysoworks.__main__:main"
+pisoworks = "pisoworks.__main__:main"
 
 
 [tool.poetry.dependencies]
@@ -61,6 +61,8 @@ numpy = "^2.3.1"
 pandas = "^2.3.1"
 openpyxl = "^3.1.5"
 
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
 # This section defines the development dependencies for the project using Poetry's

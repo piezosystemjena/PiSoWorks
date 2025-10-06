@@ -22,11 +22,11 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QAbstractSpinBox, QApplicati
     QSpinBox, QSplitter, QStackedWidget, QTabWidget,
     QToolButton, QVBoxLayout, QWidget)
 
-from pysoworks.consolewidget import Console
-from pysoworks.data_recorder_widget import DataRecorderWidget
-from pysoworks.mplcanvas import MplWidget
-from pysoworks.nv200_controller_widget import Nv200ControllerWidget
-from pysoworks.timed_progress_bar import TimedProgressBar
+from pisoworks.consolewidget import Console
+from pisoworks.data_recorder_widget import DataRecorderWidget
+from pisoworks.mplcanvas import MplWidget
+from pisoworks.nv200_controller_widget import Nv200ControllerWidget
+from pisoworks.timed_progress_bar import TimedProgressBar
 
 class Ui_NV200Widget(object):
     def setupUi(self, NV200Widget):

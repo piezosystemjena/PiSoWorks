@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
 from pathlib import Path
 import asyncio
 from enum import Enum
@@ -37,20 +37,20 @@ from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from nv200.analysis import ResonanceAnalyzer
 from nv200.utils import DeviceParamFile
-from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
-from pysoworks.svg_cycle_widget import SvgCycleWidget
-from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
-import pysoworks.ui_helpers as ui_helpers
-from pysoworks.action_manager import ActionManager, MenuID, action_manager
-from pysoworks.style_manager import StyleManager, style_manager
+from pisoworks.input_widget_change_tracker import InputWidgetChangeTracker
+from pisoworks.svg_cycle_widget import SvgCycleWidget
+from pisoworks.mplcanvas import MplWidget, MplCanvas
+from pisoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
+import pisoworks.ui_helpers as ui_helpers
+from pisoworks.action_manager import ActionManager, MenuID, action_manager
+from pisoworks.style_manager import StyleManager, style_manager
 
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from pysoworks.ui_nv200widget import Ui_NV200Widget
+from pisoworks.ui_nv200widget import Ui_NV200Widget
 
 
 
@@ -66,7 +66,7 @@ class TabWidgetTabs(Enum):
 
 class NV200Widget(QWidget):
     """
-    Main application window for the PySoWorks UI, providing asynchronous device discovery, connection, and control features.
+    Main application window for the PiSoWorks UI, providing asynchronous device discovery, connection, and control features.
     Attributes:
         _device (DeviceClient): The currently connected device client, or None if not connected.
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized

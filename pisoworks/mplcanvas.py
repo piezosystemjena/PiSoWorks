@@ -13,7 +13,7 @@ from PySide6.QtCore import QStandardPaths, QTimer
 from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QFileDialog
 from nv200.data_recorder import DataRecorder
-from pysoworks.ui_helpers import get_icon
+from pisoworks.ui_helpers import get_icon
 
 
 def mpl_color(color: QColor) -> tuple[float, float, float, float]:

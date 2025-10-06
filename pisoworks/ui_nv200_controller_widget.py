@@ -19,8 +19,8 @@ from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QCombo
     QDoubleSpinBox, QFrame, QSizePolicy, QSpinBox,
     QWidget)
 
-from pysoworks.svg_cycle_widget import SvgCycleWidget
-import pysoworks.pysoworks_rc
+from pisoworks.svg_cycle_widget import SvgCycleWidget
+import pisoworks.pisoworks_rc
 
 class Ui_nv200ControllerWidget(object):
     def setupUi(self, nv200ControllerWidget):

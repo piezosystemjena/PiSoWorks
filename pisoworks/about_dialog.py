@@ -4,10 +4,10 @@ from PySide6.QtGui import QPixmap, QIcon, QPalette
 from PySide6.QtCore import QDate, Qt, QSize, QUrl
 import PySide6
 import sys
-import pysoworks.ui_helpers as ui_helpers
+import pisoworks.ui_helpers as ui_helpers
 
-from pysoworks.ui_about_dialog import Ui_AboutDialog
-from pysoworks.style_manager import style_manager
+from pisoworks.ui_about_dialog import Ui_AboutDialog
+from pisoworks.style_manager import style_manager
 
 class AboutDialog(QDialog):
     """

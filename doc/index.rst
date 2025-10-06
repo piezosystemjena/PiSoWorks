@@ -1,11 +1,11 @@
-PySoWorks Manual
+PiSoWorks Manual
 ==================================
 
 .. image:: images/doc_header.jpg
 
-**Welcome to PySoWorks documentation!**
+**Welcome to PiSoWorks documentation!**
 
-PySoWorks is an application for controlling the piezo amplifiers, such as the 
+PiSoWorks is an application for controlling the piezo amplifiers, such as the 
 `NV200/D <https://www.piezosystem.com/product/nv-200-d-compact-amplifier/>`_, 
 from `piezosystem jena <https://www.piezosystem.com/>`_ GmbH.
 

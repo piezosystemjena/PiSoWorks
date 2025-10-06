@@ -28,7 +28,7 @@ jobs:
     runs-on: windows-latest   # Run this job on the latest Windows runner
 
     outputs:
-      artifact-name: PySoWorks.exe  # Pass artifact name to other jobs
+      artifact-name: PiSoWorks.exe  # Pass artifact name to other jobs
 
     steps:
       # Pull down the repository source code into the runner so it can be built
@@ -68,23 +68,23 @@ jobs:
       - name: Install PyInstaller
         run: poetry run pip install pyinstaller
 
-      # Uses the PyInstaller spec file (pysoworks.spec) to build the executable.
+      # Uses the PyInstaller spec file (pisoworks.spec) to build the executable.
       # --clean removes old build files, and DEBUG log level provides detailed output
       - name: Build executable with PyInstaller
-        run: poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
+        run: poetry run pyinstaller --clean --log-level=DEBUG pisoworks.spec
 
       # Uploads the built executable as a workflow artifact,
       # making it available for later jobs and manual download
       - name: Upload executable as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PySoWorks.exe
-          path: dist/PySoWorks.exe
+          name: PiSoWorks.exe
+          path: dist/PiSoWorks.exe
 
       # Renames the executable to include the branch or release name,
       # so artifacts from different builds don’t overwrite each other
       - name: Rename executable
-        run: mv dist/PySoWorks.exe dist/PySoWorks_${{ github.ref_name }}.exe
+        run: mv dist/PiSoWorks.exe dist/PiSoWorks_${{ github.ref_name }}.exe
 
       # If this workflow was triggered by a Release event,
       # the executable is uploaded directly as an asset to the GitHub Release
@@ -92,7 +92,7 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PySoWorks_${{ github.ref_name }}.exe
+          files: dist/PiSoWorks_${{ github.ref_name }}.exe
 
 # -----------------------------------------------------
 # Job: Build the Windows Installer with Inno Setup
@@ -144,27 +144,27 @@ jobs:
       - name: Download executable artifact
         uses: actions/download-artifact@v4
         with:
-          name: PySoWorks.exe
+          name: PiSoWorks.exe
           path: dist
 
       # Compile the Windows installer using Inno Setup (.iss script)
       - name: Compile Inno Setup Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-          path: pysoworks_inno_setup.iss
+          path: pisoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PySoWorks_Setup.exe
-          path: dist/PySoWorks_Setup.exe
+          name: PiSoWorks_Setup.exe
+          path: dist/PiSoWorks_Setup.exe
 
       # Rename the installer file to include the branch or release name,
       # ensuring unique file names across builds
       - name: Rename executable
-        run: mv dist/PySoWorks_Setup.exe dist/PySoWorks_Setup_${{ github.ref_name }}.exe
+        run: mv dist/PiSoWorks_Setup.exe dist/PiSoWorks_Setup_${{ github.ref_name }}.exe
 
       # If this workflow was triggered by a Release event,
       # the installer is uploaded directly as an asset to the GitHub Release
@@ -172,4 +172,4 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PySoWorks_Setup_${{ github.ref_name }}.exe
+          files: dist/PiSoWorks_Setup_${{ github.ref_name }}.exe

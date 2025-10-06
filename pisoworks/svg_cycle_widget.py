@@ -3,7 +3,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QWidget, QFrame
 from PySide6.QtCore import Signal, Qt, QRectF, QSize, QEvent, Property
 from PySide6.QtGui import QPainter, QMouseEvent, QColor, QPalette
-from pysoworks.themed_svg_renderer import ThemedSvgRenderer
+from pisoworks.themed_svg_renderer import ThemedSvgRenderer
 
 
 class SvgCycleWidget(QFrame):
