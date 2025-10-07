@@ -160,13 +160,9 @@ jobs:
       - name: Install Inno Setup
         run: winget install -e --id JRSoftware.InnoSetup --accept-source-agreements --accept-package-agreements
 
-      # Add Inno Setup to Path
-      - name: Add Inno Setup to Path
-        run: $env:Path += ';' + $env:LOCALAPPDATA + '\Programs\Inno Setup 6'
-
       # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
-        run: iscc pysoworks_inno_setup.iss
+        run: & "$env:LOCALAPPDATA/Programs/Inno Setup 6/iscc.exe" pysoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
