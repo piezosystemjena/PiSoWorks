@@ -20,13 +20,13 @@ import PySide6QtAds as QtAds
 from rich.traceback import install as install_rich_traceback
 from rich.logging import RichHandler
 
-from pysoworks.nv200widget import NV200Widget
-from pysoworks.spiboxwidget import SpiBoxWidget
-from pysoworks.action_manager import ActionManager, MenuID, action_manager
-from pysoworks.style_manager import StyleManager, style_manager
-from pysoworks.settings_manager import SettingsContext
-from pysoworks.about_dialog import AboutDialog
-import pysoworks.ui_helpers as ui_helpers
+from pisoworks.nv200widget import NV200Widget
+from pisoworks.spiboxwidget import SpiBoxWidget
+from pisoworks.action_manager import ActionManager, MenuID, action_manager
+from pisoworks.style_manager import StyleManager, style_manager
+from pisoworks.settings_manager import SettingsContext
+from pisoworks.about_dialog import AboutDialog
+import pisoworks.ui_helpers as ui_helpers
 
 
 def qt_message_handler(mode, context, message):
@@ -48,13 +48,14 @@ qInstallMessageHandler(qt_message_handler)
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from pysoworks.ui_mainwindow import Ui_MainWindow
+from pisoworks.ui_mainwindow import Ui_MainWindow
 
+APPLICATION_NAME = "PiSoWorks"
 
 
 class MainWindow(QMainWindow):
     """
-    Main application window for the PySoWorks UI, providing asynchronous device discovery, connection, and control features.
+    Main application window for the PiSoWorks UI, providing asynchronous device discovery, connection, and control features.
     Attributes:
         _device (DeviceClient): The currently connected device client, or None if not connected.
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
@@ -107,7 +108,7 @@ class MainWindow(QMainWindow):
 
         action_manager.add_action_to_menu(MenuID.HELP, ui_helpers.menu_separator(self))
 
-        show_about_dlg_action = QAction("About PySoWorks", parent=self)
+        show_about_dlg_action = QAction(f"About {APPLICATION_NAME}", parent=self)
         show_about_dlg_action.triggered.connect(self.show_about_dialog)
         show_about_dlg_action.setIcon(QIcon(str(ui_helpers.images_path() / "app_icon.svg")))
         action_manager.add_action_to_menu(MenuID.HELP, show_about_dlg_action)
@@ -285,16 +286,16 @@ def main():
     QApplication.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
 
     app = ExceptionCatchingApplication(sys.argv)
-    app.setApplicationName('PySoWorks')
+    app.setApplicationName(APPLICATION_NAME)
     app.setOrganizationName('piezosystem jena')
     app.setOrganizationDomain('https://www.piezosystem.com/')
     version = Path(resource_path("VERSION")).read_text(encoding="utf-8").strip()
     app.setApplicationVersion(version)
-    print(f"PySoWorks Version: {version}")
-    app.setApplicationDisplayName(f'PySoWorks {version}')
+    print(f"{APPLICATION_NAME} Version: {version}")
+    app.setApplicationDisplayName(f'{APPLICATION_NAME} {version}')
     app_path = Path(__file__).resolve().parent
     print(f"Application Path: {app_path}")
-    app.setWindowIcon(QIcon(resource_path('pysoworks/assets/app_icon.ico')))
+    app.setWindowIcon(QIcon(resource_path('pisoworks/assets/app_icon.ico')))
     style_manager.load_theme_from_settings()
 
     widget = MainWindow()

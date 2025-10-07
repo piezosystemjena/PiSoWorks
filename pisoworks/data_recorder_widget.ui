@@ -192,7 +192,7 @@
   <customwidget>
    <class>MplWidget</class>
    <extends>QWidget</extends>
-   <header location="global">pysoworks.mplcanvas</header>
+   <header location="global">pisoworks.mplcanvas</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
 from pathlib import Path
 import asyncio
 from enum import Enum
@@ -37,20 +37,20 @@ from nv200.connection_utils import connect_to_detected_device
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 from nv200.analysis import ResonanceAnalyzer
 from nv200.utils import DeviceParamFile
-from pysoworks.input_widget_change_tracker import InputWidgetChangeTracker
-from pysoworks.svg_cycle_widget import SvgCycleWidget
-from pysoworks.mplcanvas import MplWidget, MplCanvas
-from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
-import pysoworks.ui_helpers as ui_helpers
-from pysoworks.action_manager import ActionManager, MenuID, action_manager
-from pysoworks.style_manager import StyleManager, style_manager
+from pisoworks.input_widget_change_tracker import InputWidgetChangeTracker
+from pisoworks.svg_cycle_widget import SvgCycleWidget
+from pisoworks.mplcanvas import MplWidget, MplCanvas
+from pisoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot, repolish, images_path
+import pisoworks.ui_helpers as ui_helpers
+from pisoworks.action_manager import ActionManager, MenuID, action_manager
+from pisoworks.style_manager import StyleManager, style_manager
 
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from pysoworks.ui_nv200widget import Ui_NV200Widget
+from pisoworks.ui_nv200widget import Ui_NV200Widget
 
 
 
@@ -66,7 +66,7 @@ class TabWidgetTabs(Enum):
 
 class NV200Widget(QWidget):
     """
-    Main application window for the PySoWorks UI, providing asynchronous device discovery, connection, and control features.
+    Main application window for the PiSoWorks UI, providing asynchronous device discovery, connection, and control features.
     Attributes:
         _device (DeviceClient): The currently connected device client, or None if not connected.
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
@@ -653,20 +653,35 @@ class NV200Widget(QWidget):
         in the UI based on the setpoint range retrieved from the device.
         """
         print("Updating target position spin boxes...")
-        ui = self.ui
         dev = self.device
-
         setpoint_range = await dev.get_setpoint_range()
+        unit = await dev.get_setpoint_unit()
+        self.update_target_pos_edits_easy(unit, setpoint_range)
+        self.update_target_pos_edits_wave(unit, setpoint_range)
+    
+
+    def update_target_pos_edits_easy(self, unit, setpoint_range):
+        """
+        Updates the minimum and maximum values for the target position spin boxes
+        in the Easy Mode UI based on the specified unit and setpoint range.
+        """
+        ui = self.ui
         ui.targetPosSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox.setValue(setpoint_range[1]) # Default to high end
         ui.targetPosSpinBox_2.setRange(setpoint_range[0], setpoint_range[1])
         ui.targetPosSpinBox_2.setValue(setpoint_range[0])  # Default to low end
-        unit = await dev.get_setpoint_unit()
         ui.targetPosSpinBox.setSuffix(f" {unit}")
         ui.targetPosSpinBox_2.setSuffix(f" {unit}")
         ui.targetPositionsLabel.setTextFormat(Qt.TextFormat.RichText)
-        
         ui.rangeLabel.setText(f"{setpoint_range[0]:.0f} - {setpoint_range[1]:.0f} {unit}")
+
+
+    def update_target_pos_edits_wave(self, unit, setpoint_range):
+        """
+        Updates the minimum and maximum values for the target position spin boxes
+        in the Easy Mode UI based on the specified unit and setpoint range.
+        """
+        ui = self.ui
         ui.lowLevelSpinBox.setRange(setpoint_range[0], setpoint_range[1])
         ui.lowLevelSpinBox.setValue(setpoint_range[0])
         ui.lowLevelSpinBox.setSuffix(f" {unit}")
@@ -687,11 +702,21 @@ class NV200Widget(QWidget):
         try:
             await self.device.pid.set_mode(pid_mode)
             print(f"PID mode set to {pid_mode}.")
-            await self.update_target_pos_edits()
+            await self.update_pid_mode_ui()
         except Exception as e:
             print(f"Error setting PID mode: {e}")
             self.status_message.emit(f"Error setting PID mode: {e}", 2000)
             return
+
+
+    async def update_pid_mode_ui(self):
+        await self.update_target_pos_edits()
+        await self.update_pid_mode_selector()
+
+
+    async def update_pid_mode_selector(self):
+        pid_mode = await self.device.pid.get_mode()
+        self.ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
         
        
     async def apply_controller_parameters(self):
@@ -707,6 +732,8 @@ class NV200Widget(QWidget):
                 print(f"Applying changes from widget: {widget}")
                 await widget.applyfunc(tracker.get_value_of_widget(widget))
                 tracker.reset_widget(widget)
+            
+            await self.update_pid_mode_ui()
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
 
@@ -726,10 +753,7 @@ class NV200Widget(QWidget):
         Asynchronously initializes the UI elements for easy mode UI.
         """
         print("Initializing UI from device...")
-        dev = self.device
-        ui = self.ui
-        pid_mode = await dev.pid.get_mode()
-        ui.closedLoopCheckBox.setChecked(pid_mode == PidLoopMode.CLOSED_LOOP)
+        await self.update_pid_mode_ui()
         await self.update_target_pos_edits()
         await self.update_controller_ui_from_device()
         self.settings_widget_change_tracker.backup_current_values("initial")
@@ -1024,12 +1048,25 @@ class NV200Widget(QWidget):
         await recorder.wait_until_finished()
         self.status_message.emit("Reading recorded data from device...", 0)
         rec_data0 = await recorder.read_recorded_data_of_channel(0)
+
         if clear_plot:
             plot.clear_plot()
+
+        # If using secondary axes for plotting, use correct labels
+        if second_axes_index == 1:
+            ax1 = plot.get_axes(0)
+            ax2 = plot.get_axes(1)
+
+            ax1.set_xlabel('Time (ms)')
+            ax1.set_ylabel('Piezo Voltage (V)')
+            ax2.set_xlabel('Time (ms)')
+            ax2.set_ylabel('Piezo Position (μm or mrad)')
+
         plot.add_recorder_data_line(rec_data0, QColor('orange'), 0)
         rec_data1 = await recorder.read_recorded_data_of_channel(1)
         plot.add_recorder_data_line(rec_data1, QColor(0, 255, 0), second_axes_index)
         self.status_message.emit("", 0)
+
         return rec_data0, rec_data1
 
 
@@ -1164,7 +1201,7 @@ class NV200Widget(QWidget):
             print("Starting move operation...")
             await dev.move(spinbox.value())
             self.status_message.emit("Move operation started.", 0)
-            await self.plot_recorder_data(ui.easyModePlot)
+            await self.plot_recorder_data(ui.easyModePlot, second_axes_index = 1)
             ui.mainProgressBar.stop(success=True, context="start_move")
             self.status_message.emit("", 0)
         except Exception as e:

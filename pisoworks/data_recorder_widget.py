@@ -3,9 +3,9 @@ from PySide6.QtGui import QAction, QPalette
 
 from nv200.data_recorder import DataRecorder, DataRecorderSource
 
-from pysoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
-from pysoworks.ui_helpers import get_icon, set_combobox_index_by_value
-from pysoworks.style_manager import style_manager
+from pisoworks.ui_data_recorder_widget import Ui_DataRecorderWidget
+from pisoworks.ui_helpers import get_icon, set_combobox_index_by_value
+from pisoworks.style_manager import style_manager
 
 
 class DataRecorderWidget(QFrame):

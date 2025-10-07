@@ -1,11 +1,11 @@
 ;------------------------------------------------------------
-; Inno Setup script for PySoWorks
+; Inno Setup script for PiSoWorks
 ; Version: 1.0.4
 ; Purpose: Creates a Windows installer with app, docs, and shortcuts
 ;------------------------------------------------------------
 
 ; Define application name (used throughout the script for consistency)
-#define APP_NAME "PySoWorks"
+#define APP_NAME "PiSoWorks"
 #define COMPANY "piezosystem jena GmbH"
 #define VerFile FileOpen("VERSION")
 
@@ -55,10 +55,10 @@ PrivilegesRequired=lowest
 ArchitecturesInstallIn64BitMode=x64compatible
 
 ; Icon shown in "Add/Remove Programs"
-UninstallDisplayIcon={app}\PySoWorks.exe
+UninstallDisplayIcon={app}\PiSoWorks.exe
 
 ; Installer icon file
-SetupIconFile=pysoworks\assets\app_icon.ico
+SetupIconFile=pisoworks\assets\app_icon.ico
 
 ; Use modern wizard UI style
 WizardStyle=modern
@@ -66,7 +66,7 @@ WizardStyle=modern
 ; The version information to show if you right click on the setup file and go to details tab
 VersionInfoVersion={#FILE_VERSION} 
 VersionInfoCompany={#COMPANY}
-VersionInfoDescription=PySoWorks Setup
+VersionInfoDescription=PiSoWorks Setup
 VersionInfoCopyright=© 2025 {#COMPANY}
 
 
@@ -76,7 +76,7 @@ VersionInfoCopyright=© 2025 {#COMPANY}
 [Files]
 
 ; Main executable
-Source: "dist\PySoWorks.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\PiSoWorks.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Documentation (all files and subfolders from doc\_build)
 Source: "doc\_build\*"; DestDir: "{app}\doc"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -87,13 +87,13 @@ Source: "doc\_build\*"; DestDir: "{app}\doc"; Flags: ignoreversion recursesubdir
 [Icons]
 
 ; Start Menu shortcut to the main application
-Name: "{userprograms}\PySoWorks"; Filename: "{app}\PySoWorks.exe"
+Name: "{userprograms}\PiSoWorks"; Filename: "{app}\PiSoWorks.exe"
 
 ; Start Menu shortcut to documentation (opens index.html in browser)
-Name: "{userprograms}\PySoWorks Documentation"; Filename: "{app}\doc\index.html"
+Name: "{userprograms}\PiSoWorks Documentation"; Filename: "{app}\doc\index.html"
 
 ; Optional desktop shortcut to the main application
-Name: "{userdesktop}\PySoWorks"; Filename: "{app}\PySoWorks.exe"; Tasks: desktopicon
+Name: "{userdesktop}\PiSoWorks"; Filename: "{app}\PiSoWorks.exe"; Tasks: desktopicon
 
 ;------------------------------------------------------------
 ; Tasks Section: Optional installation components
@@ -110,4 +110,4 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 [Run]
 
 ; Launch the application automatically after installation
-Filename: "{app}\PySoWorks.exe"; Description: "Launch PySoWorks"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\PiSoWorks.exe"; Description: "Launch PiSoWorks"; Flags: nowait postinstall skipifsilent

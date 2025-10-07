@@ -20,8 +20,8 @@ from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubl
     QLabel, QPushButton, QSizePolicy, QSpacerItem,
     QToolButton, QVBoxLayout, QWidget)
 
-from pysoworks.mplcanvas import MplWidget
-from pysoworks.timed_progress_bar import TimedProgressBar
+from pisoworks.mplcanvas import MplWidget
+from pisoworks.timed_progress_bar import TimedProgressBar
 
 class Ui_SpiBoxWidget(object):
     def setupUi(self, SpiBoxWidget):
