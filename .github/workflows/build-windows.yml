@@ -168,7 +168,7 @@ jobs:
           ref="${{ github.ref_name }}"
           ref="${ref//\//_}"
           echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
-          echo ("appdata_dir=" + $env:LOCALAPPDATA) >> $GITHUB_OUTPUT
+          echo "appdata_dir=$env:LOCALAPPDATA" >> $GITHUB_OUTPUT
       
       # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
