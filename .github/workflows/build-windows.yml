@@ -168,11 +168,11 @@ jobs:
           ref="${{ github.ref_name }}"
           ref="${ref//\//_}"
           echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
-          echo "appdata_dir=$env:LOCALAPPDATA" >> $GITHUB_OUTPUT
+          echo "inno_cmd=& \"\$env:LOCALAPPDATA/Programs/Inno Setup 6/iscc.exe\"" >> $GITHUB_OUTPUT
       
       # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
-        run: ${{ steps.vars.outputs.appdata_dir }}/Programs/Inno Setup 6/iscc.exe pysoworks_inno_setup.iss
+        run: ${{ steps.vars.outputs.inno_cmd }} pysoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
