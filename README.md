@@ -1,19 +1,19 @@
 ![logo](doc/_static/piezosystem_logo.svg)
 
-# PySoWorks
+# PiSoWorks
 
-[![PyPI - Version](https://img.shields.io/pypi/v/pysoworks)](https://pypi.org/project/pysoworks/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pysoworks)](https://pypi.org/project/pysoworks/)
+[![PyPI - Version](https://img.shields.io/pypi/v/pisoworks)](https://pypi.org/project/pisoworks/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pisoworks)](https://pypi.org/project/pisoworks/)
 [![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PySoWorks/)
 [![Windows Binary](https://img.shields.io/github/v/release/piezosystemjena/PySoWorks?label=EXE)](https://github.com/piezosystemjena/PySoWorks/releases/latest/)
 [![Publish Python Package](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml)
 [![Build Windows Executable](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml)
 
-PySoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the [NV200 Python library](https://pypi.org/project/nv200/) within a graphical interface based on PySide6.
+PiSoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the [NV200 Python library](https://pypi.org/project/nv200/) within a graphical interface based on PySide6.
 
 Original Repository: https://github.com/piezosystemjena/PySoWorks
 
-![PySoWorks UI](doc/images/pysoworks_ui.png)
+![PiSoWorks UI](doc/images/pisoworks_ui.png)
 
 ## For Users
 
@@ -29,7 +29,7 @@ Original Repository: https://github.com/piezosystemjena/PySoWorks
 Install from **PyPI**:
 
 ```shell
-pip install pysoworks
+pip install pisoworks
 ```
 
 ### Install in a Virtual Environment (Recommended)
@@ -49,8 +49,8 @@ source .venv/bin/activate
 # Upgrade pip
 pip install --upgrade pip
 
-# Install pysoworks from PyPI
-pip install pysoworks
+# Install pisoworks from PyPI
+pip install pisoworks
 ```
 
 ### Usage
@@ -58,7 +58,7 @@ pip install pysoworks
 Once installed, you can launch the application from the terminal:
 
 ```shell
-pysoworks
+pisoworks
 ```
 
 ## For Developers
@@ -151,8 +151,8 @@ poetry install -E extra1 -E extra2
 
 ### Updating dependencies
 
-PySoWorks uses the `nv200` library for NV200 device control. Whenever you update the release of the
-NV200 library, you should also update the version used for PySoWorks:
+PiSoWorks uses the `nv200` library for NV200 device control. Whenever you update the release of the
+NV200 library, you should also update the version used for PiSoWorks:
 
 ```shell
 poetry update nv200
@@ -227,12 +227,12 @@ If you would like to test the installation from TestPyPi, you should use the
 following command:
 
 ```shell
-pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pysoworks
+pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pisoworks
 ```
 
  This avoids dependency resolution issues by:
 
-- Getting your test package (pysoworks) from **Test PyPI**
+- Getting your test package (pisoworks) from **Test PyPI**
 - Getting all other packages (e.g., matplotlib, pyside6, etc.) from **PyPI**
 
 #### To PyPI
@@ -256,14 +256,14 @@ and by the installer. To update the `VERSION` file you need to run the `generate
 python generate_version.py
 ```
 
-You can create a standalone executable of PySoWorks using **PyInstaller**.
+You can create a standalone executable of PiSoWorks using **PyInstaller**.
 
 Make sure **PyInstaller** is installed in your environment, normally this
 is done by `poetry install` as a dev dependency. Build the executable using the provided 
 spec file using this command:
 
 ```shell
-poetry run pyinstaller --clean --log-level=DEBUG pysoworks.spec
+poetry run pyinstaller --clean --log-level=DEBUG pisoworks.spec
 ```
 
 - `--clean` clears any temporary PyInstaller files before building.
@@ -279,7 +279,7 @@ you have installed Inno Setup and that is is in the path variable. To build the 
 following command:
 
 ```shell
-iscc .\pysoworks_inno_setup.iss
+iscc .\pisoworks_inno_setup.iss
 ```
 
 ## Creating a release
@@ -290,8 +290,8 @@ Do the following steps, to create a release:
 2. Update dependencies - i.e. if you modified `NV200` library, then update it via `poetry update nv200`
 3. Update the `CHANGELOG.md` file with the new release number i.e. 1.0.4
 4. Commit the changes and push them to GitHub
-5. Check if the `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` are built properly
-6. Test `PySoWorks.exe` and the installer `PySoWorks_Setup.exe` if both run without problems
+5. Check if the `PiSoWorks.exe` and the installer `PiSoWorks_Setup.exe` are built properly
+6. Test `PiSoWorks.exe` and the installer `PiSoWorks_Setup.exe` if both run without problems
 7. Check if puplishing to TestPyPi works - that means that action is successful
 8. Create a new git tag i.e. `v1.0.5` and push the repository to GitHub with the option `Include Tags` to push the new tag to GitHub
 9.  GitHub should now create and publish the new version to PyPi - check if it works properly

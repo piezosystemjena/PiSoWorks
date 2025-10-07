@@ -9,11 +9,12 @@ from matplotlib.colors import to_rgba
 from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+from matplotlib.ticker import MultipleLocator
 from PySide6.QtCore import QStandardPaths, QTimer
 from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QFileDialog
 from nv200.data_recorder import DataRecorder
-from pysoworks.ui_helpers import get_icon
+from pisoworks.ui_helpers import get_icon
 
 
 def mpl_color(color: QColor) -> tuple[float, float, float, float]:
@@ -54,6 +55,10 @@ class MplCanvas(FigureCanvas):
         self._resize_timer.setSingleShot(True)
         self._resize_timer.timeout.connect(self.update_layout)
 
+        self._axes_timer = QTimer(self)
+        self._axes_timer.setSingleShot(True)
+        self._axes_timer.timeout.connect(self.update_layout)
+    
 
     def init_axes_object(self, ax : Axes):
         """
@@ -69,9 +74,11 @@ class MplCanvas(FigureCanvas):
         ax.spines['bottom'].set_color('darkgray')
         ax.spines['left'].set_color('darkgray')
 
-        # Set tick parameters for dark grey color
-        ax.tick_params(axis='x', colors='darkgray')
-        ax.tick_params(axis='y', colors='darkgray')
+        text_color = mpl_color(QPalette().color(QPalette.ColorRole.WindowText))
+
+        # Set tick parameters for current text_color
+        ax.tick_params(axis='x', colors=text_color)
+        ax.tick_params(axis='y', colors=text_color)
 
 
     def get_axes(self, index : int) -> Axes:
@@ -95,6 +102,9 @@ class MplCanvas(FigureCanvas):
         if index == 1:
             self.ax2 = self.ax1.twinx()
             self.init_axes_object(self.ax2)
+            self.ax2.grid(False)            # Do not use a grid for the second axes
+            self.ax2.set_ylabel("", rotation = 270, labelpad = 15)
+            self.ax2.callbacks.connect("ylim_changed", lambda event: self.on_ylim_changed())
             self.axes_list.append(self.ax2)
             return self.ax2
 
@@ -121,7 +131,9 @@ class MplCanvas(FigureCanvas):
         Updates the layout of the figure to ensure proper spacing and alignment.
         This method is useful after adding or modifying elements in the figure.
         """
-        new_size = self.size()
+        self.align_ticks()
+        new_size = self.size()        
+
         if new_size.width() > 0 and new_size.height() > 0:  # avoid singular matrix
             self._fig.tight_layout()
             self.draw()
@@ -135,7 +147,7 @@ class MplCanvas(FigureCanvas):
             title (str): The title to set for the plot.
         """
         self.ax1.set_title(title)  # Set title with dark gray color
-        self.update_layout
+        self.update_layout()
 
 
     def plot_recorder_data(self, rec_data : DataRecorder.ChannelRecordingData, color : QColor = QColor('orange'), axis : int = 0):
@@ -189,8 +201,30 @@ class MplCanvas(FigureCanvas):
         ax.relim()
         ax.autoscale_view()
         
-        #Show the legend with custom styling
-        ax.legend(
+        self.generate_legend()
+
+        # Redraw the canvas
+        self.update_layout()
+
+
+    def generate_legend(self):
+        """
+        Generates a single legend for all axes and lines. This has to be done because the legends of individual
+        axes would overlap otherwise.
+        """
+        lines = []
+        labels = []
+
+        # Iterate over all lines and get their labels
+        for ax in self.axes_list:
+            for line in ax.get_lines():
+                lines.append(line)
+                labels.append(line.get_label())
+
+        # Show the legend with custom styling on first axis
+        self.ax1.legend(
+            lines,
+            labels,
             facecolor='darkgray', 
             edgecolor='darkgray', 
             frameon=True, 
@@ -198,8 +232,55 @@ class MplCanvas(FigureCanvas):
             fontsize=10
         )
 
-        # Redraw the canvas
-        self.update_layout()
+
+    def on_ylim_changed(self):
+        """
+        Handle the limits of the secondary axes changing and recalculate its ticks.
+        To prevent constant redrawing when dragging, this is only done after a timer has counted down.
+        """
+        self._axes_timer.start(100)  
+
+
+    def align_ticks(self):
+        """
+        Visually align the ticks of the second axes with the first axes to prevent unaligned grids. 
+        """
+        # No need to align the secondary axes when it does not exist
+        if len(self.axes_list) < 2:
+            return
+
+        src_lim = self.ax1.get_ylim()
+        dst_lim = self.ax2.get_ylim()
+
+        ticks1 = self.ax1.get_yticks()
+        ticks2 = []
+
+        for tick in ticks1:
+            mapped_tick = self.map_tick(tick, src_lim, dst_lim)
+            
+            if mapped_tick != None:
+                ticks2.append(mapped_tick)
+
+        self.ax2.set_yticks(ticks2)
+        self.ax2.set_yticklabels([f"{t:.2f}" for t in ticks2])
+        
+
+    def map_tick(self, val, src_lim, dst_lim):
+        """
+        Map a tick point from one axes (src) to another axes (dst) respecting the axes limits.
+        """
+        src_min, src_max = src_lim
+        dst_min, dst_max = dst_lim
+
+        # If the tick is out of bounds, ignore it
+        if val > src_max or val < src_min:
+            return None
+
+        src_range = src_max - src_min
+        src_scale = (val - src_min) / src_range
+        
+        dst_range = dst_max - dst_min
+        return src_scale * dst_range + dst_min
 
 
     def autoscale(self, axis: int = 0):

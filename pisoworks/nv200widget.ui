@@ -1248,29 +1248,29 @@
   <customwidget>
    <class>MplWidget</class>
    <extends>QWidget</extends>
-   <header location="global">pysoworks.mplcanvas</header>
+   <header location="global">pisoworks.mplcanvas</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>TimedProgressBar</class>
    <extends>QProgressBar</extends>
-   <header location="global">pysoworks.timed_progress_bar</header>
+   <header location="global">pisoworks.timed_progress_bar</header>
   </customwidget>
   <customwidget>
    <class>Console</class>
    <extends>QTextEdit</extends>
-   <header location="global">pysoworks.consolewidget</header>
+   <header location="global">pisoworks.consolewidget</header>
   </customwidget>
   <customwidget>
    <class>Nv200ControllerWidget</class>
    <extends>QWidget</extends>
-   <header location="global">pysoworks.nv200_controller_widget</header>
+   <header location="global">pisoworks.nv200_controller_widget</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>DataRecorderWidget</class>
    <extends>QWidget</extends>
-   <header location="global">pysoworks.data_recorder_widget</header>
+   <header location="global">pisoworks.data_recorder_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubl
     QLayout, QSizePolicy, QSpacerItem, QSpinBox,
     QVBoxLayout, QWidget)
 
-from pysoworks.mplcanvas import MplWidget
+from pisoworks.mplcanvas import MplWidget
 
 class Ui_DataRecorderWidget(object):
     def setupUi(self, DataRecorderWidget):

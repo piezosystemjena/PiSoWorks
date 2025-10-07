@@ -33,8 +33,8 @@ author = 'piezosystem Jena'
 release = Path("../VERSION").read_text().strip()
 version = release
 # If you would like to add the version to the project name, you can do it this way:
-# project = f"PySoWorks {release}"
-project = 'PySoWorks'
+# project = f"PiSoWorks {release}"
+project = 'PiSoWorks'
 html_show_copyright = True
 html_show_sphinx = True
 html_show_sourcelink = False
@@ -131,7 +131,7 @@ html_favicon = '_static/favicon.png'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = '_static/piezosystem_logo_white.svg'
-html_title = 'PySoWorks'
+html_title = 'PiSoWorks'
 html_last_updated_fmt = '%b %d, %Y %H:%M'
 html_show_sphinx = False
 

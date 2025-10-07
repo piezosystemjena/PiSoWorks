@@ -458,12 +458,12 @@ background-repeat: no-repeat;}</string>
   <customwidget>
    <class>SvgCycleWidget</class>
    <extends>QWidget</extends>
-   <header location="global">pysoworks.svg_cycle_widget</header>
+   <header location="global">pisoworks.svg_cycle_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="pysoworks.pysoworks.qrc"/>
+  <include location="pisoworks.pisoworks.qrc"/>
  </resources>
  <connections/>
  <designerdata>

@@ -4,9 +4,9 @@ from PySide6.QtGui import QPainter, QPixmap
 from PySide6.QtCore import QSize, Signal
 import qtass
 
-from pysoworks.ui_nv200_controller_widget import Ui_nv200ControllerWidget
-from pysoworks.style_manager import style_manager
-import pysoworks.ui_helpers
+from pisoworks.ui_nv200_controller_widget import Ui_nv200ControllerWidget
+from pisoworks.style_manager import style_manager
+import pisoworks.ui_helpers
 
 
 class Nv200ControllerWidget(QFrame):
@@ -45,7 +45,7 @@ class Nv200ControllerWidget(QFrame):
         Args:
             images_path (Path): The directory path containing the SVG image files.
         """
-        images_path = pysoworks.ui_helpers.images_path()
+        images_path = pisoworks.ui_helpers.images_path()
         svg_paths = [ (images_path / f"modsrc_toggle0{i}.svg").resolve() for i in range(1, 5) ]
         self.ui.modsrcToggleWidget.set_svg_paths(svg_paths)
         self.ui.modsrcToggleWidget.setStyleSheet("")
@@ -59,7 +59,7 @@ class Nv200ControllerWidget(QFrame):
         """
         Initializes the PNG background for the controller widget.
         """
-        images_path = pysoworks.ui_helpers.images_path()
+        images_path = pisoworks.ui_helpers.images_path()
         if dark_theme:
             image_file = "nv200_controller_structure@2x.png"
         else:

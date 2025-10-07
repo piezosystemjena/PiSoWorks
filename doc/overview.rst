@@ -11,7 +11,7 @@ Follow these steps:
 - Connect the NV200 to your PC via USB
 - Connect the power supply to the NV200 to switch the device on
 
-Now you can start the PySoWorks application. Right after the start, you should see the following screen:
+Now you can start the PiSoWorks application. Right after the start, you should see the following screen:
 
 .. image:: images/inital_start.png
 

@@ -15,21 +15,21 @@ from nv200.shared_types import DetectedDevice, DiscoverFlags
 from nv200.device_discovery import discover_devices
 from nv200.spibox_device import SpiBoxDevice
 from nv200.connection_utils import connect_to_detected_device
-from pysoworks.style_manager import StyleManager, style_manager
-from pysoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot
+from pisoworks.style_manager import StyleManager, style_manager
+from pisoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
-from pysoworks.ui_spiboxwidget import Ui_SpiBoxWidget
+from pisoworks.ui_spiboxwidget import Ui_SpiBoxWidget
 
 
 
 
 class SpiBoxWidget(QWidget):
     """
-    Main application window for the PySoWorks UI, providing asynchronous device discovery, connection, and control features.
+    Main application window for the PiSoWorks UI, providing asynchronous device discovery, connection, and control features.
     Attributes:
         _device (DeviceClient): The currently connected device client, or None if not connected.
         _recorder (DataRecorder): The data recorder associated with the connected device, or None if not initialized
