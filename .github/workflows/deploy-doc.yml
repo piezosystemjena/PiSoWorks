@@ -39,20 +39,21 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      # Install Poetry just like in the previous job
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
-        with:
-          poetry-version: '2.1.2'
-          poetry-plugins: 'poetry-dynamic-versioning[plugin]'
-
-      # Disable virtual environment creation (install dependencies globally in the runner)
-      - name: Configure Poetry
-        run: poetry config virtualenvs.create false
-
-      # Install dependencies but not root project
-      - name: Install dependencies
-        run: poetry install --no-root
+      # Install Poetry and project dependencies
+      # - Upgrade pip to the latest version
+      # - Install Poetry package manager
+      # - Install dynamic versioning plugin for Poetry
+      # - Add plugin to Poetry self-management
+      # - Disable virtual environment creation (install dependencies globally in the runner)
+      # - Install dependencies without installing the project itself
+      - name: Install Poetry and dependencies
+        run: |
+          pip install --upgrade pip
+          pip install poetry
+          poetry self add "poetry-dynamic-versioning[plugin]"
+          poetry config virtualenvs.create false
+          sudo apt install -y libcairo2-dev
+          poetry install --no-root
 
       # Generate version information from git tags and commit history and write it
       # into VERSION file for later use
