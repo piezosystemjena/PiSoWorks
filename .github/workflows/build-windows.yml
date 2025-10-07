@@ -170,8 +170,6 @@ jobs:
           echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
           echo ("appdata_dir=" + $env:LOCALAPPDATA) >> $GITHUB_OUTPUT
       
-      - name: Get AppData Directory
-
       # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
         run: ${{ steps.vars.outputs.appdata_dir }}/Programs/Inno Setup 6/iscc.exe pysoworks_inno_setup.iss
