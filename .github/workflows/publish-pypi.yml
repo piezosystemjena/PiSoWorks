@@ -96,6 +96,7 @@ jobs:
           pip install "poetry-dynamic-versioning[plugin]"
           poetry self add "poetry-dynamic-versioning[plugin]"
           poetry config virtualenvs.create false
+          sudo apt install -y libcairo2-dev
           poetry install --no-root
 
       # Publish the package to PyPI (official)
