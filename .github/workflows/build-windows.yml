@@ -156,12 +156,13 @@ jobs:
           name: PiSoWorks.exe
           path: dist
 
-      # Compile the Windows installer using Inno Setup (.iss script)
+      # Install Inno Setup via winget
+      - name: Install Inno Setup
+        run: winget install -e --id JRSoftware.InnoSetup --accept-source-agreements --accept-package-agreements
+
+      # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.7
-        with:
-          path: ${{ github.workspace }}\pisoworks_inno_setup.iss
-          options: /O+
+        run: iscc pysoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
