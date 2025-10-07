@@ -172,7 +172,7 @@ jobs:
       
       # Compile installer using Inno Setup
       - name: Compile Inno Setup Installer
-        run: ${{ steps.vars.outputs.inno_cmd }} pysoworks_inno_setup.iss
+        run: ${{ steps.vars.outputs.inno_cmd }} pisoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
