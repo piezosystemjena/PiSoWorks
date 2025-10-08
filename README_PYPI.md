@@ -2,7 +2,7 @@
 
 ![PyPI - Version](https://img.shields.io/pypi/v/pisoworks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/pisoworks)
-[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PySoWorks/)
+[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PiSoWorks/)
 
 PiSoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), 
 from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the 
@@ -10,7 +10,7 @@ from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the 
 
 The application shows how to use the [NV200 Python Library](https://pypi.org/project/nv200/) in a graphical user interface.
 
-![pisoworks GUI](https://raw.githubusercontent.com/piezosystemjena/PySoWorks/refs/heads/main/doc/images/pisoworks_ui.png)
+![pisoworks GUI](https://raw.githubusercontent.com/piezosystemjena/PiSoWorks/refs/heads/main/doc/images/pisoworks_ui.png)
 
 ---
 

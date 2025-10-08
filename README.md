@@ -4,14 +4,14 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/pisoworks)](https://pypi.org/project/pisoworks/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pisoworks)](https://pypi.org/project/pisoworks/)
-[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PySoWorks/)
-[![Windows Binary](https://img.shields.io/github/v/release/piezosystemjena/PySoWorks?label=EXE)](https://github.com/piezosystemjena/PySoWorks/releases/latest/)
-[![Publish Python Package](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/publish-pypi.yml)
-[![Build Windows Executable](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml/badge.svg)](https://github.com/piezosystemjena/PySoWorks/actions/workflows/build-windows.yml)
+[![Docs](https://img.shields.io/badge/docs-online-success)](https://piezosystemjena.github.io/PiSoWorks/)
+[![Windows Binary](https://img.shields.io/github/v/release/piezosystemjena/PiSoWorks?label=EXE)](https://github.com/piezosystemjena/PiSoWorks/releases/latest/)
+[![Publish Python Package](https://github.com/piezosystemjena/PiSoWorks/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/piezosystemjena/PiSoWorks/actions/workflows/publish-pypi.yml)
+[![Build Windows Executable](https://github.com/piezosystemjena/PiSoWorks/actions/workflows/build-windows.yml/badge.svg)](https://github.com/piezosystemjena/PiSoWorks/actions/workflows/build-windows.yml)
 
 PiSoWorks is an application for controlling the piezo amplifiers, such as the [NV200/D](https://www.piezosystem.com/product/nv-200-d-compact-amplifier/), from [piezosystem jena](https://www.piezosystem.com/) GmbH. It demonstrates the use of the [NV200 Python library](https://pypi.org/project/nv200/) within a graphical interface based on PySide6.
 
-Original Repository: https://github.com/piezosystemjena/PySoWorks
+Original Repository: https://github.com/piezosystemjena/PiSoWorks
 
 ![PiSoWorks UI](doc/images/pisoworks_ui.png)
 
