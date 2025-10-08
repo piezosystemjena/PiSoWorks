@@ -23,10 +23,10 @@ classifiers = [
 
 
 [tool.poetry.urls]
-Homepage = "https://github.com/piezosystemjena/PySoWorks"
-Source = "https://github.com/piezosystemjena/PySoWorks"
-"Bug Tracker" = "https://github.com/piezosystemjena/PySoWorks/issues"
-Documentation = "https://piezosystemjena.github.io/PySoWorks"
+Homepage = "https://github.com/piezosystemjena/PiSoWorks"
+Source = "https://github.com/piezosystemjena/PiSoWorks"
+"Bug Tracker" = "https://github.com/piezosystemjena/PiSoWorks/issues"
+Documentation = "https://piezosystemjena.github.io/PiSoWorks"
 
 
 [tool.poetry.scripts]

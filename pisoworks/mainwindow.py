@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
         """
         Opens the online manual in the default web browser.
         """
-        QDesktopServices.openUrl(QUrl("https://piezosystemjena.github.io/PySoWorks"))
+        QDesktopServices.openUrl(QUrl("https://piezosystemjena.github.io/PiSoWorks"))
 
     def show_manual(self):
         """
