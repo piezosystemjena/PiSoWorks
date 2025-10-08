@@ -175,13 +175,13 @@ by documentation, exe or installer builds. Normally the file will contains somet
 a development version:
 
 ```
-1.0.5.dev4
+2.0.0.dev4
 ```
 
-and this vor a tagged release version:
+and this for a tagged release version:
 
 ```
-1.0.4
+2.0.0
 ```
 
 ### Building with Poetry
