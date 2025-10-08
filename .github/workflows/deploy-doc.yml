@@ -52,6 +52,7 @@ jobs:
           pip install poetry
           poetry self add "poetry-dynamic-versioning[plugin]"
           poetry config virtualenvs.create false
+          sudo apt install -y libcairo2-dev
           poetry install --no-root
 
       # Generate version information from git tags and commit history and write it
