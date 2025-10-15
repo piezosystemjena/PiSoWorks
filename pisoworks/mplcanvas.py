@@ -173,7 +173,7 @@ class MplCanvas(FigureCanvas):
         self.add_line(x_data, y_data, label, color, axis)  # Add the new line to the plot
 
 
-    def add_line(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange'), axis : int = 0):
+    def add_line(self, x_data: Sequence[float], y_data: Sequence[float], label: str, color : QColor = QColor('orange'), axis : int = 0, linestyle: str = '-'):
         """
         Adds a new line plot to the canvas 
         """
@@ -190,7 +190,7 @@ class MplCanvas(FigureCanvas):
         print(f"Adding line with color: {rgba} and label: {label}")
         line, = ax.plot(
             x_data, y_data, 
-            linestyle='-', color=rgba, label=label
+            linestyle=linestyle, color=rgba, label=label
         )
 
         ax.set_autoscale_on(True)       # Turns autoscale mode back on

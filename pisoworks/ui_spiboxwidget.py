@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'spiboxwidget.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.1
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,19 +15,21 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
-    QFrame, QGridLayout, QGroupBox, QHBoxLayout,
-    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QComboBox,
+    QDoubleSpinBox, QFormLayout, QFrame, QGridLayout,
+    QGroupBox, QHBoxLayout, QLabel, QPushButton,
+    QSizePolicy, QSpacerItem, QSpinBox, QTabWidget,
     QToolButton, QVBoxLayout, QWidget)
 
 from pisoworks.mplcanvas import MplWidget
 from pisoworks.timed_progress_bar import TimedProgressBar
+from pisoworks.waveform_options_widget import WaveformOptionsWidget
 
 class Ui_SpiBoxWidget(object):
     def setupUi(self, SpiBoxWidget):
         if not SpiBoxWidget.objectName():
             SpiBoxWidget.setObjectName(u"SpiBoxWidget")
-        SpiBoxWidget.resize(1205, 821)
+        SpiBoxWidget.resize(847, 642)
         self.verticalLayout_3 = QVBoxLayout(SpiBoxWidget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.horizontalLayout = QHBoxLayout()
@@ -177,6 +179,165 @@ class Ui_SpiBoxWidget(object):
 
         self.verticalLayout_2.addWidget(self.singleDatasetGroupBox)
 
+        self.multipleDatasetGroupBox = QGroupBox(SpiBoxWidget)
+        self.multipleDatasetGroupBox.setObjectName(u"multipleDatasetGroupBox")
+        self.multipleDatasetGroupBox.setEnabled(True)
+        self.multipleDatasetGroupBox.setMinimumSize(QSize(0, 0))
+        self.multipleGridLayout = QGridLayout(self.multipleDatasetGroupBox)
+        self.multipleGridLayout.setObjectName(u"multipleGridLayout")
+        self.channelTabWidget = QTabWidget(self.multipleDatasetGroupBox)
+        self.channelTabWidget.setObjectName(u"channelTabWidget")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.channelTabWidget.sizePolicy().hasHeightForWidth())
+        self.channelTabWidget.setSizePolicy(sizePolicy2)
+        self.channel1Tab = QWidget()
+        self.channel1Tab.setObjectName(u"channel1Tab")
+        self.channel1Tab.setAcceptDrops(False)
+        self.vBoxLayout1 = QVBoxLayout(self.channel1Tab)
+        self.vBoxLayout1.setObjectName(u"vBoxLayout1")
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(u"formLayout")
+        self.formLayout.setHorizontalSpacing(6)
+        self.formLayout.setContentsMargins(9, 6, 6, 0)
+        self.enabledLabel1 = QLabel(self.channel1Tab)
+        self.enabledLabel1.setObjectName(u"enabledLabel1")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.enabledLabel1.sizePolicy().hasHeightForWidth())
+        self.enabledLabel1.setSizePolicy(sizePolicy3)
+        self.enabledLabel1.setBaseSize(QSize(0, 0))
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.enabledLabel1)
+
+        self.enabledCheckbox1 = QCheckBox(self.channel1Tab)
+        self.enabledCheckbox1.setObjectName(u"enabledCheckbox1")
+        self.enabledCheckbox1.setChecked(True)
+        self.enabledCheckbox1.setProperty(u"toggleSwitch", True)
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox1)
+
+
+        self.vBoxLayout1.addLayout(self.formLayout)
+
+        self.waveformOptions1 = WaveformOptionsWidget(self.channel1Tab)
+        self.waveformOptions1.setObjectName(u"waveformOptions1")
+
+        self.vBoxLayout1.addWidget(self.waveformOptions1)
+
+        self.channelTabWidget.addTab(self.channel1Tab, "")
+        self.channel2Tab = QWidget()
+        self.channel2Tab.setObjectName(u"channel2Tab")
+        self.formLayout2 = QVBoxLayout(self.channel2Tab)
+        self.formLayout2.setObjectName(u"formLayout2")
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.formLayout_3.setContentsMargins(9, 6, 6, -1)
+        self.enabledLabel2 = QLabel(self.channel2Tab)
+        self.enabledLabel2.setObjectName(u"enabledLabel2")
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.LabelRole, self.enabledLabel2)
+
+        self.enabledCheckbox2 = QCheckBox(self.channel2Tab)
+        self.enabledCheckbox2.setObjectName(u"enabledCheckbox2")
+        self.enabledCheckbox2.setChecked(True)
+        self.enabledCheckbox2.setProperty(u"toggleSwitch", True)
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox2)
+
+
+        self.formLayout2.addLayout(self.formLayout_3)
+
+        self.waveformOptions2 = WaveformOptionsWidget(self.channel2Tab)
+        self.waveformOptions2.setObjectName(u"waveformOptions2")
+
+        self.formLayout2.addWidget(self.waveformOptions2)
+
+        self.channelTabWidget.addTab(self.channel2Tab, "")
+        self.channel3Tab = QWidget()
+        self.channel3Tab.setObjectName(u"channel3Tab")
+        self.formLayout3 = QVBoxLayout(self.channel3Tab)
+        self.formLayout3.setObjectName(u"formLayout3")
+        self.formLayout_4 = QFormLayout()
+        self.formLayout_4.setObjectName(u"formLayout_4")
+        self.formLayout_4.setContentsMargins(9, 6, 6, -1)
+        self.enabledLabel3 = QLabel(self.channel3Tab)
+        self.enabledLabel3.setObjectName(u"enabledLabel3")
+
+        self.formLayout_4.setWidget(0, QFormLayout.ItemRole.LabelRole, self.enabledLabel3)
+
+        self.enabledCheckbox3 = QCheckBox(self.channel3Tab)
+        self.enabledCheckbox3.setObjectName(u"enabledCheckbox3")
+        self.enabledCheckbox3.setChecked(True)
+        self.enabledCheckbox3.setProperty(u"toggleSwitch", True)
+
+        self.formLayout_4.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox3)
+
+
+        self.formLayout3.addLayout(self.formLayout_4)
+
+        self.waveformOptions3 = WaveformOptionsWidget(self.channel3Tab)
+        self.waveformOptions3.setObjectName(u"waveformOptions3")
+
+        self.formLayout3.addWidget(self.waveformOptions3)
+
+        self.channelTabWidget.addTab(self.channel3Tab, "")
+
+        self.multipleGridLayout.addWidget(self.channelTabWidget, 0, 0, 1, 1)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.startWaveformButton = QPushButton(self.multipleDatasetGroupBox)
+        self.startWaveformButton.setObjectName(u"startWaveformButton")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
+        self.startWaveformButton.setSizePolicy(sizePolicy4)
+
+        self.horizontalLayout_4.addWidget(self.startWaveformButton)
+
+
+        self.multipleGridLayout.addLayout(self.horizontalLayout_4, 5, 0, 1, 1)
+
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.infiniteCyclesLabel = QLabel(self.multipleDatasetGroupBox)
+        self.infiniteCyclesLabel.setObjectName(u"infiniteCyclesLabel")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.infiniteCyclesLabel)
+
+        self.infiniteCyclesCheckBox = QCheckBox(self.multipleDatasetGroupBox)
+        self.infiniteCyclesCheckBox.setObjectName(u"infiniteCyclesCheckBox")
+        self.infiniteCyclesCheckBox.setProperty(u"toggleSwitch", True)
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.infiniteCyclesCheckBox)
+
+        self.cyclesLabel = QLabel(self.multipleDatasetGroupBox)
+        self.cyclesLabel.setObjectName(u"cyclesLabel")
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
+
+        self.cyclesSpinBox = QSpinBox(self.multipleDatasetGroupBox)
+        self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
+        self.cyclesSpinBox.setSizePolicy(sizePolicy5)
+        self.cyclesSpinBox.setMaximum(65535)
+        self.cyclesSpinBox.setValue(1)
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
+
+
+        self.multipleGridLayout.addLayout(self.formLayout_2, 2, 0, 1, 1)
+
+
+        self.verticalLayout_2.addWidget(self.multipleDatasetGroupBox)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer)
@@ -190,11 +351,11 @@ class Ui_SpiBoxWidget(object):
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
         self.waveformPlot = MplWidget(SpiBoxWidget)
         self.waveformPlot.setObjectName(u"waveformPlot")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.waveformPlot.sizePolicy().hasHeightForWidth())
-        self.waveformPlot.setSizePolicy(sizePolicy2)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.waveformPlot.sizePolicy().hasHeightForWidth())
+        self.waveformPlot.setSizePolicy(sizePolicy6)
 
         self.verticalLayout_4.addWidget(self.waveformPlot)
 
@@ -215,6 +376,9 @@ class Ui_SpiBoxWidget(object):
 
 
         self.retranslateUi(SpiBoxWidget)
+
+        self.channelTabWidget.setCurrentIndex(0)
+
 
         QMetaObject.connectSlotsByName(SpiBoxWidget)
     # setupUi
@@ -237,5 +401,19 @@ class Ui_SpiBoxWidget(object):
         self.label_5.setText(QCoreApplication.translate("SpiBoxWidget", u"Channel 3:", None))
         self.sendSingleButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Send", None))
         self.singleDatasetSendCh2SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
+        self.multipleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Multiple Datasets", None))
+        self.enabledLabel1.setText(QCoreApplication.translate("SpiBoxWidget", u"Enabled              ", None))
+        self.enabledCheckbox1.setText("")
+        self.channelTabWidget.setTabText(self.channelTabWidget.indexOf(self.channel1Tab), QCoreApplication.translate("SpiBoxWidget", u"Channel 1", None))
+        self.enabledLabel2.setText(QCoreApplication.translate("SpiBoxWidget", u"Enabled              ", None))
+        self.enabledCheckbox2.setText("")
+        self.channelTabWidget.setTabText(self.channelTabWidget.indexOf(self.channel2Tab), QCoreApplication.translate("SpiBoxWidget", u"Channel 2", None))
+        self.enabledLabel3.setText(QCoreApplication.translate("SpiBoxWidget", u"Enabled              ", None))
+        self.enabledCheckbox3.setText("")
+        self.channelTabWidget.setTabText(self.channelTabWidget.indexOf(self.channel3Tab), QCoreApplication.translate("SpiBoxWidget", u"Channel 3", None))
+        self.startWaveformButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Start", None))
+        self.infiniteCyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Infinite Cycles", None))
+        self.infiniteCyclesCheckBox.setText("")
+        self.cyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Cycles", None))
     # retranslateUi
 

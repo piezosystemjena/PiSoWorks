@@ -92,6 +92,7 @@ class InputWidgetChangeTracker(QObject):
         self.backups: Dict[str, Dict[QWidget, Any]] = {} # a dictionary of named backups
         self.widgets: List[QWidget] = []
         self.dirty_widgets: set[QWidget] = set()
+        self.enable_dirty_tracking: bool = True
 
 
     def add_widget(
@@ -222,6 +223,9 @@ class InputWidgetChangeTracker(QObject):
             widget: The widget to update.
             dirty: True to mark as dirty, False to clear.
         """
+        if dirty and not self.enable_dirty_tracking:
+            return
+
         widget.setProperty("dirty", dirty)
         self._refresh_style(widget)
         if dirty:
@@ -378,3 +382,16 @@ class InputWidgetChangeTracker(QObject):
             True if at least one widget is dirty, False otherwise.
         """
         return bool(self.dirty_widgets)
+    
+
+    def set_enable_dirty_tracking(self, enabled: bool) -> None:
+        """
+        Enable or disable dirty tracking.
+
+        When disabled, widgets will not be marked dirty on changes.
+        """
+        self.enable_dirty_tracking = enabled
+        
+        if not enabled:
+            self.reset()
+
