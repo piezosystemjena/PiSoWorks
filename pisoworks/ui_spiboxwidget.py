@@ -327,6 +327,7 @@ class Ui_SpiBoxWidget(object):
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
         self.cyclesSpinBox.setSizePolicy(sizePolicy5)
+        self.cyclesSpinBox.setMinimum(1)
         self.cyclesSpinBox.setMaximum(65535)
         self.cyclesSpinBox.setValue(1)
 

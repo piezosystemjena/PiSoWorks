@@ -46,6 +46,8 @@ class SpiBoxWidget(QWidget):
 
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self.ui = Ui_SpiBoxWidget()
+        self._waveform_task = None
+
         ui = self.ui
         ui.setupUi(self)
         self.init_device_search_ui()
@@ -247,7 +249,7 @@ class SpiBoxWidget(QWidget):
         return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
     
     
-    async def disconnect_from_device(self):
+    async def disconnect_from_device(self, update_ui = True):
         """
         Asynchronously disconnects from the currently connected device.
         """
@@ -256,12 +258,14 @@ class SpiBoxWidget(QWidget):
             return
 
         await self._device.close()
-        self._device = None       
-        self.reset_ui(False)
+        self._device = None     
+          
+        if update_ui:
+            self.reset_ui(False)
 
         # Cancel any ongoing waveform task
-        self._waveform_task.cancel()
-            
+        if self._waveform_task is not None:
+            self._waveform_task.cancel()
 
     async def connect_to_device(self):
         """
@@ -582,4 +586,4 @@ class SpiBoxWidget(QWidget):
         Cleans up resources by initiating an asynchronous disconnection from the device.
         This function needs to get called, before the widget is deleted
         """
-        result = asyncio.create_task(self.disconnect_from_device())
+        result = asyncio.create_task(self.disconnect_from_device(update_ui = False))
