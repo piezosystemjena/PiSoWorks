@@ -307,6 +307,7 @@ class SpiBoxWidget(QWidget):
         self.ui.waveformOptions3.set_sampling_period_readonly(True)
 
         self.ui.waveformPlot.canvas.clear_plot()
+        self.ui.waveformPlot.canvas.get_axes(0).set_ylabel('Piezo Position (%)')
 
         # If connected to a device, show waveform preview
         if connected:
@@ -470,7 +471,10 @@ class SpiBoxWidget(QWidget):
         Plots the response data received from the device for all channels.
         Displays each channel's response as a colored line on the waveform plot.
         """
-        samples_ms = self.create_sample_ms_list(len(channels[0]) if len(channels) > 0 else 0)
+        if channels is None or len(channels) == 0:
+            return
+
+        samples_ms = self.create_sample_ms_list(len(channels[0]))
 
         for i, channel in enumerate(channels):
             self.ui.waveformPlot.canvas.add_line(
