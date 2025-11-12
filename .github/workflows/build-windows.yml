@@ -155,11 +155,6 @@ jobs:
         with:
           name: PiSoWorks.exe
           path: dist
-
-      # Install Inno Setup via winget
-      - name: Install Inno Setup
-        continue-on-error: true
-        run: winget install -e --id JRSoftware.InnoSetup --accept-source-agreements --accept-package-agreements
       
       # To prevent errors because of slashs in the ref_name, '/' should be replaced with '_'
       - name: Compute variables
@@ -171,9 +166,11 @@ jobs:
           echo "safe_ref_name=$ref" >> $GITHUB_OUTPUT
           echo "inno_cmd=& \"\$env:LOCALAPPDATA/Programs/Inno Setup 6/iscc.exe\"" >> $GITHUB_OUTPUT
       
-      # Compile installer using Inno Setup
+      # Compile the Windows installer using Inno Setup (.iss script)
       - name: Compile Inno Setup Installer
-        run: ${{ steps.vars.outputs.inno_cmd }} pisoworks_inno_setup.iss
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: pisoworks_inno_setup.iss
 
       # Upload the installer as a workflow artifact,
       # so it can be downloaded from the Actions run
