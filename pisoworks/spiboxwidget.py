@@ -7,7 +7,7 @@ import math
 import numpy
 
 from PySide6.QtWidgets import QApplication, QWidget, QMenu
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPalette, QIcon, QAction, QColor
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
@@ -17,7 +17,7 @@ from nv200.shared_types import DetectedDevice, DiscoverFlags
 from nv200.device_discovery import discover_devices
 from nv200.spibox_device import SpiBoxDevice
 from nv200.connection_utils import connect_to_detected_device
-from pisoworks.style_manager import StyleManager, style_manager
+from pisoworks.style_manager import style_manager
 from pisoworks.ui_helpers import get_icon, get_icon_for_menu, set_combobox_index_by_value, safe_asyncslot
 from nv200.waveform_generator import WaveformGenerator, WaveformType, WaveformUnit
 
@@ -47,6 +47,7 @@ class SpiBoxWidget(QWidget):
         self._discover_flags : DiscoverFlags = DiscoverFlags.ALL
         self.ui = Ui_SpiBoxWidget()
         self._waveform_task = None
+        self._initialized = False
 
         ui = self.ui
         ui.setupUi(self)
@@ -56,15 +57,14 @@ class SpiBoxWidget(QWidget):
         # Create a waveform generator without any device attached - this will only generate the waveform data
         # The data can then be sent using the SpiBoxDevice class
         self.waveform_generator = WaveformGenerator(None)
-        self.waveform_response = [[], [], []]  # Placeholder for 3 channels
-
-        style_manager.style.dark_mode_changed.connect(ui.waveformPlot.set_dark_mode)
+        self.waveform_response = []
 
         # Initialize Button and Checkbox event listeners
         ui.sendSingleButton.clicked.connect(qtinter.asyncslot(self.send_single_dataset))
         ui.startWaveformButton.clicked.connect(self.on_start_waveform)
         ui.infiniteCyclesCheckBox.toggled.connect(self.on_infinite_cycles_checked)
         ui.channelTabWidget.currentChanged.connect(self.on_channel_switched)
+        ui.getResponseButton.clicked.connect(self.on_get_waveform_response)
 
         # Initialize option changed event listeners
         self.ui.waveformOptions1.optionChanged.connect(self.on_option_changed)
@@ -72,14 +72,48 @@ class SpiBoxWidget(QWidget):
         self.ui.waveformOptions3.optionChanged.connect(self.on_option_changed)
         self.ui.cyclesSpinBox.valueChanged.connect(self.on_option_changed)
         self.ui.infiniteCyclesCheckBox.toggled.connect(self.on_option_changed)
-        self.ui.enabledCheckbox1.toggled.connect(self.on_option_changed)
-        self.ui.enabledCheckbox2.toggled.connect(self.on_option_changed)
-        self.ui.enabledCheckbox3.toggled.connect(self.on_option_changed)
+        self.ui.enabledCheckbox1.toggled.connect(self.on_enabled_changed)
+        self.ui.enabledCheckbox2.toggled.connect(self.on_enabled_changed)
+        self.ui.enabledCheckbox3.toggled.connect(self.on_enabled_changed)
 
-        # Do not use dirty tracking for the waveform option widgets
-        self.ui.waveformOptions1.set_dirty_tracking(False)
-        self.ui.waveformOptions2.set_dirty_tracking(False)
-        self.ui.waveformOptions3.set_dirty_tracking(False)
+        # Do not show dirty tracking for the waveform option widgets
+        self.ui.waveformOptions1.set_show_dirty_indicators(False)
+        self.ui.waveformOptions2.set_show_dirty_indicators(False)
+        self.ui.waveformOptions3.set_show_dirty_indicators(False)
+
+        self._plot_timer = QTimer(self)
+        self._plot_timer.setSingleShot(True)
+        self._plot_timer.timeout.connect(self.plot_all_waveforms)
+
+        style_manager.style.dark_mode_changed.connect(self.set_dark_mode)
+
+
+    def showEvent(self, event):
+        """
+        Handles the widget's show event. Ensures initialization logic is executed only once
+        when the widget is shown for the first time. Schedules an asynchronous search for
+        serial devices unsing QTimer after the widget is displayed.
+
+        Args:
+            event (QShowEvent): The event object associated with the widget being shown.
+        """
+        super().showEvent(event)
+        if self._initialized:
+            return
+
+        self._initialized = True
+        QTimer.singleShot(0, safe_asyncslot(self.search_serial_devices))
+
+
+    def set_dark_mode(self, dark: bool):
+        """
+        Handler after the dark mode has changed.
+
+        Args:
+            dark (bool): The new dark mode state.
+        """
+        self.ui.waveformPlot.set_dark_mode(dark)
+        self.plot_all_waveforms()
 
 
     def on_infinite_cycles_checked(self, value):
@@ -294,14 +328,15 @@ class SpiBoxWidget(QWidget):
         """
         self.set_groupbox_enabled(connected)
         self.setCursor(Qt.ArrowCursor)
-        self.on_waveform_state_change(SpiBoxDevice.WaveformState.STOPPED)
+        self.set_waveform_ui_state(SpiBoxDevice.WaveformState.STOPPED)
         self.update_target_pos_edits()
 
-        # Sampling period is fixed to 50us for NV200 in SPI mode
-        self.ui.waveformOptions1.set_sampling_period(0.05)
-        self.ui.waveformOptions2.set_sampling_period(0.05)
-        self.ui.waveformOptions3.set_sampling_period(0.05)
+        # Set waveform option widgets to dirty state
+        self.ui.waveformOptions1.set_dirty()
+        self.ui.waveformOptions2.set_dirty()
+        self.ui.waveformOptions3.set_dirty()
 
+        # Sampling period is fixed to 50us for NV200 in SPI mode
         self.ui.waveformOptions1.set_sampling_period_readonly(True)
         self.ui.waveformOptions2.set_sampling_period_readonly(True)
         self.ui.waveformOptions3.set_sampling_period_readonly(True)
@@ -309,9 +344,26 @@ class SpiBoxWidget(QWidget):
         self.ui.waveformPlot.canvas.clear_plot()
         self.ui.waveformPlot.canvas.get_axes(0).set_ylabel('Piezo Position (%)')
 
-        # If connected to a device, show waveform preview
+        # If connected to a device, show waveform preview and get current waveform status
         if connected:
-            self.plot_all_waveforms()
+            self._plot_timer.start(100)
+            asyncio.create_task(self.reflect_waveform_status())
+
+    
+    async def reflect_waveform_status(self):
+        """
+        Fetches the current waveform status from the device and updates the UI accordingly.
+        """
+        if self._device is None:
+            return
+        
+        try:
+            wf_state = await self._device.get_waveform_status()
+            self.set_waveform_ui_state(wf_state)
+        except Exception as e:
+            self.status_message.emit(f" Error fetching waveform status: {e}", 4000)
+
+        return wf_state
 
 
     async def send_single_dataset(self):
@@ -323,15 +375,20 @@ class SpiBoxWidget(QWidget):
             self.status_message.emit("No device connected.", 2000)
             return
         
-        rxdata = await self._device.set_setpoints_percent(
-            self.ui.singleDatasetSendCh1SpinBox.value(),
-            self.ui.singleDatasetSendCh2SpinBox.value(),
-            self.ui.singleDatasetSendCh3SpinBox.value()
-        )
+        try:
+            rxdata = await self._device.set_setpoints_percent(
+                self.ui.singleDatasetSendCh1SpinBox.value(),
+                self.ui.singleDatasetSendCh2SpinBox.value(),
+                self.ui.singleDatasetSendCh3SpinBox.value()
+            )
 
-        self.ui.singleDatasetReceiveCh1SpinBox.setValue(rxdata[0])
-        self.ui.singleDatasetReceiveCh2SpinBox.setValue(rxdata[1])
-        self.ui.singleDatasetReceiveCh3SpinBox.setValue(rxdata[2])
+            self.ui.singleDatasetReceiveCh1SpinBox.setValue(rxdata[0])
+            self.ui.singleDatasetReceiveCh2SpinBox.setValue(rxdata[1])
+            self.ui.singleDatasetReceiveCh3SpinBox.setValue(rxdata[2])
+
+        except Exception as e:
+            self.status_message.emit(f" Error sending dataset: {e}", 4000)
+            return
 
 
     def plot_all_waveforms(self):
@@ -347,7 +404,7 @@ class SpiBoxWidget(QWidget):
         # Clear existing plot and redraw response and preview waveforms
         self.clear_waveform_plot()
         self.plot_waveform(
-            generated_waveform.values,
+            generated_waveform,
             self.ui.cyclesSpinBox.value() if not self.ui.infiniteCyclesCheckBox.isChecked() else 1,
             enabled
         )
@@ -372,9 +429,23 @@ class SpiBoxWidget(QWidget):
         """
         if self._device is None:
             return
+        
+        self._plot_timer.start(100)
 
-        self.plot_all_waveforms()
 
+    def on_enabled_changed(self):
+        """
+        Handles the event when any channel enabled checkbox is changed.
+        Redraws the waveform plot to reflect the updated enabled state and sets the dirty state.
+        """
+        if self._device is None:
+            return
+        
+        self.ui.waveformOptions1.set_dirty()
+        self.ui.waveformOptions2.set_dirty()
+        self.ui.waveformOptions3.set_dirty()
+
+        self.on_option_changed()
 
     def on_start_waveform(self):
         """
@@ -385,37 +456,55 @@ class SpiBoxWidget(QWidget):
         if self._device is None:
             self.status_message.emit("No device connected.", 2000)
             return
+        
+        self._waveform_task = asyncio.create_task(self.handle_start_button())
 
-        # Disable the button to prevent multiple clicks
-        self.ui.startWaveformButton.setEnabled(False)
 
-        status = self._device.get_waveform_status()
+    def on_get_waveform_response(self):
+        """
+        Handles the event when the get waveform response button is clicked.
+        This method is called when the user clicks the button to fetch the waveform response from the SPI Box.
+        It retrieves the response data from the device and updates the status message accordingly.
+        """
+        if self._device is None:
+            self.status_message.emit("No device connected.", 2000)
+            return
+
+        self._waveform_task = asyncio.create_task(self.get_waveform_response())
+
+
+    async def handle_start_button(self):
+        status = None
+        
+        try:
+            status = await self.reflect_waveform_status()
+        except Exception as e:
+            self.status_message.emit(f" Error fetching waveform status: {e}", 4000)
+            return
 
         if status == SpiBoxDevice.WaveformState.STOPPED:
-            self._waveform_task = asyncio.create_task(self.upload_waveforms())
-        elif status == SpiBoxDevice.WaveformState.RUNNING_INFINITE:
-            self._waveform_task = asyncio.create_task(self.stop_waveforms())
+            self._waveform_task = await self.upload_waveforms()
+        else:
+            self._waveform_task = await self.stop_waveforms()
 
 
     async def stop_waveforms(self):
         """
         Asynchronously stops the currently running waveform output on the device.
-        Updates the UI to display the final response data and changes the waveform state to stopped.
+        Changes the waveform state to stopped.
         """
         # Update UI state
-        self.status_message.emit(f"Stopping waveforms...", 0)
         self.setCursor(Qt.CursorShape.WaitCursor)
         self.ui.startWaveformButton.setEnabled(False)
 
-        # Stop waveform and plot response data
-        rxdata = await self._device.stop_waveforms()
-        self.waveform_response = rxdata
+        try:
+            await self._device.stop_waveforms()
 
-        self.plot_all_waveforms()
+        except Exception as e:
+            self.status_message.emit(f" Error stopping waveforms: {e}", 4000)
+            return
 
-        # Update UI state
-        self.status_message.emit(f"", 10)
-        self.on_waveform_state_change(SpiBoxDevice.WaveformState.STOPPED)
+        self.set_waveform_ui_state(SpiBoxDevice.WaveformState.STOPPED)
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
 
@@ -423,40 +512,127 @@ class SpiBoxWidget(QWidget):
         """
         Asynchronously uploads and starts the waveform output on the device.
         """
+        if self._device is None:
+            self.status_message.emit(f" No device connected.", 4000)
+            return
+
         try:
+            infinite = self.ui.infiniteCyclesCheckBox.isChecked()
+
             # Update UI state
-            self.status_message.emit(f"Generating waveforms...", 0)
+            self.status_message.emit(f" Generating waveforms...", 0)
             self.setCursor(Qt.CursorShape.WaitCursor)
+            self.set_waveform_ui_state(SpiBoxDevice.WaveformState.RUNNING)
 
             # Generate and plot waveforms
             waveforms = self.generate_waveforms_from_ui()
 
-            self.waveform_response = [[], [], []]  # Clear previous response
+            self.waveform_response = []  # Clear previous response
             self.plot_all_waveforms()
 
-            self.status_message.emit(f"Waiting for device response...", 0)
-
-            # Send waveforms to device
-            rxdata = await self._device.set_waveforms(
-                ch1 = waveforms[0] if len(waveforms) > 0 else None,
-                ch2 = waveforms[1] if len(waveforms) > 1 else None,
-                ch3 = waveforms[2] if len(waveforms) > 2 else None,
-                cycles = self.ui.cyclesSpinBox.value(),
-                infinite = self.ui.infiniteCyclesCheckBox.isChecked(),
-                on_waveform_state_change = self.on_waveform_state_change
+            # Configure waveform
+            actual_cycles = self.ui.cyclesSpinBox.value() if not self.ui.infiniteCyclesCheckBox.isChecked() else 0
+            await self._device.set_waveform_cycles(actual_cycles, actual_cycles, actual_cycles)
+            
+            await self._device.set_waveform_sample_factors(
+                waveforms[0].sample_factor if waveforms[0] is not None else 1,
+                waveforms[1].sample_factor if waveforms[1] is not None else 1,
+                waveforms[2].sample_factor if waveforms[2] is not None else 1
             )
 
-            self.status_message.emit("Waveforms uploaded successfully.", 2000)
+            if self.any_waveform_changed():
+                await self._device.upload_waveform_samples(
+                    ch1 = waveforms[0].values if waveforms[0] is not None else None,
+                    ch2 = waveforms[1].values if waveforms[1] is not None else None,
+                    ch3 = waveforms[2].values if waveforms[2] is not None else None,
+                    on_progress = lambda current, total: self.on_waveform_progress(current, total, True)
+                )
 
-            # Plot the response data
-            self.waveform_response = rxdata
-               
-            self.plot_all_waveforms()
+                self.ui.waveformOptions1.clear_dirty()
+                self.ui.waveformOptions2.clear_dirty()
+                self.ui.waveformOptions3.clear_dirty()
+
+            self.ui.moveProgressBar.reset()
+
+            # Start waveform
+            await self._device.start_waveforms()
+
+            # Handle single vs infinite cycles
+            if not infinite:
+                self.status_message.emit(f" Waiting for waveform completion...", 0)
+                await self._device.await_waveform_completion()
+
+            await self.reflect_waveform_status()
+            self.status_message.emit(f" Done", 2000)
+
         except Exception as e:
-            self.status_message.emit(f"Error uploading waveforms: {e}", 4000)
-            self.on_waveform_state_change(SpiBoxDevice.WaveformState.STOPPED)
+            self.status_message.emit(f" Error uploading waveforms: {e}", 4000)
+            self.set_waveform_ui_state(SpiBoxDevice.WaveformState.STOPPED)
+        
         finally:
             self.setCursor(Qt.CursorShape.ArrowCursor)
+
+
+    async def get_waveform_response(self):
+        """
+        Asynchronously retrieves the waveform response data from the device.
+        Updates the waveform response attribute and redraws the waveform plot.
+        """
+        if self._device is None:
+            self.status_message.emit(f" No device connected.", 4000)
+            return
+        
+        # Update UI state
+        self.ui.startWaveformButton.setEnabled(False)
+        self.ui.getResponseButton.setEnabled(False)
+        self.status_message.emit(f" Fetching waveform response...", 0)
+
+        # Fetch and plot response
+        try:
+            sample_count = await self._device.get_response_samples_count()
+
+            if sample_count == 0:
+                self.status_message.emit(f" No waveform response data available.", 4000)
+                self.ui.startWaveformButton.setEnabled(True)
+                self.ui.getResponseButton.setEnabled(True)
+                return
+
+            step = max(1, math.ceil(sample_count / 1000))  # Limit to 1000 samples for performance
+
+            rxdata = await self._device.get_waveform_response(
+                step_size = step,
+                max_samples = 1000,
+                on_progress = lambda current, total: self.on_waveform_progress(current, total, False)
+            )
+            self.waveform_response = rxdata
+
+            self.plot_all_waveforms()
+            self.status_message.emit(f" Done", 2000)
+
+        except Exception as e:
+            self.status_message.emit(f" Error fetching waveform response: {e}", 4000)
+            return
+
+        # Update UI state
+        self.ui.moveProgressBar.reset()
+        self.ui.startWaveformButton.setEnabled(True)
+        self.ui.getResponseButton.setEnabled(True)
+
+
+    def on_waveform_progress(self, current_sample, total_samples, is_upload):
+        """
+        Handles progress updates during waveform upload or response fetching.
+        Updates the status message and progress bar based on the current sample being processed.
+        """
+        percentage = (current_sample / total_samples) * 100
+
+        if current_sample % 10 != 0 and current_sample != total_samples:
+            return  # Update only on every 10 increment for performance
+
+        operation = "Uploading" if is_upload else "Fetching"
+        self.ui.moveProgressBar.setMaximum(total_samples)
+        self.ui.moveProgressBar.setValue(current_sample)
+        self.status_message.emit(f" {operation} waveform - sample {current_sample} of {total_samples} [{percentage:.1f}%]", 0)
 
 
     def clear_waveform_plot(self):
@@ -474,12 +650,10 @@ class SpiBoxWidget(QWidget):
         if channels is None or len(channels) == 0:
             return
 
-        samples_ms = self.create_sample_ms_list(len(channels[0]))
-
         for i, channel in enumerate(channels):
             self.ui.waveformPlot.canvas.add_line(
-                x_data = samples_ms,
-                y_data = channel,
+                x_data = channel.sample_times_ms,
+                y_data = channel.values,
                 label = f"Channel {i+1}",
                 color = [QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255)][i]
             )
@@ -491,24 +665,26 @@ class SpiBoxWidget(QWidget):
         The waveform is repeated for the specified number of cycles and displayed with a dashed line if
         the channel is disabled.
         """
-        samples_ms = self.create_sample_ms_list(len(waveform) * cycle_count)
+        line_color = QColor(200, 200, 200) if style_manager.style.is_current_theme_dark() else QColor(50, 50, 50)
 
         self.ui.waveformPlot.canvas.add_line(
-            x_data = samples_ms,
-            y_data = numpy.tile(waveform, cycle_count),
+            x_data = self.extend_sample_ms_list(waveform.sample_times_ms, cycle_count),
+            y_data = numpy.tile(waveform.values, cycle_count),
             label = f"Waveform",
-            color = QColor(255, 255, 255),
+            color = line_color,
             linestyle = '--' if not enabled else '-'
         )
-
     
-    def create_sample_ms_list(self, num_samples):
+
+    def extend_sample_ms_list(self, original_list, factor):
         """
-        Creates a list of time values in milliseconds for the given number of samples.
-        Used to generate the x-axis data for waveform plots based on the NV200 base sampling period.
+        Extends the original sample time list by the given factor.
+        Each sample time is repeated 'factor' times to match the extended waveform data.
         """
-        sampling_period_ms = self.waveform_generator.NV200_BASE_SAMPLE_TIME_US / 1000.0
-        return [i * sampling_period_ms for i in range(num_samples)]
+        sample_time = original_list[1]
+        total_samples = len(original_list) * factor
+
+        return [i * sample_time for i in range(total_samples)]
 
 
     def generate_waveforms_from_ui(self):
@@ -527,7 +703,7 @@ class SpiBoxWidget(QWidget):
             if enabled:
                 waveform = self.generate_waveform_for_channel(channel)
 
-            waveforms.append(waveform.values if waveform is not None else None)
+            waveforms.append(waveform)
 
         return waveforms
     
@@ -561,28 +737,50 @@ class SpiBoxWidget(QWidget):
             high_level          = option.get_high_level(),
             freq_hz             = option.get_frequency(),
             phase_shift_rad     = math.radians(option.get_phase_shift()),
-            duty_cycle          = option.get_duty_cycle() / 100.0,
-            use_base_sampling   = True
+            duty_cycle          = option.get_duty_cycle() / 100.0
         )
+
+        option.set_sampling_period(waveform.sample_time_ms)
 
         return waveform
     
     
-    def on_waveform_state_change(self, new_state):
+    def set_waveform_ui_state(self, state):
         """
         Handles changes in the waveform state and updates the UI accordingly.
         Updates the start/stop button text, icon, and enabled state based on whether the waveform is stopped, running, or running infinitely.
         """
-        if new_state == SpiBoxDevice.WaveformState.STOPPED:
+        if state == SpiBoxDevice.WaveformState.STOPPED:
             self.ui.startWaveformButton.setEnabled(True)
+            self.ui.getResponseButton.setEnabled(True)
+            self.ui.sendSingleButton.setEnabled(True)
             self.ui.startWaveformButton.setText("Start")
             self.ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
-        elif new_state == SpiBoxDevice.WaveformState.RUNNING:
+            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+        elif state == SpiBoxDevice.WaveformState.RUNNING:
             self.ui.startWaveformButton.setEnabled(False)
-        elif new_state == SpiBoxDevice.WaveformState.RUNNING_INFINITE:
+            self.ui.getResponseButton.setEnabled(False)
+            self.ui.sendSingleButton.setEnabled(False)
+            self.ui.startWaveformButton.setText("Start")
+            self.ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
+            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+        elif state == SpiBoxDevice.WaveformState.RUNNING_INFINITE:
             self.ui.startWaveformButton.setEnabled(True)
+            self.ui.getResponseButton.setEnabled(False)
+            self.ui.sendSingleButton.setEnabled(False)
             self.ui.startWaveformButton.setText("Stop")
             self.ui.startWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
+            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+
+
+    def any_waveform_changed(self):
+        """
+        Checks if any of the waveform option widgets have unsaved changes.
+        Returns True if any waveform options are dirty, otherwise False.
+        """
+        return (self.ui.waveformOptions1.is_dirty() or
+                self.ui.waveformOptions2.is_dirty() or
+                self.ui.waveformOptions3.is_dirty())
 
 
     def cleanup(self):

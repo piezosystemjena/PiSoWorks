@@ -185,13 +185,70 @@ class Ui_SpiBoxWidget(object):
         self.multipleDatasetGroupBox.setMinimumSize(QSize(0, 0))
         self.multipleGridLayout = QGridLayout(self.multipleDatasetGroupBox)
         self.multipleGridLayout.setObjectName(u"multipleGridLayout")
-        self.channelTabWidget = QTabWidget(self.multipleDatasetGroupBox)
-        self.channelTabWidget.setObjectName(u"channelTabWidget")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.startWaveformButton = QPushButton(self.multipleDatasetGroupBox)
+        self.startWaveformButton.setObjectName(u"startWaveformButton")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.channelTabWidget.sizePolicy().hasHeightForWidth())
-        self.channelTabWidget.setSizePolicy(sizePolicy2)
+        sizePolicy2.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
+        self.startWaveformButton.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_4.addWidget(self.startWaveformButton)
+
+        self.getResponseButton = QPushButton(self.multipleDatasetGroupBox)
+        self.getResponseButton.setObjectName(u"getResponseButton")
+        self.getResponseButton.setEnabled(False)
+        sizePolicy2.setHeightForWidth(self.getResponseButton.sizePolicy().hasHeightForWidth())
+        self.getResponseButton.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_4.addWidget(self.getResponseButton)
+
+
+        self.multipleGridLayout.addLayout(self.horizontalLayout_4, 5, 0, 1, 1)
+
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.infiniteCyclesLabel = QLabel(self.multipleDatasetGroupBox)
+        self.infiniteCyclesLabel.setObjectName(u"infiniteCyclesLabel")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.infiniteCyclesLabel)
+
+        self.infiniteCyclesCheckBox = QCheckBox(self.multipleDatasetGroupBox)
+        self.infiniteCyclesCheckBox.setObjectName(u"infiniteCyclesCheckBox")
+        self.infiniteCyclesCheckBox.setProperty(u"toggleSwitch", True)
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.infiniteCyclesCheckBox)
+
+        self.cyclesLabel = QLabel(self.multipleDatasetGroupBox)
+        self.cyclesLabel.setObjectName(u"cyclesLabel")
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
+
+        self.cyclesSpinBox = QSpinBox(self.multipleDatasetGroupBox)
+        self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
+        self.cyclesSpinBox.setSizePolicy(sizePolicy3)
+        self.cyclesSpinBox.setMinimum(1)
+        self.cyclesSpinBox.setMaximum(65535)
+        self.cyclesSpinBox.setValue(1)
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
+
+
+        self.multipleGridLayout.addLayout(self.formLayout_2, 2, 0, 1, 1)
+
+        self.channelTabWidget = QTabWidget(self.multipleDatasetGroupBox)
+        self.channelTabWidget.setObjectName(u"channelTabWidget")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.channelTabWidget.sizePolicy().hasHeightForWidth())
+        self.channelTabWidget.setSizePolicy(sizePolicy4)
         self.channel1Tab = QWidget()
         self.channel1Tab.setObjectName(u"channel1Tab")
         self.channel1Tab.setAcceptDrops(False)
@@ -203,18 +260,18 @@ class Ui_SpiBoxWidget(object):
         self.formLayout.setContentsMargins(9, 6, 6, 0)
         self.enabledLabel1 = QLabel(self.channel1Tab)
         self.enabledLabel1.setObjectName(u"enabledLabel1")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.enabledLabel1.sizePolicy().hasHeightForWidth())
-        self.enabledLabel1.setSizePolicy(sizePolicy3)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.enabledLabel1.sizePolicy().hasHeightForWidth())
+        self.enabledLabel1.setSizePolicy(sizePolicy5)
         self.enabledLabel1.setBaseSize(QSize(0, 0))
 
         self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.enabledLabel1)
 
         self.enabledCheckbox1 = QCheckBox(self.channel1Tab)
         self.enabledCheckbox1.setObjectName(u"enabledCheckbox1")
-        self.enabledCheckbox1.setChecked(True)
+        self.enabledCheckbox1.setChecked(False)
         self.enabledCheckbox1.setProperty(u"toggleSwitch", True)
 
         self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox1)
@@ -242,7 +299,7 @@ class Ui_SpiBoxWidget(object):
 
         self.enabledCheckbox2 = QCheckBox(self.channel2Tab)
         self.enabledCheckbox2.setObjectName(u"enabledCheckbox2")
-        self.enabledCheckbox2.setChecked(True)
+        self.enabledCheckbox2.setChecked(False)
         self.enabledCheckbox2.setProperty(u"toggleSwitch", True)
 
         self.formLayout_3.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox2)
@@ -270,7 +327,7 @@ class Ui_SpiBoxWidget(object):
 
         self.enabledCheckbox3 = QCheckBox(self.channel3Tab)
         self.enabledCheckbox3.setObjectName(u"enabledCheckbox3")
-        self.enabledCheckbox3.setChecked(True)
+        self.enabledCheckbox3.setChecked(False)
         self.enabledCheckbox3.setProperty(u"toggleSwitch", True)
 
         self.formLayout_4.setWidget(0, QFormLayout.ItemRole.FieldRole, self.enabledCheckbox3)
@@ -286,55 +343,6 @@ class Ui_SpiBoxWidget(object):
         self.channelTabWidget.addTab(self.channel3Tab, "")
 
         self.multipleGridLayout.addWidget(self.channelTabWidget, 0, 0, 1, 1)
-
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.startWaveformButton = QPushButton(self.multipleDatasetGroupBox)
-        self.startWaveformButton.setObjectName(u"startWaveformButton")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
-        self.startWaveformButton.setSizePolicy(sizePolicy4)
-
-        self.horizontalLayout_4.addWidget(self.startWaveformButton)
-
-
-        self.multipleGridLayout.addLayout(self.horizontalLayout_4, 5, 0, 1, 1)
-
-        self.formLayout_2 = QFormLayout()
-        self.formLayout_2.setObjectName(u"formLayout_2")
-        self.infiniteCyclesLabel = QLabel(self.multipleDatasetGroupBox)
-        self.infiniteCyclesLabel.setObjectName(u"infiniteCyclesLabel")
-
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.infiniteCyclesLabel)
-
-        self.infiniteCyclesCheckBox = QCheckBox(self.multipleDatasetGroupBox)
-        self.infiniteCyclesCheckBox.setObjectName(u"infiniteCyclesCheckBox")
-        self.infiniteCyclesCheckBox.setProperty(u"toggleSwitch", True)
-
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.infiniteCyclesCheckBox)
-
-        self.cyclesLabel = QLabel(self.multipleDatasetGroupBox)
-        self.cyclesLabel.setObjectName(u"cyclesLabel")
-
-        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.cyclesLabel)
-
-        self.cyclesSpinBox = QSpinBox(self.multipleDatasetGroupBox)
-        self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
-        self.cyclesSpinBox.setSizePolicy(sizePolicy5)
-        self.cyclesSpinBox.setMinimum(1)
-        self.cyclesSpinBox.setMaximum(65535)
-        self.cyclesSpinBox.setValue(1)
-
-        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.cyclesSpinBox)
-
-
-        self.multipleGridLayout.addLayout(self.formLayout_2, 2, 0, 1, 1)
 
 
         self.verticalLayout_2.addWidget(self.multipleDatasetGroupBox)
@@ -403,6 +411,11 @@ class Ui_SpiBoxWidget(object):
         self.sendSingleButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Send", None))
         self.singleDatasetSendCh2SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
         self.multipleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Multiple Datasets", None))
+        self.startWaveformButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Start", None))
+        self.getResponseButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Retrieve", None))
+        self.infiniteCyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Infinite Cycles", None))
+        self.infiniteCyclesCheckBox.setText("")
+        self.cyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Cycles", None))
         self.enabledLabel1.setText(QCoreApplication.translate("SpiBoxWidget", u"Enabled              ", None))
         self.enabledCheckbox1.setText("")
         self.channelTabWidget.setTabText(self.channelTabWidget.indexOf(self.channel1Tab), QCoreApplication.translate("SpiBoxWidget", u"Channel 1", None))
@@ -412,9 +425,5 @@ class Ui_SpiBoxWidget(object):
         self.enabledLabel3.setText(QCoreApplication.translate("SpiBoxWidget", u"Enabled              ", None))
         self.enabledCheckbox3.setText("")
         self.channelTabWidget.setTabText(self.channelTabWidget.indexOf(self.channel3Tab), QCoreApplication.translate("SpiBoxWidget", u"Channel 3", None))
-        self.startWaveformButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Start", None))
-        self.infiniteCyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Infinite Cycles", None))
-        self.infiniteCyclesCheckBox.setText("")
-        self.cyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Cycles", None))
     # retranslateUi
 

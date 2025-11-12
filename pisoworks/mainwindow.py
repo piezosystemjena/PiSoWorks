@@ -206,17 +206,17 @@ def setup_logging():
     Configures the logging settings for the application.
     """
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.ERROR,
         format='%(asctime)s.%(msecs)03d | %(name)-25s | %(message)s',
         datefmt="[%X]",
         handlers=[RichHandler(rich_tracebacks=True, )]
     )
     install_rich_traceback(show_locals=True)  
 
-    logging.getLogger("nv200.device_discovery").setLevel(logging.DEBUG)
-    logging.getLogger("nv200.transport_protocols").setLevel(logging.DEBUG)         
-    logging.getLogger("nv200.serial_protocol").setLevel(logging.DEBUG)    
-    logging.getLogger("nv200.device_base").setLevel(logging.DEBUG)     
+    logging.getLogger("nv200.device_discovery").setLevel(logging.ERROR)
+    logging.getLogger("nv200.transport_protocols").setLevel(logging.ERROR)         
+    logging.getLogger("nv200.serial_protocol").setLevel(logging.ERROR)    
+    logging.getLogger("nv200.device_base").setLevel(logging.ERROR)     
 
 
 def resource_path(relative_path):

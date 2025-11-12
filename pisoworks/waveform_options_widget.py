@@ -83,8 +83,6 @@ class WaveformOptionsWidget(QWidget):
         ui.freqLabel.setVisible(not is_custom)
         ui.freqSpinBox.setVisible(not is_custom)
 
-        self._set_sampling_period_readonly(not is_custom)
-
         repolish(ui.waveSamplingPeriodSpinBox)
 
         ui.phaseLabel.setVisible(not is_custom)
@@ -109,6 +107,8 @@ class WaveformOptionsWidget(QWidget):
         else:
             ui.waveSamplingPeriodSpinBox.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
 
+        repolish(ui.waveSamplingPeriodSpinBox)
+        
 
     def _on_value_changed(self):
         """
@@ -193,6 +193,14 @@ class WaveformOptionsWidget(QWidget):
         """
         self.ui.waveSamplingPeriodSpinBox.setValue(value)
 
+
+    def set_sampling_period_step(self, value):
+        """
+        Sets the sampling period step value.
+        """
+        self.ui.waveSamplingPeriodSpinBox.setSingleStep(value)
+        self.ui.waveSamplingPeriodSpinBox.setMinimum(value)
+
     
     def set_phase_shift(self, value):
         """
@@ -241,6 +249,13 @@ class WaveformOptionsWidget(QWidget):
         Returns whether any tracked widgets have been modified.
         """
         return self.waveform_widget_change_tracker.has_dirty_widgets()
+    
+
+    def set_dirty(self):
+        """
+        Sets all tracked widgets to dirty state.
+        """
+        return self.waveform_widget_change_tracker.set_all_widgets_dirty(True)
 
     
     def clear_dirty(self):
@@ -255,7 +270,14 @@ class WaveformOptionsWidget(QWidget):
         Sets the external readonly flag for the sampling period spin box.
         """
         self.sampling_period_readonly = readonly
-        self._set_sampling_period_readonly(not self.sampling_period_readonly)
+        self._set_sampling_period_readonly(self.sampling_period_readonly)
+
+    
+    def set_show_dirty_indicators(self, show: bool):
+        """
+        Enables or disables the display of dirty indicators for all tracked widgets.
+        """
+        self.waveform_widget_change_tracker.set_show_dirty_indicators(show)
 
 
     def set_dirty_tracking(self, enabled: bool):

@@ -14,6 +14,7 @@ from PySide6.QtCore import QStandardPaths, QTimer
 from PySide6.QtGui import QPalette, QColor, QAction
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QFileDialog
 from nv200.data_recorder import DataRecorder
+from pisoworks.style_manager import style_manager
 from pisoworks.ui_helpers import get_icon
 
 
@@ -58,6 +59,8 @@ class MplCanvas(FigureCanvas):
         self._axes_timer = QTimer(self)
         self._axes_timer.setSingleShot(True)
         self._axes_timer.timeout.connect(self.update_layout)
+
+        self.set_dark_mode(style_manager.style.is_current_theme_dark())
     
 
     def init_axes_object(self, ax : Axes):
