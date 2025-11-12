@@ -2968,7 +2968,7 @@ Nv200ControllerWidget QCheckBox[toggleSwitch="true"]::indicator:!checked
    padding: 2px;
 }
 
-QCheckBox[toggleSwitch="true"][dirty="true"]::indicator:!checked
+QCheckBox[toggleSwitch="true"][dirty="true"][showdirty="true"]::indicator:!checked
 {
    image: url(icon:/normal/toggle_switch_off.svg);
    image-position: center left;
@@ -2979,7 +2979,7 @@ QCheckBox[toggleSwitch="true"][dirty="true"]::indicator:!checked
    padding: 2px;
 }
 
-QCheckBox[toggleSwitch="true"][dirty="true"]::indicator::checked
+QCheckBox[toggleSwitch="true"][dirty="true"][showdirty="true"]::indicator::checked
 {
    image: url(icon:/normal/toggle_switch_on.svg);
    border: 1px solid #ff9300;
@@ -2989,16 +2989,16 @@ QCheckBox[toggleSwitch="true"][dirty="true"]::indicator::checked
 
 
 
-QAbstractSpinBox[dirty="true"],
-QAbstractSpinBox[dirty="true"]:focus
+QAbstractSpinBox[dirty="true"][showdirty="true"],
+QAbstractSpinBox[dirty="true"][showdirty="true"]:focus
 {
     border-color: #ff9300;
 }
 
 
 
-QComboBox[dirty="true"],
-QComboBox[dirty="true"]:focus
+QComboBox[dirty="true"][showdirty="true"],
+QComboBox[dirty="true"][showdirty="true"]:focus
 {
     border-color: #ff9300;
 }
@@ -3009,7 +3009,7 @@ SvgCycleWidget
     qproperty-color: {{accentColor}};
 }
 
-SvgCycleWidget[dirty="true"]
+SvgCycleWidget[dirty="true"][showdirty="true"]
 {
     qproperty-color: #ff9300;
 }

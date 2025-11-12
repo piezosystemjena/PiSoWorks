@@ -21,7 +21,7 @@ class InputWidgetChangeTracker(QObject):
     when their value differs from the stored initial value.
 
     Widgets must be styled externally using:
-        QWidget[dirty="true"] { background-color: lightyellow; }
+        QWidget[dirty="true"][showdirty="true"] { background-color: lightyellow; }
 
     Supported widgets:
     - QDoubleSpinBox
@@ -92,6 +92,8 @@ class InputWidgetChangeTracker(QObject):
         self.backups: Dict[str, Dict[QWidget, Any]] = {} # a dictionary of named backups
         self.widgets: List[QWidget] = []
         self.dirty_widgets: set[QWidget] = set()
+        self.enable_dirty_tracking: bool = True
+        self.show_dirty_indicators: bool = True
 
 
     def add_widget(
@@ -222,7 +224,11 @@ class InputWidgetChangeTracker(QObject):
             widget: The widget to update.
             dirty: True to mark as dirty, False to clear.
         """
+        if dirty and not self.enable_dirty_tracking:
+            return
+
         widget.setProperty("dirty", dirty)
+        widget.setProperty("showdirty", self.show_dirty_indicators)
         self._refresh_style(widget)
         if dirty:
             self.dirty_widgets.add(widget)
@@ -378,3 +384,27 @@ class InputWidgetChangeTracker(QObject):
             True if at least one widget is dirty, False otherwise.
         """
         return bool(self.dirty_widgets)
+    
+
+    def set_enable_dirty_tracking(self, enabled: bool) -> None:
+        """
+        Enable or disable dirty tracking.
+
+        When disabled, widgets will not be marked dirty on changes.
+        """
+        self.enable_dirty_tracking = enabled
+        
+        if not enabled:
+            self.reset()
+
+
+    def set_show_dirty_indicators(self, show: bool) -> None:
+        """
+        Enable or disable the display of dirty indicators for all tracked widgets.
+        """
+        self.show_dirty_indicators = show
+
+        for widget in self.widgets:
+            widget.setProperty("showdirty", show)
+            self._refresh_style(widget)
+
