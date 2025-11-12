@@ -158,6 +158,7 @@ jobs:
 
       # Install Inno Setup via winget
       - name: Install Inno Setup
+        continue-on-error: true
         run: winget install -e --id JRSoftware.InnoSetup --accept-source-agreements --accept-package-agreements
       
       # To prevent errors because of slashs in the ref_name, '/' should be replaced with '_'
