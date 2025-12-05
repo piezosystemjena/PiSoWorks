@@ -12,6 +12,7 @@ from PySide6.QtCore import QObject
 from typing import Callable, Any, Dict, List, Type, Tuple
 from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QCheckBox, QComboBox
 from PySide6.QtCore import QObject, Signal
+from pisoworks.ui_helpers import set_combobox_index_by_value
 
 
 
@@ -53,8 +54,8 @@ class InputWidgetChangeTracker(QObject):
         ),
         QComboBox: (
             "currentIndexChanged",
-            lambda w: w.currentIndex(),
-            lambda w, v: w.setCurrentIndex(int(v)),
+            lambda w: w.currentData(),
+            lambda w, v: set_combobox_index_by_value(w, v),
         ),
     }
 

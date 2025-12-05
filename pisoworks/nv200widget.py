@@ -500,7 +500,8 @@ class NV200Widget(QWidget):
         cb.addItem("Closed Loop Pos.", SPIMonitorSource.CLOSED_LOOP_POS)
         cb.addItem("Setpoint", SPIMonitorSource.SETPOINT)
         cb.addItem("Piezo Voltage", SPIMonitorSource.PIEZO_VOLTAGE)
-        cb.addItem("Position Error", SPIMonitorSource.ABS_POSITION_ERROR)
+        cb.addItem("Position Error", SPIMonitorSource.POSITION_ERROR)
+        cb.addItem("Abs. Pos. Error", SPIMonitorSource.ABS_POSITION_ERROR)
         cb.addItem("Open Loop Pos.", SPIMonitorSource.OPEN_LOOP_POS)
         cb.addItem("Piezo Current 1", SPIMonitorSource.PIEZO_CURRENT_1)
         cb.addItem("Piezo Current 2", SPIMonitorSource.PIEZO_CURRENT_2)
@@ -515,7 +516,8 @@ class NV200Widget(QWidget):
         cb.addItem("Closed Loop Pos.", AnalogMonitorSource.CLOSED_LOOP_POS)
         cb.addItem("Setpoint", AnalogMonitorSource.SETPOINT)
         cb.addItem("Piezo Voltage", AnalogMonitorSource.PIEZO_VOLTAGE)
-        cb.addItem("Position Error", AnalogMonitorSource.ABS_POSITION_ERROR)
+        cb.addItem("Position Error", AnalogMonitorSource.POSITION_ERROR)
+        cb.addItem("Abs. Pos. Error", AnalogMonitorSource.ABS_POSITION_ERROR)
         cb.addItem("Open Loop Pos.", AnalogMonitorSource.OPEN_LOOP_POS)
         cb.addItem("Piezo Current 1", AnalogMonitorSource.PIEZO_CURRENT_1)
         cb.addItem("Piezo Current 2", AnalogMonitorSource.PIEZO_CURRENT_2)
@@ -807,6 +809,8 @@ class NV200Widget(QWidget):
         Asynchronously initializes the controller settings UI elements based on the device's current settings.
         """
         dev = self.device
+        dev.clear_cmd_cache()
+
         print("Initializing controller settings from device...")
         ui = self.ui
         cui = ui.controllerStructureWidget.ui
@@ -1648,6 +1652,10 @@ class NV200Widget(QWidget):
 
             if isinstance(result, bool):
                 result = int(result)
+
+            if isinstance(result, Enum):
+                result = result.value
+            
             params[cmd] = str(result)
         
         path = (await self.actuator_backup_filepath()).parent

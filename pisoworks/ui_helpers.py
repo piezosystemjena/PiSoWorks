@@ -1,3 +1,4 @@
+from enum import Enum
 import traceback
 from functools import wraps
 from typing import Any, Callable, Awaitable
@@ -47,12 +48,62 @@ def set_combobox_index_by_value(combo: QComboBox, value: Any) -> None:
         combo: The QComboBox instance.
         value: The value to match in userData of combo items.
     """
+    expected_type: type = None
+
+    # Get the first element to fetch the type
+    if combo.count() > 0:
+        expected_type = type(combo.itemData(0))
+
+    print("type" + str(type(value)))
+
+    # If combobox expects Enum but new value is not Enum, create Enum
+    try:
+        if issubclass(expected_type, Enum) and not issubclass(type(value), Enum):   
+            value = value_to_enum(expected_type, value)
+    except ValueError:
+        raise ValueError(f"Value {value!r} not found in QComboBox.")
+
     index: int = combo.findData(value)
     if index != -1:
         combo.setCurrentIndex(index)
     else:
         raise ValueError(f"Value {value!r} not found in QComboBox.")
     
+def get_enum_value_type(enum: Enum) -> type | None:
+    """
+    Retrieves the type of the underlying values in an Enum class.
+
+    Args:
+        enum (Enum): The Enum class to inspect.
+
+    Returns:
+        type | None: The type of the first enum value, or None if the enum has no values.
+    """
+    tmp = [e.value for e in enum]
+
+    # If any value exists, return the type of the first value
+    if len(tmp) > 0:
+        return type(tmp[0])
+    
+    return None
+    
+def value_to_enum(enum: Enum, val) -> Enum:
+    """
+    Converts a raw value to its corresponding Enum member by casting the value to the enum's underlying type.
+
+    Args:
+        enum (Enum): The Enum class to convert the value to.
+        val: The raw value to convert to an enum member.
+
+    Returns:
+        Enum: The enum member corresponding to the converted value.
+    """
+    enum_type: type = get_enum_value_type(enum)
+
+    if enum_type is None:
+        raise ValueError(f"Enum {enum} has no values.")
+
+    return enum(enum_type(val))
 
 def images_path() -> Path:
     """
