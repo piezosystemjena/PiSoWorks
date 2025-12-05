@@ -320,7 +320,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Retrieve</string>
+               <string>Plot Data</string>
               </property>
              </widget>
             </item>

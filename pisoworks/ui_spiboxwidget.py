@@ -412,7 +412,7 @@ class Ui_SpiBoxWidget(object):
         self.singleDatasetSendCh2SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
         self.multipleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Multiple Datasets", None))
         self.startWaveformButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Start", None))
-        self.getResponseButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Retrieve", None))
+        self.getResponseButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Plot Data", None))
         self.infiniteCyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Infinite Cycles", None))
         self.infiniteCyclesCheckBox.setText("")
         self.cyclesLabel.setText(QCoreApplication.translate("SpiBoxWidget", u"Cycles", None))

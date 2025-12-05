@@ -76,6 +76,9 @@ class SpiBoxWidget(QWidget):
         self.ui.enabledCheckbox2.toggled.connect(self.on_enabled_changed)
         self.ui.enabledCheckbox3.toggled.connect(self.on_enabled_changed)
 
+        # Initialize waveform plot
+        self.ui.waveformPlot.show_export_action()
+
         # Do not show dirty tracking for the waveform option widgets
         self.ui.waveformOptions1.set_show_dirty_indicators(False)
         self.ui.waveformOptions2.set_show_dirty_indicators(False)
@@ -756,21 +759,21 @@ class SpiBoxWidget(QWidget):
             self.ui.sendSingleButton.setEnabled(True)
             self.ui.startWaveformButton.setText("Start")
             self.ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
-            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+            self.ui.getResponseButton.setIcon(get_icon("show_chart", size=24, fill=True))
         elif state == SpiBoxDevice.WaveformState.RUNNING:
-            self.ui.startWaveformButton.setEnabled(False)
+            self.ui.startWaveformButton.setEnabled(True)
             self.ui.getResponseButton.setEnabled(False)
             self.ui.sendSingleButton.setEnabled(False)
-            self.ui.startWaveformButton.setText("Start")
-            self.ui.startWaveformButton.setIcon(get_icon("play_arrow", size=24, fill=True))
-            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+            self.ui.startWaveformButton.setText("Stop")
+            self.ui.startWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
+            self.ui.getResponseButton.setIcon(get_icon("show_chart", size=24, fill=True))
         elif state == SpiBoxDevice.WaveformState.RUNNING_INFINITE:
             self.ui.startWaveformButton.setEnabled(True)
             self.ui.getResponseButton.setEnabled(False)
             self.ui.sendSingleButton.setEnabled(False)
             self.ui.startWaveformButton.setText("Stop")
             self.ui.startWaveformButton.setIcon(get_icon("stop", size=24, fill=True))
-            self.ui.getResponseButton.setIcon(get_icon("download", size=24, fill=True))
+            self.ui.getResponseButton.setIcon(get_icon("show_chart", size=24, fill=True))
 
 
     def any_waveform_changed(self):
