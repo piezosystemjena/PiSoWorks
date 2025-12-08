@@ -115,9 +115,9 @@ class Ui_WaveformOptionsWidget(object):
 
         self.formLayout.setWidget(6, QFormLayout.ItemRole.FieldRole, self.dutyCycleSpinBox)
 
-        self.verticalSpacer_5 = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.levelSpacer = QSpacerItem(0, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
-        self.formLayout.setItem(7, QFormLayout.ItemRole.FieldRole, self.verticalSpacer_5)
+        self.formLayout.setItem(7, QFormLayout.ItemRole.FieldRole, self.levelSpacer)
 
         self.highLabel = QLabel(WaveformOptionsWidget)
         self.highLabel.setObjectName(u"highLabel")

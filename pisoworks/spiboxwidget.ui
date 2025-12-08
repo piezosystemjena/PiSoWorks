@@ -292,7 +292,7 @@
          <property name="title">
           <string>Multiple Datasets</string>
          </property>
-         <layout class="QGridLayout" name="multipleGridLayout">
+         <layout class="QGridLayout" name="multipleGridLayout" rowstretch="0,0,0,0,0,0">
           <item row="5" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
@@ -376,7 +376,7 @@
           <item row="0" column="0">
            <widget class="QTabWidget" name="channelTabWidget">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -385,6 +385,12 @@
              <number>0</number>
             </property>
             <widget class="QWidget" name="channel1Tab">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="acceptDrops">
               <bool>false</bool>
              </property>
@@ -449,6 +455,12 @@
              </layout>
             </widget>
             <widget class="QWidget" name="channel2Tab">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <attribute name="title">
               <string>Channel 2</string>
              </attribute>
@@ -492,6 +504,12 @@
              </layout>
             </widget>
             <widget class="QWidget" name="channel3Tab">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <attribute name="title">
               <string>Channel 3</string>
              </attribute>

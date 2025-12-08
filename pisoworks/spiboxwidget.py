@@ -6,8 +6,8 @@ import os
 import math
 import numpy
 
-from PySide6.QtWidgets import QApplication, QWidget, QMenu
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtWidgets import QApplication, QWidget, QMenu, QSizePolicy
+from PySide6.QtCore import Qt, Signal, QTimer, QEvent
 from PySide6.QtGui import QPalette, QIcon, QAction, QColor
 import qtinter
 from matplotlib.backends.backend_qtagg import FigureCanvas
@@ -76,6 +76,15 @@ class SpiBoxWidget(QWidget):
         self.ui.enabledCheckbox2.toggled.connect(self.on_enabled_changed)
         self.ui.enabledCheckbox3.toggled.connect(self.on_enabled_changed)
 
+        # Handle tab switching and content size changes
+        self.ui.channelTabWidget.currentChanged.connect(self.updateTabSize)
+        self.ui.channel1Tab.installEventFilter(self)
+        self.ui.channel2Tab.installEventFilter(self)
+        self.ui.channel3Tab.installEventFilter(self)
+        
+        # Set initial tab size for the first tab
+        QTimer.singleShot(0, lambda: self.updateTabSize(self.ui.channelTabWidget.currentIndex()))
+
         # Initialize waveform plot
         self.ui.waveformPlot.show_export_action()
 
@@ -84,11 +93,45 @@ class SpiBoxWidget(QWidget):
         self.ui.waveformOptions2.set_show_dirty_indicators(False)
         self.ui.waveformOptions3.set_show_dirty_indicators(False)
 
+        # Plot timer, to delay plotting after option changes
         self._plot_timer = QTimer(self)
         self._plot_timer.setSingleShot(True)
         self._plot_timer.timeout.connect(self.plot_all_waveforms)
 
+        self._custom_waveform = WaveformGenerator.WaveformData() # Placeholder for custom waveform
+
         style_manager.style.dark_mode_changed.connect(self.set_dark_mode)
+
+
+    def updateTabSize(self, index=None):
+        """
+        Adjusts the tab widget height to match the currently selected tab's content.
+        """
+        if index is None:
+            index = self.ui.channelTabWidget.currentIndex()
+        
+        # Set size policies: Ignored for hidden tabs, Preferred for visible tab
+        for i in range(self.ui.channelTabWidget.count()):
+            policy = QSizePolicy.Policy.Preferred if i == index else QSizePolicy.Policy.Ignored
+            self.ui.channelTabWidget.widget(i).setSizePolicy(policy, policy)
+        
+        # Calculate and set the tab widget height
+        current_widget = self.ui.channelTabWidget.widget(index)
+        tab_bar_height = self.ui.channelTabWidget.tabBar().height()
+        total_height = current_widget.sizeHint().height() + tab_bar_height
+        
+        self.ui.channelTabWidget.setMaximumHeight(total_height)
+        self.ui.channelTabWidget.updateGeometry()
+
+
+    def eventFilter(self, obj, event):
+        """
+        Detects when tab content size changes and updates tab widget height accordingly.
+        """
+        if event.type() == QEvent.Type.LayoutRequest:
+            if obj == self.ui.channelTabWidget.currentWidget():
+                QTimer.singleShot(0, self.updateTabSize)
+        return super().eventFilter(obj, event)   
 
 
     def showEvent(self, event):
@@ -340,9 +383,9 @@ class SpiBoxWidget(QWidget):
         self.ui.waveformOptions3.set_dirty()
 
         # Sampling period is fixed to 50us for NV200 in SPI mode
-        self.ui.waveformOptions1.set_sampling_period_readonly(True)
-        self.ui.waveformOptions2.set_sampling_period_readonly(True)
-        self.ui.waveformOptions3.set_sampling_period_readonly(True)
+        self.ui.waveformOptions1.set_sampling_period_step(0.05)
+        self.ui.waveformOptions2.set_sampling_period_step(0.05)
+        self.ui.waveformOptions3.set_sampling_period_step(0.05)
 
         self.ui.waveformPlot.canvas.clear_plot()
         self.ui.waveformPlot.canvas.get_axes(0).set_ylabel('Piezo Position (%)')
@@ -430,6 +473,8 @@ class SpiBoxWidget(QWidget):
         Handles the event when any waveform option is changed.
         Redraws the waveform plot to reflect the updated parameters.
         """
+        self.updateTabSize(self.ui.channelTabWidget.currentIndex())
+
         if self._device is None:
             return
         
@@ -668,6 +713,10 @@ class SpiBoxWidget(QWidget):
         The waveform is repeated for the specified number of cycles and displayed with a dashed line if
         the channel is disabled.
         """
+        # Do not plot if no waveform data is available
+        if waveform is None or len(waveform.values) == 0:
+            return
+
         line_color = QColor(200, 200, 200) if style_manager.style.is_current_theme_dark() else QColor(50, 50, 50)
 
         self.ui.waveformPlot.canvas.add_line(
@@ -684,6 +733,9 @@ class SpiBoxWidget(QWidget):
         Extends the original sample time list by the given factor.
         Each sample time is repeated 'factor' times to match the extended waveform data.
         """
+        if len(original_list) == 0:
+            return []
+        
         sample_time = original_list[1]
         total_samples = len(original_list) * factor
 
@@ -728,11 +780,19 @@ class SpiBoxWidget(QWidget):
         Generates a waveform based on the provided option settings.
         Supports standard waveform types (sine, triangle, square) and placeholder for custom waveforms.
         """
+        # Check if custom waveform
         if option.get_waveform_type() == -1:
-            # TODO: Custom waveform handling
-            # self._custom_waveform.sample_time_ms = option.waveSamplingPeriodSpinBox.value()
-            # return self._custom_waveform
-            return None
+            data = option.get_custom_waveform_data()
+
+            # Do not generate if no data is provided
+            if data is None or len(data) == 0:
+                return None
+
+            self._custom_waveform = WaveformGenerator.WaveformData(
+                data,
+                option.get_sampling_period()
+            )
+            return self._custom_waveform
         
         waveform = WaveformGenerator.generate_waveform(
             waveform_type       = option.get_waveform_type(),
