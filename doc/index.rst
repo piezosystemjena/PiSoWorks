@@ -49,6 +49,7 @@ your navigation through this document:
    waveform.rst
    hysteresis.rst
    impulse_response.rst
+   spi_controller_box.rst
    console.rst
    themes.rst
    multiple_devices.rst
