@@ -1,6 +1,8 @@
-from PySide6.QtWidgets import QWidget, QComboBox, QCheckBox, QDoubleSpinBox
+import pandas as pd
+
+from PySide6.QtWidgets import QWidget, QComboBox, QCheckBox, QDoubleSpinBox, QFileDialog, QMessageBox
 from PySide6.QtGui import QAction, QPalette
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QStandardPaths
 
 from nv200.data_recorder import DataRecorder, DataRecorderSource
 from nv200.waveform_generator import WaveformType
@@ -9,6 +11,7 @@ from pisoworks.ui_waveform_options_widget import Ui_WaveformOptionsWidget
 from pisoworks.ui_helpers import get_icon, set_combobox_index_by_value, repolish
 from pisoworks.style_manager import style_manager
 from pisoworks.input_widget_change_tracker import InputWidgetChangeTracker
+
 
 class WaveformOptionsWidget(QWidget):
 
@@ -32,6 +35,9 @@ class WaveformOptionsWidget(QWidget):
         self.ui.dutyCycleSpinBox.valueChanged.connect(self._on_value_changed)
         self.ui.lowLevelSpinBox.valueChanged.connect(self._on_value_changed)
         self.ui.highLevelSpinBox.valueChanged.connect(self._on_value_changed)
+        self.ui.importButton.clicked.connect(self._on_import_button_clicked)
+
+        self._custom_waveform = None  # Placeholder for custom waveform data
 
 
     def _init_tracker(self):
@@ -48,6 +54,7 @@ class WaveformOptionsWidget(QWidget):
         tracker.add_widget(ui.dutyCycleSpinBox)
         tracker.add_widget(ui.lowLevelSpinBox)
         tracker.add_widget(ui.highLevelSpinBox)
+        tracker.add_widget(ui.waveSamplingPeriodSpinBox)
 
         tracker.set_all_widgets_dirty()  # set all widgets to dirty initially
         tracker.dirtyStateChanged.connect(self._on_dirty_state_changed)
@@ -79,10 +86,12 @@ class WaveformOptionsWidget(QWidget):
         is_custom = (index == (WaveformType.SQUARE.value + 1))
         ui.customLabel.setVisible(is_custom)
         ui.importButton.setVisible(is_custom)
+        ui.levelSpacer.changeSize(0, 0 if is_custom else 10)
 
         ui.freqLabel.setVisible(not is_custom)
         ui.freqSpinBox.setVisible(not is_custom)
 
+        self._set_sampling_period_readonly(not is_custom)
         repolish(ui.waveSamplingPeriodSpinBox)
 
         ui.phaseLabel.setVisible(not is_custom)
@@ -91,6 +100,15 @@ class WaveformOptionsWidget(QWidget):
         ui.highLevelSpinBox.setVisible(not is_custom)
         ui.lowLabel.setVisible(not is_custom)
         ui.lowLevelSpinBox.setVisible(not is_custom)
+
+
+    def _on_import_button_clicked(self):
+        """
+        Handles the event when the import button is clicked to import custom waveform data.
+        """
+        self._custom_waveform = self._import_custom_waveform()
+        self.waveform_widget_change_tracker.set_all_widgets_dirty(True)
+        self._on_value_changed()  # Notify that options have changed
 
     
     def _set_sampling_period_readonly(self, readonly: bool):
@@ -122,6 +140,104 @@ class WaveformOptionsWidget(QWidget):
         Handles the event when the dirty state of tracked widgets changes.
         """
         self.dirtyStateChanged.emit(value, self)
+
+
+    def _import_custom_waveform(self):
+        """
+        Opens a file dialog to import custom waveform data and stores it.
+        """
+        home_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.HomeLocation)
+        file_path, selected_filter = QFileDialog.getOpenFileName(
+            self,
+            "Import Waveform File",
+            home_dir,
+            "CSV and Excel Files (*.csv *.xlsx);;CSV Files (*.csv);;Excel Files (*.xlsx)",
+            "CSV and Excel Files (*.csv *.xlsx)"  # default filter
+        )
+        
+        if file_path is None or file_path == "":
+            return  # User cancelled the dialog
+        
+        try:
+            values = self._parse_custom_waveform(file_path)
+            return values
+        except ValueError as e:
+            QMessageBox.critical(self, "Import Error", str(e))
+            return None
+
+
+    def _parse_custom_waveform(self, file_path: str, max_values: int = 1024) -> list[float]:
+        """
+        Reads a single-column CSV or Excel file containing percentage values (0-100).
+
+        If the number of values exceeds max_values, asks the user whether to truncate
+        or resample the data to fit the max_values limit.
+
+        Args:
+            parent (QWidget): Parent widget for dialogs.
+            file_path (str): Path to CSV or Excel file.
+            max_values (int): Maximum allowed number of values (default 1024).
+
+        Returns:
+            List[float]: List of percentage values as floats.
+
+        Raises:
+            ValueError: For invalid data or unsupported file types.
+        """
+        # Load data
+        if file_path.lower().endswith('.csv'):
+            df = pd.read_csv(file_path)
+        elif file_path.lower().endswith(('.xls', '.xlsx')):
+            df = pd.read_excel(file_path)
+        else:
+            raise ValueError("Unsupported file type. Provide a .csv or Excel (.xls/.xlsx) file.")
+
+        if df.shape[1] != 1:
+            raise ValueError(f"Expected exactly one column, found {df.shape[1]} columns.")
+
+        # Validate and extract values
+        col = df.iloc[:, 0]
+        col_numeric = pd.to_numeric(col, errors='coerce')
+
+        if col_numeric.isnull().any():
+            raise ValueError("Column contains non-numeric or invalid values.")
+
+        if not ((col_numeric >= 0) & (col_numeric <= 100)).all():
+            raise ValueError("Waveform values are given in percent and must be in the range 0 to 100 inclusive.")
+
+        values = col_numeric.tolist()
+
+        # Check length limit
+        if len(values) > max_values:
+            # Ask user what to do
+            msg = QMessageBox(self)
+            msg.setWindowTitle("Too many values")
+            msg.setText(f"The data has {len(values)} values, which exceeds the limit of {max_values}.")
+            msg.setInformativeText("Do you want to truncate the data or resample it?")
+            truncate_button = msg.addButton("Truncate", QMessageBox.ButtonRole.AcceptRole)
+            resample_button = msg.addButton("Resample", QMessageBox.ButtonRole.AcceptRole)
+            cancel_button = msg.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+            msg.setDefaultButton(truncate_button)
+            msg.exec()
+
+            clicked = msg.clickedButton()
+
+            if clicked == cancel_button:
+                raise ValueError("User cancelled operation due to too many values.")
+
+            elif clicked == truncate_button:
+                # Truncate list
+                values = values[:max_values]
+
+            elif clicked == resample_button:
+                # Resample by skipping values to reduce to max_values
+                factor = (len(values) + max_values - 1) // max_values  # ceiling division
+                values = values[::factor]
+
+                # Ensure result not longer than max_values (edge case)
+                values = values[:max_values]
+
+        return values
 
     
     def get_waveform_type(self):
@@ -285,3 +401,10 @@ class WaveformOptionsWidget(QWidget):
         Enables or disables dirty tracking for all tracked widgets.
         """
         self.waveform_widget_change_tracker.set_enable_dirty_tracking(enabled)
+
+
+    def get_custom_waveform_data(self):
+        """
+        Returns the custom waveform data if applicable.
+        """
+        return self._custom_waveform
