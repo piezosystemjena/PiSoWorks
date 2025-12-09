@@ -107,21 +107,25 @@ class SpiBoxWidget(QWidget):
         """
         Adjusts the tab widget height to match the currently selected tab's content.
         """
-        if index is None:
-            index = self.ui.channelTabWidget.currentIndex()
-        
-        # Set size policies: Ignored for hidden tabs, Preferred for visible tab
-        for i in range(self.ui.channelTabWidget.count()):
-            policy = QSizePolicy.Policy.Preferred if i == index else QSizePolicy.Policy.Ignored
-            self.ui.channelTabWidget.widget(i).setSizePolicy(policy, policy)
-        
-        # Calculate and set the tab widget height
-        current_widget = self.ui.channelTabWidget.widget(index)
-        tab_bar_height = self.ui.channelTabWidget.tabBar().height()
-        total_height = current_widget.sizeHint().height() + tab_bar_height
-        
-        self.ui.channelTabWidget.setMaximumHeight(total_height)
-        self.ui.channelTabWidget.updateGeometry()
+        try:
+            if index is None:
+                index = self.ui.channelTabWidget.currentIndex()
+            
+            # Set size policies: Ignored for hidden tabs, Preferred for visible tab
+            for i in range(self.ui.channelTabWidget.count()):
+                policy = QSizePolicy.Policy.Preferred if i == index else QSizePolicy.Policy.Ignored
+                self.ui.channelTabWidget.widget(i).setSizePolicy(policy, policy)
+            
+            # Calculate and set the tab widget height
+            current_widget = self.ui.channelTabWidget.widget(index)
+            tab_bar_height = self.ui.channelTabWidget.tabBar().height()
+            total_height = current_widget.sizeHint().height() + tab_bar_height
+            
+            self.ui.channelTabWidget.setMaximumHeight(total_height)
+            self.ui.channelTabWidget.updateGeometry()
+        except Exception as e:
+            # Log error but do not crash, this might happen because the tab was already destroyed
+            print(f"Error updating tab size: {e}")
 
 
     def eventFilter(self, obj, event):
