@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. Settings &mdash; PiSoWorks</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/style_override.css?v=06ecac75" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/color_roles.css?v=7881a399" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5319cc38"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
+      <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4. Waveform Generator" href="waveform.html" />
+    <link rel="prev" title="1. Getting Started" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PiSoWorks
+              <img src="_static/piezosystem_logo_white.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#easy-mode">2. Easy Mode</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#settings-overview">3.1. Settings Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-backup">3.2. Parameter Backup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pid-controller-parameters">3.3. PID Controller Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pid-control-mode">3.3.1. PID Control Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pid-gains">3.3.2. PID Gains</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#slew-rate">3.4. Slew Rate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filters">3.5. Filters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="waveform.html">4. Waveform Generator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hysteresis.html">5. Hysteresis Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impulse_response.html">6. Impulse Response Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spi_controller_box.html">7. SPI Controller Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="console.html">8. Command Console</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">9. Interface Theme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_devices.html">10. Working With Multiple Devices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PiSoWorks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>Settings</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="settings">
+<h1><span class="section-number">3. </span>Settings<a class="headerlink" href="#settings" title="Link to this heading"></a></h1>
+<section id="settings-overview">
+<h2><span class="section-number">3.1. </span>Settings Overview<a class="headerlink" href="#settings-overview" title="Link to this heading"></a></h2>
+<p>By clicking the Settings tab, you enter the settings section of the application. This section displays the
+functional block diagram of the device along with all relevant parameters that can be adjusted by the user.</p>
+<img alt="_images/settings.png" src="_images/settings.png" />
+<p>Changing the parameters is carried out in two steps:</p>
+<ol class="arabic simple">
+<li><p>Modify all parameters whose values need to be adjusted.</p></li>
+<li><p>Click <span class="guilabel">Apply Parameters</span> to transfer the updated parameters to the device.</p></li>
+</ol>
+<p>All parameters that have been modified but not yet transferred to the device are highlighted in orange.
+Move the mouse pointer over the individual fields in the block diagram to display a tooltip and obtain
+detailed information about the corresponding parameters.</p>
+<img alt="_images/settings_tooltip.png" src="_images/settings_tooltip.png" />
+<p>To the left of the block diagram, you will find all actions available for this section:</p>
+<dl class="simple">
+<dt>Apply Parameters</dt><dd><p>Send the currently edited parameters to the device to update its configuration.</p>
+</dd>
+<dt>Retrieve Parameters</dt><dd><p>Read the current parameters from the device and update the local view in case you modified
+the parameters from outside or via a terminal program.</p>
+</dd>
+<dt>Restore Previous Parameters</dt><dd><p>Reverts parameters to their values before the last time you clicked <span class="guilabel">Apply Parameters</span>.
+This is some kind of undo function for the last change.</p>
+</dd>
+<dt>Restore Initial Parameters</dt><dd><p>Load the parameters as they were when the device was first connected this session.</p>
+</dd>
+<dt>Restore Original Parameters</dt><dd><p>Restore the parameters that were backed up when this device was first connected.</p>
+</dd>
+<dt>Export Parameters</dt><dd><p>Exports the current parameters into a parameters <code class="file docutils literal notranslate"><span class="pre">*.ini</span></code> file.</p>
+</dd>
+<dt>Load Parameters</dt><dd><p>Loads the parameters from a previously exported <code class="file docutils literal notranslate"><span class="pre">*.ini</span></code> file.</p>
+</dd>
+</dl>
+</section>
+<section id="parameter-backup">
+<h2><span class="section-number">3.2. </span>Parameter Backup<a class="headerlink" href="#parameter-backup" title="Link to this heading"></a></h2>
+<p>Actuators connected to the NV200 amplifier store important default control parameters in their EEPROM. These include:</p>
+<ul class="simple">
+<li><p>Low-pass and notch filter settings</p></li>
+<li><p>PID gains (kp, ki, kd)</p></li>
+<li><p>Closed-loop control settings</p></li>
+</ul>
+<p>Changing these values will overwrite them in the actuator’s nonvolatile memory. If the new parameters are incorrect
+or unstable, it may degrade device performance or behavior.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Always <strong>export and save</strong> the actuator configuration using <span class="guilabel">Export Parameters</span> button <strong>before</strong>
+writing or experimenting with actuator parameters.</p>
+</div>
+</section>
+<section id="pid-controller-parameters">
+<h2><span class="section-number">3.3. </span>PID Controller Parameters<a class="headerlink" href="#pid-controller-parameters" title="Link to this heading"></a></h2>
+<p>The following image shows the block diagram of the device with the PID parts highlighted:</p>
+<img alt="_images/nv200_block_diagram_pid.png" src="_images/nv200_block_diagram_pid.png" />
+<section id="pid-control-mode">
+<h3><span class="section-number">3.3.1. </span>PID Control Mode<a class="headerlink" href="#pid-control-mode" title="Link to this heading"></a></h3>
+<p>The PID-controller can work in two different modes: The open loop mode (OL) and the closed loop mode (CL).
+To change the the mode, you can use <span class="guilabel">Open / Closed Loop</span> toggle switch <span class="guinum">❶</span> in the block diagram.</p>
+<p>In open loop mode the PID-controller is bridged and the command input directly controls the amplifier,
+which can provide a voltage between -20 V and +180 V, however, limited to the admissible voltage range
+of the connected piezo actuator. The resulting piezo stroke then depends on the characteristic of the
+piezo actuator and is affected by piezo-typical creeping and hysteresis behavior.</p>
+<p>In closed loop mode (CL), these effects will be compensated by the digital loop controller. The
+position sensor value can also be filtered with an adjustable 1st order low pass filter in order to
+reduce the measurement noise spectrum.</p>
+</section>
+<section id="pid-gains">
+<h3><span class="section-number">3.3.2. </span>PID Gains<a class="headerlink" href="#pid-gains" title="Link to this heading"></a></h3>
+<p>The controller-specific parameters are stored in the actuator’s ID-chip. The default parameters were
+determined in the piezosystem jena laboratory and ensure safe function of the actuator and will work
+for most applications. Depending on your application, additional load, setpoint trajectory and motion
+requirements, fine tuning of the control parameters will most likely improve your results.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Always <strong>export and save</strong> the actuator configuration <strong>before</strong> writing or experimenting with actuator
+parameters (see <a class="reference internal" href="#parameter-backup"><span class="std std-ref">Parameter Backup</span></a>).</p>
+</div>
+<p>To adapt the controller properties to your special application please start with the default values and
+then adjust the PID Gains <strong>kp</strong>, <strong>ki</strong> and <strong>kd</strong> <span class="guinum">❷</span>.</p>
+<div class="note admonition">
+<p class="admonition-title">Important</p>
+<p>To adapt the controller properties to your special application please start with the default values. In general,
+change the parameters in small steps and, depending on the actuator’s reaction, slightly increase the step size.
+If the system begins to oscillate, switch to open loop mode immediately, then reset to stable values again.</p>
+</div>
+</section>
+</section>
+<section id="slew-rate">
+<h2><span class="section-number">3.4. </span>Slew Rate<a class="headerlink" href="#slew-rate" title="Link to this heading"></a></h2>
+<p>For filtering the set point, a slew rate limiter is implemented, which can be changed via the <span class="guilabel">Slew Rate</span>
+edit field. The slew rate is defined in %/ms.</p>
+<p>For example, a value of 1 %/ms yields that a jump off the full motion
+range (100 %) is converted into a ramp with 100 ms duration. Independent from the slew rate value set in
+the controller, the limitation given by the high voltage amplifier cannot be exceeded, since the piezo
+voltage slew rate is limited by the amplifiers maximum output current and the actuators capacity.</p>
+</section>
+<section id="filters">
+<h2><span class="section-number">3.5. </span>Filters<a class="headerlink" href="#filters" title="Link to this heading"></a></h2>
+<p>As shown in the control block diagram, the NV200 device includes several configurable filters to improve system stability and performance:</p>
+<img alt="_images/nv200_block_diagram_filters.png" src="_images/nv200_block_diagram_filters.png" />
+<p>These filters can be accessed and configured individually via the settings panel:</p>
+<dl class="simple">
+<dt>1st-order low-pass filter on the position sensor input <span class="guinum">❶</span></dt><dd><p>The setpoint low-pass filter <span class="guilabel">setlpf</span> smooths the commanded input signal to avoid abrupt changes and reduce noise.</p>
+</dd>
+<dt>4th-order low-pass filter on the setpoint input <span class="guinum">❷</span></dt><dd><p>The position low-pass filter <span class="guilabel">poslpf</span> filters noise from the position sensor before it enters the control loop.</p>
+</dd>
+<dt>Notch filter applied to the control output <span class="guinum">❸</span></dt><dd><p>The notch filter is used to suppress specific resonant frequencies in the system, often caused by
+mechanical resonances. It is defined by its center frequency <span class="guilabel">notchf</span> and bandwidth <span class="guilabel">notchb</span>.</p>
+</dd>
+</dl>
+<div class="note admonition">
+<p class="admonition-title">Important</p>
+<p>Filters can be enabled or disabled independently and should be tuned according to the dynamics and noise characteristics of your system.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="1. Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="waveform.html" class="btn btn-neutral float-right" title="4. Waveform Generator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, piezosystem Jena.
+      <span class="lastupdated">Last updated on Dec 09, 2025 12:45.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

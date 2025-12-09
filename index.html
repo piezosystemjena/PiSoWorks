@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PiSoWorks Manual &mdash; PiSoWorks</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/style_override.css?v=06ecac75" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/color_roles.css?v=7881a399" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5319cc38"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
+      <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Getting Started" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            PiSoWorks
+              <img src="_static/piezosystem_logo_white.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#easy-mode">2. Easy Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">3. Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="waveform.html">4. Waveform Generator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hysteresis.html">5. Hysteresis Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impulse_response.html">6. Impulse Response Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spi_controller_box.html">7. SPI Controller Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="console.html">8. Command Console</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">9. Interface Theme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_devices.html">10. Working With Multiple Devices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">PiSoWorks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PiSoWorks Manual</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pisoworks-manual">
+<h1>PiSoWorks Manual<a class="headerlink" href="#pisoworks-manual" title="Link to this heading"></a></h1>
+<img alt="_images/doc_header.jpg" src="_images/doc_header.jpg" />
+<p><strong>Welcome to PiSoWorks documentation!</strong></p>
+<p>PiSoWorks is an application for controlling the piezo amplifiers, such as the
+<a class="reference external" href="https://www.piezosystem.com/product/nv-200-d-compact-amplifier/">NV200/D</a>,
+from <a class="reference external" href="https://www.piezosystem.com/">piezosystem jena</a> GmbH.</p>
+<section id="symbols-and-signal-words-used">
+<h2>Symbols and Signal Words Used<a class="headerlink" href="#symbols-and-signal-words-used" title="Link to this heading"></a></h2>
+<p>The following symbols are used in this manual and are designed to aid
+your navigation through this document:</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Describes practical tips and useful information to facilitate the handling
+of the software.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Important</p>
+<p>Describes important information and other especially useful notes, in which
+no dangerous or damaging situations can arise.</p>
+</div>
+<div class="caution admonition">
+<p class="admonition-title">Attention</p>
+<p>Indicates a potentially damaging situation. Failure to avoid this situation
+may result in damage to the product or anything nearby.</p>
+</div>
+<div class="error admonition">
+<p class="admonition-title">Caution</p>
+<p>Describes a situation that may be dangerous. If this aspect is not avoided,
+light or minor injuries as well as damage to property could result.</p>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#quick-start">1.1. Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#device-search">1.2. Device Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#easy-mode">2. Easy Mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#setpoint-control">2.1. Setpoint Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#plot-interaction-and-data-export">2.2. Plot Interaction and Data Export</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">3. Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#settings-overview">3.1. Settings Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#parameter-backup">3.2. Parameter Backup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#pid-controller-parameters">3.3. PID Controller Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#slew-rate">3.4. Slew Rate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#filters">3.5. Filters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="waveform.html">4. Waveform Generator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="waveform.html#generating-a-waveform">4.1. Generating a Waveform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="waveform.html#running-a-waveform">4.2. Running a Waveform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="waveform.html#setting-up-data-recording">4.3. Setting Up Data Recording</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hysteresis.html">5. Hysteresis Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impulse_response.html">6. Impulse Response Measurement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="impulse_response.html#impulse-response-and-resonance-frequency">6.1. Impulse Response and Resonance Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impulse_response.html#how-the-notch-filter-helps">6.2. How the Notch Filter Helps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spi_controller_box.html">7. SPI Controller Box</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spi_controller_box.html#connecting-the-spi-controller-box">7.1. Connecting the SPI Controller Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spi_controller_box.html#nv200-configuration">7.2. NV200 Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spi_controller_box.html#single-position-data">7.3. Single Position Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spi_controller_box.html#waveform-generation">7.4. Waveform Generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="console.html">8. Command Console</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="console.html#showing-hiding-the-command-console">8.1. Showing / Hiding the Command Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html#entering-commands">8.2. Entering commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html#getting-help">8.3. Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console.html#list-of-available-commands">8.4. List of available commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">9. Interface Theme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_devices.html">10. Working With Multiple Devices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_devices.html#introduction-to-multi-device-control">10.1. Introduction to Multi Device control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_devices.html#introduction-to-views">10.2. Introduction to Views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_devices.html#moving-views">10.3. Moving Views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_devices.html#docking-views">10.4. Docking Views</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-right" title="1. Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, piezosystem Jena.
+      <span class="lastupdated">Last updated on Dec 09, 2025 12:45.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

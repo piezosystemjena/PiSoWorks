@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. Command Console &mdash; PiSoWorks</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/style_override.css?v=06ecac75" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/color_roles.css?v=7881a399" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5319cc38"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
+      <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="9. Interface Theme" href="themes.html" />
+    <link rel="prev" title="7. SPI Controller Box" href="spi_controller_box.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PiSoWorks
+              <img src="_static/piezosystem_logo_white.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#easy-mode">2. Easy Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">3. Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="waveform.html">4. Waveform Generator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hysteresis.html">5. Hysteresis Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impulse_response.html">6. Impulse Response Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spi_controller_box.html">7. SPI Controller Box</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Command Console</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#showing-hiding-the-command-console">8.1. Showing / Hiding the Command Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#entering-commands">8.2. Entering commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-syntax">8.2.1. Command Syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clearing-the-console">8.2.2. Clearing the Console</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#console-history">8.2.3. Console history</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">8.3. Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-available-commands">8.4. List of available commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">9. Interface Theme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_devices.html">10. Working With Multiple Devices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PiSoWorks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8. </span>Command Console</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-console">
+<h1><span class="section-number">8. </span>Command Console<a class="headerlink" href="#command-console" title="Link to this heading"></a></h1>
+<section id="showing-hiding-the-command-console">
+<h2><span class="section-number">8.1. </span>Showing / Hiding the Command Console<a class="headerlink" href="#showing-hiding-the-command-console" title="Link to this heading"></a></h2>
+<p>The software has an integrated command console that allows you to interact with the system using text-based commands like you would
+do with a serial console application like HTerm. This console provides a way to control the piezo actuator or access features that
+are not supported by the graphical user interface (GUI) yet.</p>
+<img alt="_images/command_console.png" src="_images/command_console.png" />
+<p>To show or hide the console, just click the <span class="guilabel">Command Console</span> button <span class="guinum">❶</span>. This will show the command console <span class="guinum">❷</span>
+at the bottom of the window. You can click and drag the splitter handle <span class="guinum">❸</span> to resize the console area to your liking.</p>
+<div class="caution admonition">
+<p class="admonition-title">Attention</p>
+<p>Entering commands in the console bypasses all safety features of the GUI. This means you should be careful when issuing commands,
+as they can have immediate and potentially harmful effects on the system. Because the commands bypass the GUI,
+the state of the system shown in the GUI may not reflect the actual state of the actuator after executing a command.</p>
+</div>
+</section>
+<section id="entering-commands">
+<h2><span class="section-number">8.2. </span>Entering commands<a class="headerlink" href="#entering-commands" title="Link to this heading"></a></h2>
+<p>Entering commands works like in a terminal application. You can type your command and press the <kbd class="kbd docutils literal notranslate">Enter</kbd> key to send it.
+The command syntax is similar to the one used in the NV200 firmware, so you can use the same commands as you would in a serial terminal.</p>
+<section id="command-syntax">
+<h3><span class="section-number">8.2.1. </span>Command Syntax<a class="headerlink" href="#command-syntax" title="Link to this heading"></a></h3>
+<dl>
+<dt>Commands with a single parameter:</dt><dd><p>Use the following format:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;command&gt;,&lt;value&gt;\r</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cl,0\r</span>
+</pre></div>
+</div>
+</dd>
+<dt>Commands with an index and a value:</dt><dd><p>Use this format:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">recsrc,0,1\r</span>
+</pre></div>
+</div>
+</dd>
+<dt>Read-only commands or commands without parameters:</dt><dd><p>To read back a value or issue a command without a value, use:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;command&gt;\r</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">meas\r</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="clearing-the-console">
+<h3><span class="section-number">8.2.2. </span>Clearing the Console<a class="headerlink" href="#clearing-the-console" title="Link to this heading"></a></h3>
+<p>To clear the console output, you can use the <code class="code docutils literal notranslate"><span class="pre">cls</span></code> command:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cls\r</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="console-history">
+<h3><span class="section-number">8.2.3. </span>Console history<a class="headerlink" href="#console-history" title="Link to this heading"></a></h3>
+<p>The console supports a command history feature, allowing you to scroll through previously entered commands using
+the <kbd class="kbd docutils literal notranslate">↑</kbd> and <kbd class="kbd docutils literal notranslate">↓</kbd> arrow keys.</p>
+</section>
+</section>
+<section id="getting-help">
+<h2><span class="section-number">8.3. </span>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>The console has an internal <code class="code docutils literal notranslate"><span class="pre">help</span></code> command that lists all available commands with their syntax and a short description:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">help\r</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you know the command name, you can also get help for a specific command by typing:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">help,&lt;command&gt;\r</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For example:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">help,cl\r</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This will output:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cl: Loop mode (0=open loop, 1=closed loop)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="list-of-available-commands">
+<h2><span class="section-number">8.4. </span>List of available commands<a class="headerlink" href="#list-of-available-commands" title="Link to this heading"></a></h2>
+<p>This is the list of available commands:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>s</strong></p></td>
+<td><p>Print full command list</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>reset</strong></p></td>
+<td><p>Hardware-reset of the controller</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>fenable</strong></p></td>
+<td><p>Enable/disable full range voltage sweep during power-up (0=disabled, 1=enabled)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sinit</strong></p></td>
+<td><p>Set initial actuator position after power-up (0 to 100 %)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>set</strong></p></td>
+<td><p>Setpoint: voltage (open loop) or position (closed loop), range limited by actuator</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>setst</strong></p></td>
+<td><p>Smooth setpoint: setst,&lt;value1&gt;=Setpoint,&lt;value2&gt;=JumpTime; same rules as ‘set’</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>meas</strong></p></td>
+<td><p>Read position (with sensor) or piezo voltage (no sensor)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>imeas</strong></p></td>
+<td><p>Read measured piezo current (0=channel 1, 1=channel 2)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ctrlmode</strong></p></td>
+<td><p>Controller mode (0=PID, 1=ILC identification, 2=ILC feedforward, 3=ILC feedback)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>temp</strong></p></td>
+<td><p>Read heat sink temperature</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>stat</strong></p></td>
+<td><p>Read status register</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>posmin</strong></p></td>
+<td><p>Lower motion range limit</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>posmax</strong></p></td>
+<td><p>Upper motion range limit</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>avmin</strong></p></td>
+<td><p>Lower voltage range limit</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>avmax</strong></p></td>
+<td><p>Upper voltage range limit</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>modsrc</strong></p></td>
+<td><p>Setpoint source (0=USB/Ethernet, 1=Analog In, 2=SPI, 3=AWG)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>monsrc</strong></p></td>
+<td><p>Analog output source (0=position closed loop, 1=setpoint, 2=piezo voltage, 3=position error, 4=abs(position error),
+5=position open loop, 6=piezo current 1, 7=piezo current 2)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>desc</strong></p></td>
+<td><p>Actuator description (type such as ‘TRITOR100SG’)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>acserno</strong></p></td>
+<td><p>Actuator serial number</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>acmeasure</strong></p></td>
+<td><p>Actuator position sensor type (0=none, 1=straingauge, 2=capacitive, 3=LVDT)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cl</strong></p></td>
+<td><p>Loop mode (0=open loop, 1=closed loop)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sr</strong></p></td>
+<td><p>Slew rate limit (0.0000008 to 2000.0 %/ms; 2000=disabled)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>kp</strong></p></td>
+<td><p>PID proportional gain (0 to 10000)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ki</strong></p></td>
+<td><p>PID integral gain (0 to 10000)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>kd</strong></p></td>
+<td><p>PID differential gain (0 to 10000)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>tf</strong></p></td>
+<td><p>PID differential term (time constant)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>pcf</strong></p></td>
+<td><p>PID feedforward gain: pcf,&lt;position_gain&gt;,&lt;velocity_gain&gt;,&lt;acceleration_gain&gt; (acceleration scaled internally by 1/1,000,000)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>setlpon</strong></p></td>
+<td><p>Enable/disable setpoint lowpass filter (0=off, 1=on)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>setlpf</strong></p></td>
+<td><p>Setpoint lowpass cutoff frequency (1 to 10000 Hz)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>notchon</strong></p></td>
+<td><p>Enable/disable notch filter (0=off, 1=on)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>notchf</strong></p></td>
+<td><p>Notch filter frequency (1 to 10000 Hz)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>notchb</strong></p></td>
+<td><p>Notch filter bandwidth (-3dB) (1 to 10000 Hz; max = 2 * notchf)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>poslpon</strong></p></td>
+<td><p>Enable/disable position lowpass filter (0=off, 1=on)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>poslpf</strong></p></td>
+<td><p>Position lowpass cutoff frequency (1 to 10000 Hz)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>grun</strong></p></td>
+<td><p>Start/stop AWG (0=stop, 1=start)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gsarb</strong></p></td>
+<td><p>AWG start index (0 to 1023)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gearb</strong></p></td>
+<td><p>AWG end index (0 to 1023)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gcarb</strong></p></td>
+<td><p>AWG cycles (0=infinite, 1 to 65535)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>goarb</strong></p></td>
+<td><p>AWG offset index (0 to 1023)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>giarb</strong></p></td>
+<td><p>Read current AWG index</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gtarb</strong></p></td>
+<td><p>Output sampling factor (1 to 65535; sample time = factor * 50µs)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gbarb</strong></p></td>
+<td><p>Write AWG buffer in % units (index: 0 to 1023, value: 0.0 to 100.0)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gparb</strong></p></td>
+<td><p>Write AWG buffer in length units (index: 0 to 1023, value: posmin to posmax)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gsave</strong></p></td>
+<td><p>Save AWG buffer to EEPROM</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gload</strong></p></td>
+<td><p>Load AWG buffer from EEPROM</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>recsrc</strong></p></td>
+<td><p>Set data recorder source: recsrc,&lt;ch&gt;,&lt;src&gt;; ch: 0=A, 1=B; src: 0=position, 1=setpoint, 2=voltage, 3=error, 4=abs(error),
+5=position (open loop), 6=piezo current 1, 7=piezo current 2)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>recast</strong></p></td>
+<td><p>Recorder autostart (0=off, 1=start on set, 2=start on grun)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>recstr</strong></p></td>
+<td><p>Recorder stride (store every nth value) (1 to 65535)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>reclen</strong></p></td>
+<td><p>Recorder length (0 to 6144; 0=infinite loop)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>recrun</strong></p></td>
+<td><p>Start/stop recorder (0=stop, 1=start)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>recidx</strong></p></td>
+<td><p>Read current recorder write index</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>recout</strong></p></td>
+<td><p>Read recorder by index: recout,&lt;ch&gt;,&lt;index&gt;,&lt;value&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>recoutf</strong></p></td>
+<td><p>Read full recorder buffer (comma-separated)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>trgfkt</strong></p></td>
+<td><p>Trigger input function (0=none, 1=AWG start, 2=AWG step, 3=AWG sync, 4=ILC sync, 5=recorder start)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>trgedg</strong></p></td>
+<td><p>Trigger edge mode (0=off, 1=rising, 2=falling, 3=both)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>trgsrc</strong></p></td>
+<td><p>Trigger signal source (0=position, 1=setpoint)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>trgss</strong></p></td>
+<td><p>Trigger start position (posmin+0.001 to posmax-0.001)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>trgse</strong></p></td>
+<td><p>Trigger stop position (posmin+0.001 to posmax-0.001)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>trgsi</strong></p></td>
+<td><p>Trigger step size (0.001 to posmax-0.001)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>trglen</strong></p></td>
+<td><p>Trigger pulse length in samples (0 to 255, time = length * 50µs)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>spisrc</strong></p></td>
+<td><p>SPI return source (0=0x0000, 1=position, 2=setpoint, 3=voltage, 4=error, 5=abs(error), 6=position open loop,
+7=piezo current 1, 8=piezo current 2, 9=test 0x5A5A)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>spitrg</strong></p></td>
+<td><p>SPI interrupt source (0=internal, 1=SPI)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>spis</strong></p></td>
+<td><p>SPI setpoint format (0=hex, 1=decimal, 2=stroke/voltage)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>idata</strong></p></td>
+<td><p>Read all ILC parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>iemin</strong></p></td>
+<td><p>ILC lower error threshold ‘emin’ (0.0001 to 1.0)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>irho</strong></p></td>
+<td><p>ILC learning rate ‘rho’ (0.0001 to 1.0)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>in0</strong></p></td>
+<td><p>Number of basic scans (≥ in1) (2 to 65535)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>in1</strong></p></td>
+<td><p>Number of subsamples (power of 2: 2, 4, 8…1024)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>inx</strong></p></td>
+<td><p>Frequency components to learn (1 to 128, must be &lt; ½ * in1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>iut</strong></p></td>
+<td><p>Read piezo voltage profile (time domain)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>iyt</strong></p></td>
+<td><p>Read measured position profile (time domain)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ii1t</strong></p></td>
+<td><p>Read piezo current channel 1 (time domain)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ii2t</strong></p></td>
+<td><p>Read piezo current channel 2 (time domain)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>igc</strong></p></td>
+<td><p>Read learning function (frequency domain)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>iuc</strong></p></td>
+<td><p>Read piezo voltage profile (frequency domain)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>iwc</strong></p></td>
+<td><p>Set/read desired position profile (frequency domain): iwc,&lt;index&gt;,&lt;real&gt;,&lt;imag&gt;; index: 0 to inx</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>iyc</strong></p></td>
+<td><p>Read measured position profile (frequency domain)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>igt</strong></p></td>
+<td><p>Correction mode (0=no learning, 1=offline ID, 2=online ID)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>isave</strong></p></td>
+<td><p>Save ILC learning profiles to actuator</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>iload</strong></p></td>
+<td><p>Load ILC learning profiles from actuator</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spi_controller_box.html" class="btn btn-neutral float-left" title="7. SPI Controller Box" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="themes.html" class="btn btn-neutral float-right" title="9. Interface Theme" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, piezosystem Jena.
+      <span class="lastupdated">Last updated on Dec 09, 2025 12:45.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

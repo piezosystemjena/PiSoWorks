@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6. Impulse Response Measurement &mdash; PiSoWorks</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5349f25f" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/style_override.css?v=06ecac75" />
+      <link rel="stylesheet" type="text/css" href="_static/style_override_css/color_roles.css?v=7881a399" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5319cc38"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
+      <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. SPI Controller Box" href="spi_controller_box.html" />
+    <link rel="prev" title="5. Hysteresis Measurement" href="hysteresis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PiSoWorks
+              <img src="_static/piezosystem_logo_white.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#easy-mode">2. Easy Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">3. Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="waveform.html">4. Waveform Generator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hysteresis.html">5. Hysteresis Measurement</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Impulse Response Measurement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#impulse-response-and-resonance-frequency">6.1. Impulse Response and Resonance Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-the-notch-filter-helps">6.2. How the Notch Filter Helps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spi_controller_box.html">7. SPI Controller Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="console.html">8. Command Console</a></li>
+<li class="toctree-l1"><a class="reference internal" href="themes.html">9. Interface Theme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_devices.html">10. Working With Multiple Devices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PiSoWorks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">6. </span>Impulse Response Measurement</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="impulse-response-measurement">
+<h1><span class="section-number">6. </span>Impulse Response Measurement<a class="headerlink" href="#impulse-response-measurement" title="Link to this heading"></a></h1>
+<p>The software allows you to perform impulse response measurement and response analysis
+for your piezo actuator. Just click the <span class="guilabel">Impulse Response</span> tab <span class="guinum">❶</span> to show the
+panel for impulse response measurement.</p>
+<img alt="_images/impulse_response_numbered.png" src="_images/impulse_response_numbered.png" />
+<p>Piezo actuators are highly responsive devices, but their precision can be limited by mechanical resonances.
+These resonances are frequencies at which the actuator or the connected system naturally vibrates,
+often resulting in undesired oscillations or overshoot. Understanding the impulse response and
+resonance frequency of your system is critical for optimizing performance and avoiding instability.</p>
+<p>The <a class="reference internal" href="settings.html#filters"><span class="std std-ref">notch filter</span></a> in your piezo amplifier is specifically designed to address these issues by suppressing
+problematic resonant frequencies. To measure the impulse response and identify resonant frequencies, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Measure or obtain the <strong>impulse response</strong> of your actuator system by clicking the <span class="guinum">❶</span> <span class="guilabel">Get Resonance Spectrum</span> button.</p></li>
+<li><p>Identify peaks corresponding to <strong>resonant frequencies</strong> in the <span class="guilabel">Resonance Spectrum</span> plot <span class="guinum">❸</span>.</p></li>
+<li><p>Set the notch filter’s center frequency (<strong>notchf</strong>) to the dominant resonance.</p></li>
+<li><p>Adjust the bandwidth (<strong>notchb</strong>) to cover the resonance peak while minimizing attenuation of other frequencies.</p></li>
+<li><p>Observe the improved impulse response and smoother system behavior.</p></li>
+</ol>
+<div class="caution admonition">
+<p class="admonition-title">Attention</p>
+<p>The impulse response measurement will create a short impulse from a <span class="guilabel">Base Voltage</span> to a <span class="guilabel">Peak Voltage</span> to
+get the impulse response from the device. Ensure that the resulting motion or force cannot damage your application or surrounding
+equipment.</p>
+</div>
+<section id="impulse-response-and-resonance-frequency">
+<h2><span class="section-number">6.1. </span>Impulse Response and Resonance Frequency<a class="headerlink" href="#impulse-response-and-resonance-frequency" title="Link to this heading"></a></h2>
+<p>The impulse response tells you how fast
+the actuator reacts and how it settles after a sudden input. Knowing the impulse
+response allows you to predict the system’s behavior in feedback or feedforward control systems.
+It helps you to identify unwanted oscillations or overshoot that could affect precision.</p>
+<p>The resonance frequency, on the other hand, is the frequency at which the actuator naturally oscillates.
+It is important to know this frequency to avoid driving the actuator at its resonance, which can lead to
+excessive vibrations and potential damage. By knowing the resonance frequency, you can design the
+driving signals to stay in the safe frequency range.</p>
+</section>
+<section id="how-the-notch-filter-helps">
+<h2><span class="section-number">6.2. </span>How the Notch Filter Helps<a class="headerlink" href="#how-the-notch-filter-helps" title="Link to this heading"></a></h2>
+<p>The notch filter works by attenuating a specific frequency range, defined by:</p>
+<ul class="simple">
+<li><p><strong>Center frequency</strong> <code class="code docutils literal notranslate"><span class="pre">notchf</span></code> - the frequency to be suppressed (typically the resonance frequency).</p></li>
+<li><p><strong>Bandwidth</strong> <code class="code docutils literal notranslate"><span class="pre">notchb</span></code> - the range around the center frequency that is attenuated.</p></li>
+</ul>
+<p>Benefits:</p>
+<p><strong>1. Suppress Resonant Peaks:</strong></p>
+<blockquote>
+<div><p>By reducing the amplitude of signals at the resonance frequency, the notch filter prevents excessive vibrations that appear in the impulse response.</p>
+</div></blockquote>
+<p><strong>2. Improve Control Stability:</strong></p>
+<blockquote>
+<div><p>Control algorithms that rely on the actuator’s response (e.g., PID or feedforward control) perform better when resonant oscillations are minimized.</p>
+</div></blockquote>
+<p><strong>3. Protect Mechanical Components:</strong></p>
+<blockquote>
+<div><p>Avoiding excitation of resonant modes reduces wear, noise, and the risk of mechanical damage.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hysteresis.html" class="btn btn-neutral float-left" title="5. Hysteresis Measurement" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spi_controller_box.html" class="btn btn-neutral float-right" title="7. SPI Controller Box" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, piezosystem Jena.
+      <span class="lastupdated">Last updated on Dec 09, 2025 12:45.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
