@@ -1069,14 +1069,14 @@ files = [
 
 [[package]]
 name = "nv200"
-version = "1.5.1"
+version = "1.5.3"
 description = "Python library for piezosystem NV200 device"
 optional = false
 python-versions = "<3.14,>=3.12"
 groups = ["main"]
 files = [
-    {file = "nv200-1.5.1-py3-none-any.whl", hash = "sha256:02c77629f760719db9c7d48d6b06bf1c091f7997d9c5623ae311c5cc7892f508"},
-    {file = "nv200-1.5.1.tar.gz", hash = "sha256:879e90a024cf3de87d5fa8966fa88f75ba82f61521b3653ac889c86258335f1b"},
+    {file = "nv200-1.5.3-py3-none-any.whl", hash = "sha256:88864b22c1345cd4e27359935f160178e6f97f7d1442e2b47d57af45d318c7a8"},
+    {file = "nv200-1.5.3.tar.gz", hash = "sha256:c4cbf4a21065b07387f530328c6e8d7407ef9f2812f6e9b1609865323ec27167"},
 ]
 
 [package.dependencies]
