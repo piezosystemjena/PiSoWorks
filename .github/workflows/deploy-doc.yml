@@ -5,10 +5,10 @@ name: Publish Documentation
 # -----------------------------------------------------
 on:
   push:
-    branches:
-      - main         # Run workflow when code is pushed to the main branch
     tags:
-      - 'v*'         # Run workflow when a tag starting with 'v' is pushed (semantic versioning)
+      - 'v*.*.*'      # Run workflow only for semantic version tags like v1.2.3
+    tags-ignore:
+      - 'v*.*.*-*'   # Ignore dev pre-release tags like v1.2.3-dev1
   workflow_dispatch:  # Allows manual triggering of the workflow from GitHub Actions UI
 
 # -----------------------------------------------------
@@ -23,8 +23,6 @@ permissions:
 jobs:
   publish:
     name: Publish documentation
-    # Only run on main branch or when manually triggered
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
 
     steps:
