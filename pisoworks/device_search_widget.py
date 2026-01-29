@@ -147,22 +147,24 @@ class DeviceSearchWidget(QWidget):
             if self._search_complete_cb:
                 await self._search_complete_cb(self._devices, error)
 
-    async def _disconnect_device(self) -> None:
+    async def _disconnect_device(self, update_ui: bool = True) -> None:
         """
         Disconnects from the currently connected device and updates the UI.
         """
-        self.ui.connectionButton.setEnabled(False)
+        if update_ui:
+            self.ui.connectionButton.setEnabled(False)
         
         if self._current_device:
             await self._current_device.close()
         
-        if self._disconnect_cb:
+        if update_ui and self._disconnect_cb:
             await self._disconnect_cb()
 
         self._current_device = None
-        
-        self.ui.connectionButton.setText("Connect")
-        self.ui.connectionButton.setEnabled(True)
+
+        if update_ui:
+            self.ui.connectionButton.setText("Connect")
+            self.ui.connectionButton.setEnabled(True)
 
     async def _connect_device(self, device: DetectedDevice) -> None:
         """
@@ -189,3 +191,6 @@ class DeviceSearchWidget(QWidget):
 
             self.ui.connectionButton.setEnabled(True)
             self.setCursor(Qt.CursorShape.ArrowCursor)
+
+    def cleanup(self) -> None:
+        asyncio.create_task(self._disconnect_device(update_ui=False))

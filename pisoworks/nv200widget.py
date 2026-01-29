@@ -129,10 +129,8 @@ class NV200Widget(QWidget):
         Cleans up resources by initiating an asynchronous disconnection from the device.
         This function needs to get called, before the widget is deleted
         """
-        result = asyncio.create_task(self.disconnect_from_device())
-
-
-
+        self.ui.deviceSearchWidget.cleanup()
+        
     def set_piezosystem_logo(self, dark_theme : bool):
         """
         Sets the piezosystem logo on the UI based on the selected theme.
@@ -594,23 +592,6 @@ class NV200Widget(QWidget):
         self._recorder = None
         self._waveform_generator = None
         self._analyzer = None  
-
-            
-    def on_device_selected(self, index):
-        """
-        Handles the event when a device is selected from the devicesComboBox.
-        """
-        if index == -1:
-            print("No device selected.")
-            return
-
-        device = self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
-        if device is None:
-            print("No device data found.")
-            return
-        
-        print(f"Selected device: {device}")
-        self.ui.connectButton.setEnabled(True)
 
 
     async def update_target_pos_edits(self):
