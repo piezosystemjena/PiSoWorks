@@ -8,7 +8,7 @@ from typing import Any, cast, Dict, Tuple, List
 import math
 import numpy as np
 
-from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog
+from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog, QSizePolicy
 from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths, QUrl
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap, QDesktopServices
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
@@ -122,6 +122,8 @@ class NV200Widget(QWidget):
         self.register_main_menu_actions()
         self.set_piezosystem_logo(style_manager.style.is_current_theme_dark())
         style_manager.style.dark_mode_changed.connect(self.set_piezosystem_logo)
+        style_manager.style.stylesheet_changed.connect(self.schedule_left_nav_relayout)
+        self.schedule_left_nav_relayout()
 
 
     def cleanup(self):
@@ -142,6 +144,63 @@ class NV200Widget(QWidget):
             Updates the pixmap of the piezoIconLabel in the UI to display the appropriate logo image.
         """
         self.ui.piezoIconLabel.setPixmap(ui_helpers.company_logo_pixmap(dark_theme))
+
+
+    def schedule_left_nav_relayout(self):
+        """
+        Schedules a relayout so the left navigation bar resizes after font changes.
+        """
+        QTimer.singleShot(0, self.update_left_nav_layout)
+        QTimer.singleShot(100, self.update_left_nav_layout)
+
+
+    def update_left_nav_layout(self):
+        """
+        Forces layout updates for the left navigation bar so it reflects font size changes.
+        """
+        ui = self.ui
+        if ui is None:
+            return
+
+        tab_bar = ui.tabWidget.tabBar()
+        tab_bar.ensurePolished()
+        tab_bar.updateGeometry()
+        tab_bar.adjustSize()
+
+        ui.tabWidget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        ui.tabWidget.ensurePolished()
+        ui.tabWidget.updateGeometry()
+        ui.tabWidget.adjustSize()
+
+        frame = ui.scrollArea.frameWidth()
+        margins = ui.tabWidget.contentsMargins()
+        tab_width = max(tab_bar.sizeHint().width(), ui.tabWidget.sizeHint().width())
+        min_width = max(0, tab_width + margins.left() + margins.right() + frame * 2 + 12)
+
+        ui.scrollArea.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        ui.scrollAreaWidgetContents.setFixedWidth(min_width)
+        ui.scrollArea.setFixedWidth(min_width)
+        ui.layoutWidget.setMinimumWidth(min_width)
+        ui.tabWidget.setFixedWidth(min_width)
+
+        ui.scrollAreaWidgetContents.updateGeometry()
+        ui.scrollAreaWidgetContents.adjustSize()
+        ui.scrollArea.updateGeometry()
+        ui.scrollArea.adjustSize()
+        ui.layoutWidget.updateGeometry()
+        ui.layoutWidget.adjustSize()
+
+        if ui.layoutWidget.layout():
+            ui.layoutWidget.layout().activate()
+        if ui.horizontalLayout_2:
+            ui.horizontalLayout_2.activate()
+
+        ui.verticalLayout_10.invalidate()
+        ui.horizontalLayout_2.invalidate()
+        ui.verticalLayout_3.invalidate()
+        self.updateGeometry()
+        self.adjustSize()
+        self.update()
 
 
     def register_main_menu_actions(self):
