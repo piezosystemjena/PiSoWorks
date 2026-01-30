@@ -102,6 +102,8 @@ class SpiBoxWidget(QWidget):
         self._custom_waveform = WaveformGenerator.WaveformData() # Placeholder for custom waveform
 
         style_manager.style.dark_mode_changed.connect(self.set_dark_mode)
+        style_manager.style.stylesheet_changed.connect(self.schedule_left_nav_relayout)
+        self.schedule_left_nav_relayout()
 
 
     def updateTabSize(self, index=None):
@@ -164,6 +166,46 @@ class SpiBoxWidget(QWidget):
         """
         self.ui.waveformPlot.set_dark_mode(dark)
         self.plot_all_waveforms()
+
+
+    def schedule_left_nav_relayout(self):
+        """
+        Schedules a relayout so the left navigation column resizes after font changes.
+        """
+        QTimer.singleShot(0, self.update_left_nav_layout)
+        QTimer.singleShot(100, self.update_left_nav_layout)
+
+
+    def update_left_nav_layout(self):
+        """
+        Forces layout updates for the left navigation column so it reflects font size changes.
+        """
+        ui = self.ui
+        if ui is None:
+            return
+
+        left_widgets = [ui.singleDatasetGroupBox, ui.multipleDatasetGroupBox]
+        for widget in left_widgets:
+            widget.ensurePolished()
+            widget.updateGeometry()
+            widget.adjustSize()
+
+        min_width = max(widget.sizeHint().width() for widget in left_widgets)
+        min_width = max(0, min_width + 8)
+
+        for widget in left_widgets:
+            widget.setSizePolicy(QSizePolicy.Policy.Fixed, widget.sizePolicy().verticalPolicy())
+            widget.setFixedWidth(min_width)
+
+        ui.channelTabWidget.updateGeometry()
+        ui.channelTabWidget.adjustSize()
+
+        ui.verticalLayout_2.invalidate()
+        ui.horizontalLayout_2.invalidate()
+        ui.verticalLayout_3.invalidate()
+        self.updateGeometry()
+        self.adjustSize()
+        self.update()
 
 
     def on_infinite_cycles_checked(self, value):
