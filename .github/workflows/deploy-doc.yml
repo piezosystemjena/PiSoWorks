@@ -7,8 +7,6 @@ on:
   push:
     tags:
       - 'v*.*.*'      # Run workflow only for semantic version tags like v1.2.3
-    tags-ignore:
-      - 'v*.*.*-*'   # Ignore dev pre-release tags like v1.2.3-dev1
   workflow_dispatch:  # Allows manual triggering of the workflow from GitHub Actions UI
 
 # -----------------------------------------------------
@@ -23,6 +21,7 @@ permissions:
 jobs:
   publish:
     name: Publish documentation
+    if: ${{ !contains(github.ref_name, '-') }}
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
 
     steps:
