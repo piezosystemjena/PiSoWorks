@@ -5,8 +5,6 @@ name: Publish Python Package
 # -----------------------------------------------------
 on:
   push:
-    branches:
-      - main         # Run workflow when code is pushed to the main branch
     tags:
       - 'v*.*.*'         # Run workflow only for semantic version tags like v1.2.3
   workflow_dispatch:  # Allows manual triggering of the workflow from GitHub Actions UI
