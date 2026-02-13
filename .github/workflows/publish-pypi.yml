@@ -65,7 +65,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     # Run only if the workflow is triggered by a release tag
-    if: !contains(github.ref, '-')
+    if: ${{ !contains(github.ref_name, '-') }}
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
 
     steps:
