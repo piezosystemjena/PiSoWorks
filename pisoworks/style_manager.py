@@ -15,6 +15,10 @@ class StyleManager:
     def __init__(self) -> None:
         QApplication.setStyle('Fusion')
         self.style = qtass.QtAdvancedStylesheet()
+        self.default_base_font_size = 9.0
+        self.min_base_font_size = 7.0
+        self.max_base_font_size = 24.0
+        self.base_font_size_step = 1.0
         app_path = Path(__file__).resolve().parent
         style = self.style
         style.output_dir = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation) + "/styles"
@@ -74,7 +78,9 @@ class StyleManager:
         """
         with SettingsContext() as settings:
             light_theme = cast(bool, settings.value("theme/light", False, type=bool))
+            base_font_size = cast(float, settings.value("style/baseFontSize", self.default_base_font_size, type=float))
         self.set_light_theme(light_theme)
+        self.set_base_font_size(base_font_size, store=False)
 
 
     def notify_application(self) -> None:
@@ -83,6 +89,57 @@ class StyleManager:
         This allows existing controls to adapt to dark / or light mode
         """
         self.style.dark_mode_changed.emit(self.style.is_current_theme_dark())
+
+
+    def base_font_size(self) -> float:
+        """
+        Returns the current base font size from the theme variables.
+        """
+        value = self.style.theme_variable_value("baseFontSize")
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return self.default_base_font_size
+
+
+    def set_base_font_size(self, size: float, *, store: bool = True) -> None:
+        """
+        Sets the base font size and updates the stylesheet.
+
+        Args:
+            size (float): New base font size in points.
+            store (bool): Persist setting to QSettings if True.
+        """
+        clamped = max(self.min_base_font_size, min(self.max_base_font_size, float(size)))
+        self.style.set_theme_variable_value("baseFontSize", str(clamped))
+        self.style.update_stylesheet()
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            app.setStyleSheet(self.style.stylesheet)
+        if store:
+            with SettingsContext() as settings:
+                settings.setValue("style/baseFontSize", clamped)
+
+
+    def zoom_in(self) -> None:
+        """
+        Increase base font size by one step.
+        """
+        self.set_base_font_size(self.base_font_size() + self.base_font_size_step)
+
+
+    def zoom_out(self) -> None:
+        """
+        Decrease base font size by one step.
+        """
+        self.set_base_font_size(self.base_font_size() - self.base_font_size_step)
+
+
+    def zoom_reset(self) -> None:
+        """
+        Reset base font size to default.
+        """
+        self.set_base_font_size(self.default_base_font_size)
 
 
 # Global instance of the StyleManager   

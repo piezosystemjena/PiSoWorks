@@ -15,12 +15,13 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QComboBox,
-    QDoubleSpinBox, QFormLayout, QFrame, QGridLayout,
-    QGroupBox, QHBoxLayout, QLabel, QPushButton,
-    QSizePolicy, QSpacerItem, QSpinBox, QTabWidget,
-    QToolButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QDoubleSpinBox,
+    QFormLayout, QFrame, QGridLayout, QGroupBox,
+    QHBoxLayout, QLabel, QPushButton, QSizePolicy,
+    QSpacerItem, QSpinBox, QTabWidget, QVBoxLayout,
+    QWidget)
 
+from pisoworks.device_search_widget import DeviceSearchWidget
 from pisoworks.mplcanvas import MplWidget
 from pisoworks.timed_progress_bar import TimedProgressBar
 from pisoworks.waveform_options_widget import WaveformOptionsWidget
@@ -32,42 +33,10 @@ class Ui_SpiBoxWidget(object):
         SpiBoxWidget.resize(847, 642)
         self.verticalLayout_3 = QVBoxLayout(SpiBoxWidget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setSpacing(6)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.devicesComboBox = QComboBox(SpiBoxWidget)
-        self.devicesComboBox.setObjectName(u"devicesComboBox")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.devicesComboBox.sizePolicy().hasHeightForWidth())
-        self.devicesComboBox.setSizePolicy(sizePolicy)
+        self.deviceSearchWidget = DeviceSearchWidget(SpiBoxWidget)
+        self.deviceSearchWidget.setObjectName(u"deviceSearchWidget")
 
-        self.horizontalLayout.addWidget(self.devicesComboBox)
-
-        self.searchDevicesButton = QToolButton(SpiBoxWidget)
-        self.searchDevicesButton.setObjectName(u"searchDevicesButton")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.searchDevicesButton.sizePolicy().hasHeightForWidth())
-        self.searchDevicesButton.setSizePolicy(sizePolicy1)
-        self.searchDevicesButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
-        self.searchDevicesButton.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.searchDevicesButton.setProperty(u"alignedWithEdit", True)
-
-        self.horizontalLayout.addWidget(self.searchDevicesButton)
-
-        self.connectButton = QPushButton(SpiBoxWidget)
-        self.connectButton.setObjectName(u"connectButton")
-        self.connectButton.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.connectButton.sizePolicy().hasHeightForWidth())
-        self.connectButton.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout.addWidget(self.connectButton)
-
-
-        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.verticalLayout_3.addWidget(self.deviceSearchWidget)
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setSpacing(12)
@@ -189,19 +158,19 @@ class Ui_SpiBoxWidget(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.startWaveformButton = QPushButton(self.multipleDatasetGroupBox)
         self.startWaveformButton.setObjectName(u"startWaveformButton")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
-        self.startWaveformButton.setSizePolicy(sizePolicy2)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.startWaveformButton.sizePolicy().hasHeightForWidth())
+        self.startWaveformButton.setSizePolicy(sizePolicy)
 
         self.horizontalLayout_4.addWidget(self.startWaveformButton)
 
         self.getResponseButton = QPushButton(self.multipleDatasetGroupBox)
         self.getResponseButton.setObjectName(u"getResponseButton")
         self.getResponseButton.setEnabled(False)
-        sizePolicy2.setHeightForWidth(self.getResponseButton.sizePolicy().hasHeightForWidth())
-        self.getResponseButton.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.getResponseButton.sizePolicy().hasHeightForWidth())
+        self.getResponseButton.setSizePolicy(sizePolicy)
 
         self.horizontalLayout_4.addWidget(self.getResponseButton)
 
@@ -228,11 +197,11 @@ class Ui_SpiBoxWidget(object):
 
         self.cyclesSpinBox = QSpinBox(self.multipleDatasetGroupBox)
         self.cyclesSpinBox.setObjectName(u"cyclesSpinBox")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
-        self.cyclesSpinBox.setSizePolicy(sizePolicy3)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.cyclesSpinBox.sizePolicy().hasHeightForWidth())
+        self.cyclesSpinBox.setSizePolicy(sizePolicy1)
         self.cyclesSpinBox.setMinimum(1)
         self.cyclesSpinBox.setMaximum(65535)
         self.cyclesSpinBox.setValue(1)
@@ -244,15 +213,15 @@ class Ui_SpiBoxWidget(object):
 
         self.channelTabWidget = QTabWidget(self.multipleDatasetGroupBox)
         self.channelTabWidget.setObjectName(u"channelTabWidget")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.channelTabWidget.sizePolicy().hasHeightForWidth())
-        self.channelTabWidget.setSizePolicy(sizePolicy4)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.channelTabWidget.sizePolicy().hasHeightForWidth())
+        self.channelTabWidget.setSizePolicy(sizePolicy2)
         self.channel1Tab = QWidget()
         self.channel1Tab.setObjectName(u"channel1Tab")
-        sizePolicy4.setHeightForWidth(self.channel1Tab.sizePolicy().hasHeightForWidth())
-        self.channel1Tab.setSizePolicy(sizePolicy4)
+        sizePolicy2.setHeightForWidth(self.channel1Tab.sizePolicy().hasHeightForWidth())
+        self.channel1Tab.setSizePolicy(sizePolicy2)
         self.channel1Tab.setAcceptDrops(False)
         self.vBoxLayout1 = QVBoxLayout(self.channel1Tab)
         self.vBoxLayout1.setObjectName(u"vBoxLayout1")
@@ -262,11 +231,11 @@ class Ui_SpiBoxWidget(object):
         self.formLayout.setContentsMargins(9, 6, 6, 0)
         self.enabledLabel1 = QLabel(self.channel1Tab)
         self.enabledLabel1.setObjectName(u"enabledLabel1")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.enabledLabel1.sizePolicy().hasHeightForWidth())
-        self.enabledLabel1.setSizePolicy(sizePolicy5)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.enabledLabel1.sizePolicy().hasHeightForWidth())
+        self.enabledLabel1.setSizePolicy(sizePolicy3)
         self.enabledLabel1.setBaseSize(QSize(0, 0))
 
         self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.enabledLabel1)
@@ -289,8 +258,8 @@ class Ui_SpiBoxWidget(object):
         self.channelTabWidget.addTab(self.channel1Tab, "")
         self.channel2Tab = QWidget()
         self.channel2Tab.setObjectName(u"channel2Tab")
-        sizePolicy4.setHeightForWidth(self.channel2Tab.sizePolicy().hasHeightForWidth())
-        self.channel2Tab.setSizePolicy(sizePolicy4)
+        sizePolicy2.setHeightForWidth(self.channel2Tab.sizePolicy().hasHeightForWidth())
+        self.channel2Tab.setSizePolicy(sizePolicy2)
         self.formLayout2 = QVBoxLayout(self.channel2Tab)
         self.formLayout2.setObjectName(u"formLayout2")
         self.formLayout_3 = QFormLayout()
@@ -319,8 +288,8 @@ class Ui_SpiBoxWidget(object):
         self.channelTabWidget.addTab(self.channel2Tab, "")
         self.channel3Tab = QWidget()
         self.channel3Tab.setObjectName(u"channel3Tab")
-        sizePolicy4.setHeightForWidth(self.channel3Tab.sizePolicy().hasHeightForWidth())
-        self.channel3Tab.setSizePolicy(sizePolicy4)
+        sizePolicy2.setHeightForWidth(self.channel3Tab.sizePolicy().hasHeightForWidth())
+        self.channel3Tab.setSizePolicy(sizePolicy2)
         self.formLayout3 = QVBoxLayout(self.channel3Tab)
         self.formLayout3.setObjectName(u"formLayout3")
         self.formLayout_4 = QFormLayout()
@@ -366,11 +335,11 @@ class Ui_SpiBoxWidget(object):
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, -1)
         self.waveformPlot = MplWidget(SpiBoxWidget)
         self.waveformPlot.setObjectName(u"waveformPlot")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.waveformPlot.sizePolicy().hasHeightForWidth())
-        self.waveformPlot.setSizePolicy(sizePolicy6)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.waveformPlot.sizePolicy().hasHeightForWidth())
+        self.waveformPlot.setSizePolicy(sizePolicy4)
 
         self.verticalLayout_4.addWidget(self.waveformPlot)
 
@@ -400,9 +369,6 @@ class Ui_SpiBoxWidget(object):
 
     def retranslateUi(self, SpiBoxWidget):
         SpiBoxWidget.setWindowTitle(QCoreApplication.translate("SpiBoxWidget", u"Form", None))
-        self.searchDevicesButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Search Devices ...", None))
-        self.searchDevicesButton.setProperty(u"style", QCoreApplication.translate("SpiBoxWidget", u"pushButton", None))
-        self.connectButton.setText(QCoreApplication.translate("SpiBoxWidget", u"Connect", None))
         self.singleDatasetGroupBox.setTitle(QCoreApplication.translate("SpiBoxWidget", u"Single Dataset", None))
         self.singleDatasetSendCh1SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))
         self.singleDatasetReceiveCh1SpinBox.setSuffix(QCoreApplication.translate("SpiBoxWidget", u" %", None))

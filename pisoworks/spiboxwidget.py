@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from typing import List
 import sys
 import asyncio
 import logging
@@ -101,6 +102,8 @@ class SpiBoxWidget(QWidget):
         self._custom_waveform = WaveformGenerator.WaveformData() # Placeholder for custom waveform
 
         style_manager.style.dark_mode_changed.connect(self.set_dark_mode)
+        style_manager.style.stylesheet_changed.connect(self.schedule_left_nav_relayout)
+        self.schedule_left_nav_relayout()
 
 
     def updateTabSize(self, index=None):
@@ -152,7 +155,6 @@ class SpiBoxWidget(QWidget):
             return
 
         self._initialized = True
-        QTimer.singleShot(0, safe_asyncslot(self.search_serial_devices))
 
 
     def set_dark_mode(self, dark: bool):
@@ -164,6 +166,46 @@ class SpiBoxWidget(QWidget):
         """
         self.ui.waveformPlot.set_dark_mode(dark)
         self.plot_all_waveforms()
+
+
+    def schedule_left_nav_relayout(self):
+        """
+        Schedules a relayout so the left navigation column resizes after font changes.
+        """
+        QTimer.singleShot(0, self.update_left_nav_layout)
+        QTimer.singleShot(100, self.update_left_nav_layout)
+
+
+    def update_left_nav_layout(self):
+        """
+        Forces layout updates for the left navigation column so it reflects font size changes.
+        """
+        ui = self.ui
+        if ui is None:
+            return
+
+        left_widgets = [ui.singleDatasetGroupBox, ui.multipleDatasetGroupBox]
+        for widget in left_widgets:
+            widget.ensurePolished()
+            widget.updateGeometry()
+            widget.adjustSize()
+
+        min_width = max(widget.sizeHint().width() for widget in left_widgets)
+        min_width = max(0, min_width + 8)
+
+        for widget in left_widgets:
+            widget.setSizePolicy(QSizePolicy.Policy.Fixed, widget.sizePolicy().verticalPolicy())
+            widget.setFixedWidth(min_width)
+
+        ui.channelTabWidget.updateGeometry()
+        ui.channelTabWidget.adjustSize()
+
+        ui.verticalLayout_2.invalidate()
+        ui.horizontalLayout_2.invalidate()
+        ui.verticalLayout_3.invalidate()
+        self.updateGeometry()
+        self.adjustSize()
+        self.update()
 
 
     def on_infinite_cycles_checked(self, value):
@@ -203,135 +245,13 @@ class SpiBoxWidget(QWidget):
 
 
     def init_device_search_ui(self):
-        """
-        Initializes the device search UI components, including buttons and combo boxes for device selection.
-        """
         ui = self.ui
-        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
-        ui.searchDevicesButton.clicked.connect(safe_asyncslot(self.search_all_devices))
+        ui.deviceSearchWidget.set_device_class(SpiBoxDevice)
+        ui.deviceSearchWidget.set_on_search_start_callback(self.handle_search_devices_start)
+        ui.deviceSearchWidget.set_on_search_complete_callback(self.handle_search_devices_end)
+        ui.deviceSearchWidget.set_on_connect_callback(self.handle_connect_device)
+        ui.deviceSearchWidget.set_on_disconnect_callback(self.handle_disconnect_device)
 
-        # Create the menu
-        menu = QMenu(self)
-
-        # Create actions
-        serial_action = QAction("USB Devices", ui.searchDevicesButton)
-        serial_action.setIcon(get_icon_for_menu("usb"))
-        ethernet_action = QAction("Ethernet Devices", ui.searchDevicesButton)
-        ethernet_action.setIcon(get_icon("lan"))
-
-        # Connect actions to appropriate slots
-        serial_action.triggered.connect(safe_asyncslot(self.search_serial_devices))
-        ethernet_action.triggered.connect(safe_asyncslot(self.search_ethernet_devices))
-
-        # Add actions to menu
-        menu.addAction(serial_action)
-        menu.addAction(ethernet_action)
-
-        # Set the menu to the button
-        ui.searchDevicesButton.setMenu(menu)
-                                       
-        ui.connectButton.clicked.connect(qtinter.asyncslot(self.connect_to_device))
-        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
-        ui.searchDevicesButton.clicked.connect(qtinter.asyncslot(self.search_devices))
-        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
-
-
-    async def search_all_devices(self):
-        """
-        Asynchronously searches for all available devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
-        """
-        self._discover_flags = DiscoverFlags.ALL
-        await self.search_devices()
-
-
-    async def search_serial_devices(self):
-        """
-        Asynchronously searches for serial devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
-        """
-        self._discover_flags = DiscoverFlags.DETECT_SERIAL
-        await self.search_devices()
-
-    async def search_ethernet_devices(self):
-        """
-        Asynchronously searches for Ethernet devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
-        """
-        self._discover_flags = DiscoverFlags.DETECT_ETHERNET
-        await self.search_devices()
-
-
-    async def search_devices(self):
-        """
-        Asynchronously searches for available devices and updates the UI accordingly.
-        """
-        ui = self.ui
-        ui.searchDevicesButton.setEnabled(False)
-        ui.connectButton.setEnabled(False)
-        self.set_groupbox_enabled(False)
-        self.status_message.emit("Searching for devices...", 0)
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-
-        if self._device is not None:
-            await self._device.close()
-            self._device = None
-        
-        print("Searching...")
-        ui.moveProgressBar.start(300)
-        try:
-            print("Discovering devices...")
-            devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=SpiBoxDevice)    
-            
-            if not devices:
-                print("No devices found.")
-            else:
-                print(f"Found {len(devices)} device(s):")
-                for device in devices:
-                    print(device)
-            ui.moveProgressBar.stop(success=True, context="search_devices")
-        except Exception as e:
-            ui.moveProgressBar.reset()
-            print(f"Error: {e}")
-        finally:
-            QApplication.restoreOverrideCursor()
-            self.ui.searchDevicesButton.setEnabled(True)
-            self.status_message.emit("", 0)
-            print("Search completed.")
-            self.ui.devicesComboBox.clear()
-            if devices:
-                for device in devices:
-                    self.ui.devicesComboBox.addItem(f"{device}", device)
-            else:
-                self.ui.devicesComboBox.addItem("No devices found.")
-            
-            
-    def on_device_selected(self, index):
-        """
-        Handles the event when a device is selected from the devicesComboBox.
-        """
-        if index == -1:
-            print("No device selected.")
-            return
-
-        device = self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
-        if device is None:
-            print("No device data found.")
-            return
-        
-        print(f"Selected device: {device}")
-        self.ui.connectButton.setEnabled(True)
-
-    
-    def selected_device(self) -> DetectedDevice:
-        """
-        Returns the currently selected device from the devicesComboBox.
-        """
-        index = self.ui.devicesComboBox.currentIndex()
-        if index == -1:
-            return None
-        return self.ui.devicesComboBox.itemData(index, role=Qt.UserRole)
-    
     
     async def disconnect_from_device(self, update_ui = True):
         """
@@ -350,26 +270,6 @@ class SpiBoxWidget(QWidget):
         # Cancel any ongoing waveform task
         if self._waveform_task is not None:
             self._waveform_task.cancel()
-
-    async def connect_to_device(self):
-        """
-        Asynchronously connects to the selected device.
-        """
-        self.setCursor(Qt.WaitCursor)
-        detected_device = self.selected_device()
-        self.status_message.emit(f"Connecting to {detected_device.identifier}...", 0)
-        print(f"Connecting to {detected_device.identifier}...")
-        try:
-            await self.disconnect_from_device()
-            self._device = await connect_to_detected_device(detected_device)
-            self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
-            print(f"Connected to {detected_device.identifier}.")
-        except Exception as e:
-            self.status_message.emit(f"Connection failed: {e}", 2000)
-            print(f"Connection failed: {e}")
-            return
-        finally:
-            self.reset_ui(True)
     
 
     def reset_ui(self, connected):
@@ -398,6 +298,51 @@ class SpiBoxWidget(QWidget):
         if connected:
             self._plot_timer.start(100)
             asyncio.create_task(self.reflect_waveform_status())
+
+    
+    async def handle_search_devices_start(self):
+        """
+        Handles the start of the device search process by updating the UI status and progress bar.
+        """
+        self.status_message.emit("Searching for devices...", 0)
+        self.ui.moveProgressBar.start(3000)
+
+    
+    async def handle_search_devices_end(self, devices: List[DetectedDevice], error: Exception | None):
+        """
+        Handles the end of the device search process by updating the UI status and progress bar.
+        """
+        if devices:
+            self.ui.moveProgressBar.stop(success=True, context="search_devices")
+        else:
+            self.ui.moveProgressBar.reset()
+
+        self.status_message.emit("", 0)
+        
+
+    async def handle_connect_device(self, device: SpiBoxDevice, error: Exception | None):
+        """
+        Handles the event when the DeviceSearchWidget connects to a device.
+        """
+        if error:
+            self.reset_ui(False)
+            self.status_message.emit(f"Connection failed: {error}", 2000)
+            return
+        
+        self._device = device
+        self.reset_ui(True)
+        print(f"Connected to {device.device_info}.")
+
+
+    async def handle_disconnect_device(self):
+        """
+        Handles the event when the DeviceSearchWidget disconnects from a device.
+        """
+        self.reset_ui(False)
+
+        # Cancel any ongoing waveform task
+        if self._waveform_task is not None:
+            self._waveform_task.cancel()
 
     
     async def reflect_waveform_status(self):
@@ -855,4 +800,4 @@ class SpiBoxWidget(QWidget):
         Cleans up resources by initiating an asynchronous disconnection from the device.
         This function needs to get called, before the widget is deleted
         """
-        result = asyncio.create_task(self.disconnect_from_device(update_ui = False))
+        self.ui.deviceSearchWidget.cleanup()

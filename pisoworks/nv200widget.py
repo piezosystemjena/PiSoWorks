@@ -8,7 +8,7 @@ from typing import Any, cast, Dict, Tuple, List
 import math
 import numpy as np
 
-from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog
+from PySide6.QtWidgets import QApplication, QWidget, QMenu, QFileDialog, QSizePolicy
 from PySide6.QtCore import Qt, QSize, QObject, Signal, QTimer, QStandardPaths, QUrl
 from PySide6.QtGui import QColor, QPalette, QAction, QPixmap, QDesktopServices
 from PySide6.QtWidgets import QDoubleSpinBox, QComboBox, QMessageBox
@@ -122,6 +122,8 @@ class NV200Widget(QWidget):
         self.register_main_menu_actions()
         self.set_piezosystem_logo(style_manager.style.is_current_theme_dark())
         style_manager.style.dark_mode_changed.connect(self.set_piezosystem_logo)
+        style_manager.style.stylesheet_changed.connect(self.schedule_left_nav_relayout)
+        self.schedule_left_nav_relayout()
 
 
     def cleanup(self):
@@ -129,10 +131,8 @@ class NV200Widget(QWidget):
         Cleans up resources by initiating an asynchronous disconnection from the device.
         This function needs to get called, before the widget is deleted
         """
-        result = asyncio.create_task(self.disconnect_from_device())
-
-
-
+        self.ui.deviceSearchWidget.cleanup()
+        
     def set_piezosystem_logo(self, dark_theme : bool):
         """
         Sets the piezosystem logo on the UI based on the selected theme.
@@ -144,6 +144,63 @@ class NV200Widget(QWidget):
             Updates the pixmap of the piezoIconLabel in the UI to display the appropriate logo image.
         """
         self.ui.piezoIconLabel.setPixmap(ui_helpers.company_logo_pixmap(dark_theme))
+
+
+    def schedule_left_nav_relayout(self):
+        """
+        Schedules a relayout so the left navigation bar resizes after font changes.
+        """
+        QTimer.singleShot(0, self.update_left_nav_layout)
+        QTimer.singleShot(100, self.update_left_nav_layout)
+
+
+    def update_left_nav_layout(self):
+        """
+        Forces layout updates for the left navigation bar so it reflects font size changes.
+        """
+        ui = self.ui
+        if ui is None:
+            return
+
+        tab_bar = ui.tabWidget.tabBar()
+        tab_bar.ensurePolished()
+        tab_bar.updateGeometry()
+        tab_bar.adjustSize()
+
+        ui.tabWidget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        ui.tabWidget.ensurePolished()
+        ui.tabWidget.updateGeometry()
+        ui.tabWidget.adjustSize()
+
+        frame = ui.scrollArea.frameWidth()
+        margins = ui.tabWidget.contentsMargins()
+        tab_width = max(tab_bar.sizeHint().width(), ui.tabWidget.sizeHint().width())
+        min_width = max(0, tab_width + margins.left() + margins.right() + frame * 2 + 12)
+
+        ui.scrollArea.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        ui.scrollAreaWidgetContents.setFixedWidth(min_width)
+        ui.scrollArea.setFixedWidth(min_width)
+        ui.layoutWidget.setMinimumWidth(min_width)
+        ui.tabWidget.setFixedWidth(min_width)
+
+        ui.scrollAreaWidgetContents.updateGeometry()
+        ui.scrollAreaWidgetContents.adjustSize()
+        ui.scrollArea.updateGeometry()
+        ui.scrollArea.adjustSize()
+        ui.layoutWidget.updateGeometry()
+        ui.layoutWidget.adjustSize()
+
+        if ui.layoutWidget.layout():
+            ui.layoutWidget.layout().activate()
+        if ui.horizontalLayout_2:
+            ui.horizontalLayout_2.activate()
+
+        ui.verticalLayout_10.invalidate()
+        ui.horizontalLayout_2.invalidate()
+        ui.verticalLayout_3.invalidate()
+        self.updateGeometry()
+        self.adjustSize()
+        self.update()
 
 
     def register_main_menu_actions(self):
@@ -222,6 +279,8 @@ class NV200Widget(QWidget):
         """
         ui = self.ui
         ui.tabWidget.setEnabled(connected)
+        self.ui.easyModeGroupBox.setEnabled(connected)
+        self.ui.controllerStructureWidget.setEnabled(connected)
     
 
     def init_device_search_ui(self):
@@ -229,33 +288,11 @@ class NV200Widget(QWidget):
         Initializes the device search UI components, including buttons and combo boxes for device selection.
         """
         ui = self.ui
-        ui.searchDevicesButton.setIcon(get_icon("search", size=24, fill=True))
-        ui.searchDevicesButton.clicked.connect(safe_asyncslot(self.search_all_devices))
-
-        # Create the menu
-        menu = QMenu(self)
-
-        # Create actions
-        serial_action = QAction("USB Devices", ui.searchDevicesButton)
-        serial_action.setIcon(get_icon_for_menu("usb"))
-        ethernet_action = QAction("Ethernet Devices", ui.searchDevicesButton)
-        ethernet_action.setIcon(get_icon("lan"))
-
-        # Connect actions to appropriate slots
-        serial_action.triggered.connect(safe_asyncslot(self.search_serial_devices))
-        ethernet_action.triggered.connect(safe_asyncslot(self.search_ethernet_devices))
-
-        # Add actions to menu
-        menu.addAction(serial_action)
-        menu.addAction(ethernet_action)
-
-        # Set the menu to the button
-        ui.searchDevicesButton.setMenu(menu)
-
-        ui.devicesComboBox.currentIndexChanged.connect(self.on_device_selected)
-        ui.connectButton.setEnabled(False)
-        ui.connectButton.setIcon(get_icon("power", size=24, fill=True))
-        ui.connectButton.clicked.connect(safe_asyncslot(self.connect_to_device))
+        ui.deviceSearchWidget.set_device_class(NV200Device)
+        ui.deviceSearchWidget.set_on_search_start_callback(self.handle_search_devices_start)
+        ui.deviceSearchWidget.set_on_search_complete_callback(self.handle_search_devices_end)
+        ui.deviceSearchWidget.set_on_connect_callback(self.handle_connect_device)
+        ui.deviceSearchWidget.set_on_disconnect_callback(self.handle_disconnect_device)
 
 
     def init_easy_mode_ui(self):
@@ -566,87 +603,54 @@ class NV200Widget(QWidget):
 
         self.update_waveform_plot()
 
-
-    async def search_all_devices(self):
+    
+    async def handle_search_devices_start(self):
         """
-        Asynchronously searches for all available devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
+        Handles the start of the device search process by updating the UI status and progress bar.
         """
-        self._discover_flags = DiscoverFlags.ALL
-        await self.search_devices()
-
-
-    async def search_serial_devices(self):
-        """
-        Asynchronously searches for serial devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
-        """
-        self._discover_flags = DiscoverFlags.DETECT_SERIAL
-        await self.search_devices()
-
-    async def search_ethernet_devices(self):
-        """
-        Asynchronously searches for Ethernet devices and updates the UI accordingly.
-        This method is a wrapper around search_devices to allow for easy integration with other async tasks.
-        """
-        self._discover_flags = DiscoverFlags.DETECT_ETHERNET
-        await self.search_devices()
-
-
-    async def search_devices(self):
-        """
-        Asynchronously searches for available devices and updates the UI accordingly.
-        """
-        ui = self.ui
-        ui.searchDevicesButton.setEnabled(False)
-        ui.connectButton.setEnabled(False)
         self.status_message.emit("Searching for devices...", 0)
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-       
-        print("Searching...")
-        ui.mainProgressBar.start(3000)
-        try:
-            print("Discovering devices...")
-            devices = await discover_devices(flags=self._discover_flags | DiscoverFlags.ADJUST_COMM_PARAMS, device_class=NV200Device)    
-            
-            if not devices:
-                print("No devices found.")
-            else:
-                print(f"Found {len(devices)} device(s):")
-                for device in devices:
-                    print(device)
-            ui.mainProgressBar.stop(success=True, context="search_devices")
-        except Exception as e:
-            ui.mainProgressBar.reset()
-            print(f"Error: {e}")
-        finally:
-            QApplication.restoreOverrideCursor()
-            self.ui.searchDevicesButton.setEnabled(True)
-            self.status_message.emit("", 0)
-            print("Search completed.")
-            self.ui.devicesComboBox.clear()
-            if devices:
-                for device in devices:
-                    self.ui.devicesComboBox.addItem(f"{device}", device)
-            else:
-                self.ui.devicesComboBox.addItem("No devices found.")
-            
-            
-    def on_device_selected(self, index):
-        """
-        Handles the event when a device is selected from the devicesComboBox.
-        """
-        if index == -1:
-            print("No device selected.")
-            return
+        self.ui.mainProgressBar.start(3000)
 
-        device = self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
-        if device is None:
-            print("No device data found.")
+    
+    async def handle_search_devices_end(self, devices: List[DetectedDevice], error: Exception | None):
+        """
+        Handles the end of the device search process by updating the UI status and progress bar.
+        """
+        if devices:
+            self.ui.mainProgressBar.stop(success=True, context="search_devices")
+        else:
+            self.ui.mainProgressBar.reset()
+
+        self.status_message.emit("", 0)
+        
+    async def handle_connect_device(self, device: NV200Device, error: Exception | None):
+        """
+        Handles the event when the DeviceSearchWidget connects to a device.
+        """
+        if error:
+            self.set_ui_connected(False)
+            self.status_message.emit(f"Connection failed: {error}", 2000)
             return
         
-        print(f"Selected device: {device}")
-        self.ui.connectButton.setEnabled(True)
+        self._device = device
+        self._recorder = DataRecorder(self._device)
+        self._waveform_generator = WaveformGenerator(self._device)
+        self._analyzer = ResonanceAnalyzer(self._device)
+        
+        await self.backup_actuator_config()
+        await self.init_ui_from_device()
+
+        self.set_ui_connected(True)
+        
+        print(f"Connected to {device.device_info}.")
+
+
+    async def handle_disconnect_device(self):
+        self.set_ui_connected(False)
+        self._device = None       
+        self._recorder = None
+        self._waveform_generator = None
+        self._analyzer = None  
 
 
     async def update_target_pos_edits(self):
@@ -738,16 +742,6 @@ class NV200Widget(QWidget):
             await self.update_pid_mode_ui()
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
-
-
-    def selected_device(self) -> DetectedDevice:
-        """
-        Returns the currently selected device from the devicesComboBox.
-        """
-        index = self.ui.devicesComboBox.currentIndex()
-        if index == -1:
-            return None
-        return self.ui.devicesComboBox.itemData(index, role=Qt.ItemDataRole.UserRole)
     
 
     async def init_ui_from_device(self):
@@ -901,56 +895,6 @@ class NV200Widget(QWidget):
         self.settings_widget_change_tracker.reset()
         cui.spiSrcComboBox.applyfunc = lambda value: dev.set_spi_monitor_source(SPIMonitorSource(value))
         
-
-
-
-    async def disconnect_from_device(self):
-        """
-        Asynchronously disconnects from the currently connected device.
-        """
-        if self._device is None:
-            print("No device connected.")
-            return
-
-        await self._device.close()
-        self._device = None       
-        self._recorder = None
-        self._waveform_generator = None
-        self._analyzer = None  
-            
-
-
-    async def connect_to_device(self):
-        """
-        Asynchronously connects to the selected device.
-        """
-        self.setCursor(Qt.CursorShape.WaitCursor)
-        detected_device = self.selected_device()
-        self.status_message.emit(f"Connecting to {detected_device.identifier}...", 0)
-        print(f"Connecting to {detected_device.identifier}...")
-        try:
-            await self.disconnect_from_device()
-            self.set_ui_connected(False)
-            self._device = cast(NV200Device, await connect_to_detected_device(detected_device))
-            await self.backup_actuator_config()
-            self.ui.easyModeGroupBox.setEnabled(True)
-
-            self._recorder = DataRecorder(self._device)
-            self._waveform_generator = WaveformGenerator(self._device)
-            self._analyzer = ResonanceAnalyzer(self._device)
-
-            self.set_ui_connected(True)
-            await self.init_ui_from_device()
-            self.status_message.emit(f"Connected to {detected_device.identifier}.", 2000)
-            print(f"Connected to {detected_device.identifier}.")
-        except Exception as e:
-            self.status_message.emit(f"Connection failed: {e}", 2000)
-            print(f"Connection failed: {e}")
-            return
-        finally:
-            self.setCursor(Qt.CursorShape.ArrowCursor)
-
-
     def actuator_backup_path(self) -> Path:
         """
         Returns the backup directory path for actuator configurations.
@@ -1505,7 +1449,6 @@ class NV200Widget(QWidget):
             return
 
         self._initialized = True
-        QTimer.singleShot(0, safe_asyncslot(self.search_serial_devices))
         ui = self.ui
         ui.scrollArea.setFixedWidth(ui.scrollArea.widget().sizeHint().width() + 40)  # +40 for scroll bar width
 

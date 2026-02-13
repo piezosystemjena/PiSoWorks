@@ -61,6 +61,8 @@ class MplCanvas(FigureCanvas):
         self._axes_timer.timeout.connect(self.update_layout)
 
         self.set_dark_mode(style_manager.style.is_current_theme_dark())
+        self.apply_font_size(style_manager.base_font_size())
+        style_manager.style.stylesheet_changed.connect(self.on_stylesheet_changed)
     
 
     def init_axes_object(self, ax : Axes):
@@ -82,6 +84,34 @@ class MplCanvas(FigureCanvas):
         # Set tick parameters for current text_color
         ax.tick_params(axis='x', colors=text_color)
         ax.tick_params(axis='y', colors=text_color)
+
+        self.apply_font_size(style_manager.base_font_size(), axes=[ax])
+
+
+    def on_stylesheet_changed(self):
+        """
+        Applies the current base font size to all axes when the app stylesheet changes.
+        """
+        self.apply_font_size(style_manager.base_font_size())
+
+
+    def apply_font_size(self, font_size: float, axes: list[Axes] | None = None):
+        """
+        Applies the given font size to axes labels, titles, ticks, and legend.
+        """
+        target_axes = axes if axes is not None else self.axes_list
+        for ax in target_axes:
+            ax.tick_params(axis='both', labelsize=font_size)
+            ax.xaxis.label.set_size(font_size)
+            ax.yaxis.label.set_size(font_size)
+            ax.title.set_size(font_size)
+
+        legend = self.ax1.get_legend()
+        if legend:
+            for text in legend.get_texts():
+                text.set_fontsize(font_size)
+            if legend.get_title():
+                legend.get_title().set_fontsize(font_size)
 
 
     def get_axes(self, index : int) -> Axes:
@@ -232,7 +262,7 @@ class MplCanvas(FigureCanvas):
             edgecolor='darkgray', 
             frameon=True, 
             loc='best', 
-            fontsize=10
+            fontsize=style_manager.base_font_size()
         )
 
 

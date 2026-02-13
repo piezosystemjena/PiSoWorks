@@ -12,7 +12,7 @@ from PySide6.QtCore import (
     QLocale,
     QUrl
 )
-from PySide6.QtGui import QIcon, QGuiApplication, QAction, QDesktopServices, QPalette
+from PySide6.QtGui import QIcon, QGuiApplication, QAction, QDesktopServices, QPalette, QKeySequence
 
 import qtinter
 from pathlib import Path
@@ -125,6 +125,21 @@ class MainWindow(QMainWindow):
         a.setChecked(not style_manager.style.is_current_theme_dark())
         menu.addAction(a)
         a.triggered.connect(style_manager.set_light_theme)
+
+        menu.addSeparator()
+        zoom_in_action = QAction("Zoom In", self)
+        zoom_in_action.setShortcut(QKeySequence.ZoomIn)
+        zoom_in_action.triggered.connect(style_manager.zoom_in)
+        menu.addAction(zoom_in_action)
+
+        zoom_out_action = QAction("Zoom Out", self)
+        zoom_out_action.setShortcut(QKeySequence.ZoomOut)
+        zoom_out_action.triggered.connect(style_manager.zoom_out)
+        menu.addAction(zoom_out_action)
+
+        reset_zoom_action = QAction("Reset Zoom", self)
+        reset_zoom_action.triggered.connect(style_manager.zoom_reset)
+        menu.addAction(reset_zoom_action)
         
 
     def add_view(self, widget_class, title) -> QtAds.CDockWidget:
