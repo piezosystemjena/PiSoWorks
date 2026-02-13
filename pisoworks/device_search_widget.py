@@ -127,9 +127,10 @@ class DeviceSearchWidget(QWidget):
         
         if self._search_start_cb:
             await self._search_start_cb()
+
+        self._devices = []
        
         try:
-            self._devices = []
             self._devices = await discover_devices(flags=discover_flags, device_class=device)    
         except Exception as e:
             error = e
@@ -188,6 +189,7 @@ class DeviceSearchWidget(QWidget):
                     await self._connect_cb(self._current_device, error)
             except Exception:
                 self.ui.connectionButton.setText("Connect")
+                print("Error in connect callback: " + str(error))
 
             self.ui.connectionButton.setEnabled(True)
             self.setCursor(Qt.CursorShape.ArrowCursor)

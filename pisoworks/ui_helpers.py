@@ -67,6 +67,7 @@ def set_combobox_index_by_value(combo: QComboBox, value: Any) -> None:
     else:
         raise ValueError(f"Value {value!r} not found in QComboBox.")
     
+    
 def get_enum_value_type(enum: Enum) -> type | None:
     """
     Retrieves the type of the underlying values in an Enum class.
