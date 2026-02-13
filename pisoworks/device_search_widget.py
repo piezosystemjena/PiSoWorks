@@ -1,5 +1,5 @@
 import asyncio
-from typing import Type
+from typing import Awaitable, Callable, Type
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QWidget, QMenu, QApplication
 from PySide6.QtGui import QAction
@@ -19,10 +19,10 @@ class DeviceSearchWidget(QWidget):
         self._devices: list[DetectedDevice] = []
 
         self._current_device: PiezoDeviceBase = None
-        self._search_start_cb: callable = None
-        self._search_complete_cb: callable = None
-        self._connect_cb: callable = None
-        self._disconnect_cb: callable = None
+        self._search_start_cb: Callable[[], Awaitable[None]] = None
+        self._search_complete_cb: Callable[[list[DetectedDevice], Exception | None], Awaitable[None]] = None
+        self._connect_cb: Callable[[DetectedDevice, Exception | None], Awaitable[None]] = None
+        self._disconnect_cb: Callable[[], Awaitable[None]] = None
 
         self._init_search_ui()
 
@@ -35,16 +35,16 @@ class DeviceSearchWidget(QWidget):
     def get_devices(self) -> list[DetectedDevice]:
         return self._devices
 
-    def set_on_search_start_callback(self, callback):
+    def set_on_search_start_callback(self, callback: Callable[[], Awaitable[None]]) -> None:
         self._search_start_cb = callback
 
-    def set_on_search_complete_callback(self, callback):
+    def set_on_search_complete_callback(self, callback: Callable[[list[DetectedDevice], Exception | None], Awaitable[None]]) -> None:
         self._search_complete_cb = callback
 
-    def set_on_connect_callback(self, callback):
+    def set_on_connect_callback(self, callback: Callable[[DetectedDevice, Exception | None], Awaitable[None]]) -> None:
         self._connect_cb = callback
 
-    def set_on_disconnect_callback(self, callback):
+    def set_on_disconnect_callback(self, callback: Callable[[], Awaitable[None]]) -> None:
         self._disconnect_cb = callback
 
     def _init_search_ui(self):
