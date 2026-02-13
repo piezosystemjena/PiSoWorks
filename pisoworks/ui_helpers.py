@@ -54,8 +54,6 @@ def set_combobox_index_by_value(combo: QComboBox, value: Any) -> None:
     if combo.count() > 0:
         expected_type = type(combo.itemData(0))
 
-    print("type" + str(type(value)))
-
     # If combobox expects Enum but new value is not Enum, create Enum
     try:
         if issubclass(expected_type, Enum) and not issubclass(type(value), Enum):   
