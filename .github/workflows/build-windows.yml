@@ -34,6 +34,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Make sure the apt package index is up to date before installing dependencies
+      - name: Refresh apt package index
+        run: sudo apt update -y
+
       # Installs and configures Python 3.12 so Poetry and PyInstaller can run
       - name: Set up Python
         uses: actions/setup-python@v5

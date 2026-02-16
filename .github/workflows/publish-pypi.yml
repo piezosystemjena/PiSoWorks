@@ -23,6 +23,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Make sure the apt package index is up to date before installing dependencies
+      - name: Refresh apt package index
+        run: sudo apt update -y
+
       # Set up Python 3.12 and enable pip caching for faster builds
       - name: Set up Python
         uses: actions/setup-python@v5
