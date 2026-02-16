@@ -6,10 +6,9 @@ name: Build Windows Executable
 on:
   push:
     branches: [main]          # Run automatically when code is pushed to "main"
+    tags: ['v*.*.*']               # Run when a tag is pushed
   pull_request:
     branches: [main]          # Run when a pull request is opened or updated against "main"
-  release:
-    types: [published]        # Run when a GitHub Release is published
   workflow_dispatch:          # Allow manual trigger from the Actions tab
 
 # -----------------------------------------------------
@@ -95,12 +94,15 @@ jobs:
       - name: Rename executable
         run: mv dist/PiSoWorks.exe dist/PiSoWorks_${{ steps.vars.outputs.safe_ref_name }}.exe
 
-      # If this workflow was triggered by a Release event,
-      # the executable is uploaded directly as an asset to the GitHub Release
+      # If this workflow was triggered by a tag push,
+      # create/update the GitHub Release and upload the executable asset
       - name: Upload to GitHub Release (if applicable)
-        if: github.event_name == 'release'
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: dist/PiSoWorks_${{ steps.vars.outputs.safe_ref_name }}.exe
 
 # -----------------------------------------------------
@@ -185,10 +187,13 @@ jobs:
       - name: Rename executable
         run: mv dist/PiSoWorks_Setup.exe dist/PiSoWorks_Setup_${{ steps.vars.outputs.safe_ref_name }}.exe
 
-      # If this workflow was triggered by a Release event,
-      # the installer is uploaded directly as an asset to the GitHub Release
+      # If this workflow was triggered by a tag push,
+      # create/update the GitHub Release and upload the installer asset
       - name: Upload to GitHub Release (if applicable)
-        if: github.event_name == 'release'
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
           files: dist/PiSoWorks_Setup_${{ steps.vars.outputs.safe_ref_name }}.exe
