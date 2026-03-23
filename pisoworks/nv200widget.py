@@ -734,12 +734,17 @@ class NV200Widget(QWidget):
             tracker = self.settings_widget_change_tracker
             tracker.backup_initial_values("previous")
             dirty_widgets = tracker.get_dirty_widgets()
+
+            cl_previous = await self.device.pid.get_mode()
+
             for widget in dirty_widgets:
                 print(f"Applying changes from widget: {widget}")
                 await widget.applyfunc(tracker.get_value_of_widget(widget))
                 tracker.reset_widget(widget)
-            
-            await self.update_pid_mode_ui()
+
+            # If closed/open loop mode was changed, we need to update the UI elements accordingly
+            if cl_previous != await self.device.pid.get_mode():
+                await self.update_pid_mode_ui()
         except Exception as e:
             self.status_message.emit(f"Error setting setpoint param: {e}", 2000)
     
