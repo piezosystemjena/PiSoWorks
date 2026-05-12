@@ -131,7 +131,7 @@ As shown in the control block diagram, the NV200 device includes several configu
 
 These filters can be accessed and configured individually via the settings panel:
 
-4th-order low-pass filter on the setpoint input :guinum: `❶`
+4th-order low-pass filter on the setpoint input :guinum:`❶`
    The setpoint low-pass filter :guilabel:`setlpf` smooths the commanded input signal to avoid abrupt changes and reduce noise.
 
 1st-order low-pass filter on the position sensor input :guinum:`❷`
